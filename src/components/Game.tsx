@@ -297,11 +297,11 @@ export default function Game() {
     showSequence(nextSeq);
   };
 
-  // Node position coordinates around center (250, 250) with radius 180
+  // Node position coordinates around center (250, 250) with expanded radius 208 for generous text breathing room
   const stagePositions = useMemo(() => {
     const cx = 250;
     const cy = 250;
-    const r = 180;
+    const r = 208;
     return STAGES.map((s) => {
       const rad = (s.angle - 90) * (Math.PI / 180);
       return {
@@ -376,14 +376,14 @@ export default function Game() {
       </div>
 
       {/* Main Content Area */}
-      <div className="relative z-10 w-full max-w-[480px] sm:max-w-[500px] flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-[510px] sm:max-w-[550px] flex flex-col items-center">
         
         {/* Washi Paper Card Container */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="washi-card rounded-[2.5rem] p-6 sm:p-8 w-full flex flex-col items-center justify-between min-h-[580px] relative overflow-hidden"
+          className="washi-card rounded-[2.5rem] p-5 sm:p-7 w-full flex flex-col items-center justify-between min-h-[600px] relative overflow-hidden"
         >
           
           {!isPlaying ? (
@@ -501,7 +501,7 @@ export default function Game() {
               </div>
 
               {/* The Central Circular Wheel: Faded Dharmachakra + Ensō + Jade & Stamp Nodes */}
-              <div className="relative w-full max-w-[340px] sm:max-w-[370px] aspect-square flex items-center justify-center my-1 select-none">
+              <div className="relative w-full max-w-[395px] sm:max-w-[430px] aspect-square flex items-center justify-center my-0.5 select-none">
                 <svg className="w-full h-full enso-container" viewBox="0 0 500 500">
                   <defs>
                     {/* Jade Completed Glow */}
@@ -527,25 +527,25 @@ export default function Game() {
                   </defs>
 
                   {/* 1. Stylized Faded Dharmachakra (Dharma Wheel) in Background */}
-                  <g className="opacity-40" stroke="#bfb29e" fill="none">
+                  <g className="opacity-25" stroke="#a89a85" fill="none">
                     {/* Outer Wheel Rim */}
-                    <circle cx="250" cy="250" r="148" strokeWidth="3.5" />
-                    <circle cx="250" cy="250" r="160" strokeWidth="1.5" strokeDasharray="5 7" />
+                    <circle cx="250" cy="250" r="176" strokeWidth="3.5" />
+                    <circle cx="250" cy="250" r="188" strokeWidth="1.5" strokeDasharray="5 7" />
                     
-                    {/* 8 Radiating Dharmachakra Spokes with Ornamental Knobs */}
-                    {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, idx) => {
+                    {/* 8 Radiating Dharmachakra Spokes Angled (22.5° offset) to Keep Vertical Corridor Clear of Lines */}
+                    {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((angle, idx) => {
                       const rad = (angle * Math.PI) / 180;
-                      const xInner = 250 + 58 * Math.cos(rad);
-                      const yInner = 250 + 58 * Math.sin(rad);
-                      const xOuter = 250 + 148 * Math.cos(rad);
-                      const yOuter = 250 + 148 * Math.sin(rad);
-                      const xMid = 250 + 104 * Math.cos(rad);
-                      const yMid = 250 + 104 * Math.sin(rad);
+                      const xInner = 250 + 66 * Math.cos(rad);
+                      const yInner = 250 + 66 * Math.sin(rad);
+                      const xOuter = 250 + 176 * Math.cos(rad);
+                      const yOuter = 250 + 176 * Math.sin(rad);
+                      const xMid = 250 + 122 * Math.cos(rad);
+                      const yMid = 250 + 122 * Math.sin(rad);
                       return (
                         <g key={idx}>
                           <line x1={xInner} y1={yInner} x2={xOuter} y2={yOuter} strokeWidth="3" strokeLinecap="round" />
-                          <circle cx={xMid} cy={yMid} r="4.5" fill="#bfb29e" />
-                          <circle cx={xOuter} cy={yOuter} r="5.5" fill="#bfb29e" />
+                          <circle cx={xMid} cy={yMid} r="4.5" fill="#a89a85" />
+                          <circle cx={xOuter} cy={yOuter} r="5.5" fill="#a89a85" />
                         </g>
                       );
                     })}
@@ -553,27 +553,27 @@ export default function Game() {
 
                   {/* 2. Ensō (Ink Brush Circle) with Sumi-E Texture */}
                   <path
-                    d="M 270 68 
-                       C 375 74, 438 152, 432 254 
-                       C 426 356, 344 436, 244 436 
-                       C 144 436, 62 356, 68 250 
-                       C 74 158, 144 82, 226 72"
+                    d="M 272 44 
+                       C 378 48, 462 142, 458 252 
+                       C 454 362, 356 456, 246 456 
+                       C 136 456, 44 362, 48 250 
+                       C 52 148, 138 56, 226 48"
                     fill="none"
                     stroke="#1e1b18"
-                    strokeWidth="22"
+                    strokeWidth="24"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     className="opacity-90"
                   />
                   <path
-                    d="M 282 74 
-                       C 382 80, 442 160, 436 256 
-                       C 430 352, 348 430, 248 430 
-                       C 150 430, 72 352, 76 250 
-                       C 80 168, 142 86, 220 78"
+                    d="M 284 50 
+                       C 386 56, 466 148, 462 254 
+                       C 458 358, 360 450, 250 450 
+                       C 142 450, 54 358, 58 250 
+                       C 62 158, 136 60, 220 54"
                     fill="none"
                     stroke="#2e2a25"
-                    strokeWidth="10"
+                    strokeWidth="11"
                     strokeLinecap="round"
                     className="opacity-50"
                   />
@@ -604,13 +604,12 @@ export default function Game() {
                           <circle
                             cx={node.x}
                             cy={node.y}
-                            r="22"
+                            r="21"
                             fill="none"
                             stroke="#c0392b"
                             strokeWidth="2"
                             strokeDasharray="4 3"
-                            className="animate-spin"
-                            style={{ animationDuration: '9s' }}
+                            className="animate-pulse"
                           />
                         )}
 
@@ -661,29 +660,29 @@ export default function Game() {
                   })}
                 </svg>
 
-                {/* Central Medallion Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-6">
+                {/* Central Medallion Overlay with Roomy Breathing Space */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-8 py-4">
                   
                   {/* Stage Realm & Title (Above Lotus) */}
                   <div 
-                    className="text-center mb-1 pointer-events-auto cursor-pointer group"
+                    className="text-center mb-2 pointer-events-auto cursor-pointer group"
                     onClick={() => setSelectedLoreStage(currentStage)}
                   >
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2d6a50] block font-serif-zen">
+                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.22em] text-[#2d6a50] block font-serif-zen">
                       {currentStage.realm} • STAGE {currentStage.id}
                     </span>
-                    <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors">
+                    <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors mt-0.5">
                       {currentStage.name}
                     </h3>
-                    <div className="text-[9px] text-stone-500 font-serif-zen tracking-wider flex items-center justify-center space-x-2 mt-0.5">
-                      <span className="opacity-60 uppercase">SPIRIT</span>
+                    <div className="text-[9.5px] sm:text-[10px] text-stone-500 font-serif-zen tracking-widest flex items-center justify-center space-x-2 mt-0.5">
+                      <span className="opacity-60 uppercase text-[9px]">SPIRIT</span>
                       <span className="italic font-bold text-stone-700">({currentStage.subtitle})</span>
-                      <span className="opacity-60 uppercase">MIND</span>
+                      <span className="opacity-60 uppercase text-[9px]">MIND</span>
                     </div>
                   </div>
 
                   {/* Pale Jade Celadon Disk with Hand-Drawn Lotus / Meditating Symbol */}
-                  <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 my-1">
+                  <div className="relative flex items-center justify-center w-20 h-20 sm:w-22 sm:h-22 my-1">
                     {/* Audio Feedback Pulse */}
                     <AnimatePresence>
                       {feedback === 'correct' && (
@@ -702,7 +701,7 @@ export default function Game() {
                         scale: feedback === 'correct' ? [1, 1.05, 1] : 1,
                         x: feedback === 'wrong' ? [-6, 6, -6, 6, 0] : 0,
                       }}
-                      className={`w-20 h-20 sm:w-22 sm:h-22 rounded-full flex items-center justify-center shadow-md border transition-all duration-300 ${
+                      className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-md border transition-all duration-300 ${
                         feedback === 'wrong' 
                           ? 'border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
                           : 'border-white/90 shadow-[0_4px_14px_rgba(64,145,108,0.25)]'
@@ -712,7 +711,7 @@ export default function Game() {
                       }}
                     >
                       {/* Meditating Figure on Lotus Flower in Black Ink Brush Lines */}
-                      <svg className="w-13 h-13 text-[#18281f]" viewBox="0 0 64 64" fill="none">
+                      <svg className="w-12 h-12 text-[#18281f]" viewBox="0 0 64 64" fill="none">
                         {/* Meditating Figure Head */}
                         <circle cx="32" cy="18" r="3.2" fill="#18281f" />
                         
@@ -748,11 +747,11 @@ export default function Game() {
                   </div>
 
                   {/* Stage Progress & Tone Count (Below Lotus) */}
-                  <div className="text-center mt-0.5">
-                    <span className="text-[9.5px] uppercase tracking-widest text-stone-500 font-bold font-serif-zen block">
+                  <div className="text-center mt-2">
+                    <span className="text-[10px] sm:text-[10.5px] uppercase tracking-widest text-stone-600 font-bold font-serif-zen block">
                       CIRCLE {currentStageIndex + 1} • PUZZLE {puzzleInStage}/3 ({currentPuzzleLength} {currentPuzzleLength === 1 ? 'TONE' : 'TONES'})
                     </span>
-                    <span className="text-[10px] italic text-stone-600 font-serif-zen">
+                    <span className="text-[10.5px] sm:text-[11px] italic text-stone-500 font-serif-zen mt-0.5 block">
                       {isShowingSequence ? 'Listen to the bells...' : 'Repeat the tone'}
                     </span>
                   </div>
