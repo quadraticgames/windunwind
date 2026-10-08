@@ -527,68 +527,55 @@ export default function Game() {
                   </defs>
 
                   {/* 1. Stylized Faded Dharmachakra (Dharma Wheel) in Background */}
-                  <g className="opacity-35" stroke="#a39683" fill="none">
+                  <g className="opacity-40" stroke="#bfb29e" fill="none">
                     {/* Outer Wheel Rim */}
-                    <circle cx="250" cy="250" r="150" strokeWidth="3" />
-                    <circle cx="250" cy="250" r="162" strokeWidth="1.5" strokeDasharray="6 8" />
+                    <circle cx="250" cy="250" r="148" strokeWidth="3.5" />
+                    <circle cx="250" cy="250" r="160" strokeWidth="1.5" strokeDasharray="5 7" />
                     
-                    {/* 8 Radiating Dharmachakra Spokes */}
+                    {/* 8 Radiating Dharmachakra Spokes with Ornamental Knobs */}
                     {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, idx) => {
                       const rad = (angle * Math.PI) / 180;
-                      const xInner = 250 + 60 * Math.cos(rad);
-                      const yInner = 250 + 60 * Math.sin(rad);
-                      const xOuter = 250 + 150 * Math.cos(rad);
-                      const yOuter = 250 + 150 * Math.sin(rad);
-                      const xMid = 250 + 105 * Math.cos(rad);
-                      const yMid = 250 + 105 * Math.sin(rad);
+                      const xInner = 250 + 58 * Math.cos(rad);
+                      const yInner = 250 + 58 * Math.sin(rad);
+                      const xOuter = 250 + 148 * Math.cos(rad);
+                      const yOuter = 250 + 148 * Math.sin(rad);
+                      const xMid = 250 + 104 * Math.cos(rad);
+                      const yMid = 250 + 104 * Math.sin(rad);
                       return (
                         <g key={idx}>
                           <line x1={xInner} y1={yInner} x2={xOuter} y2={yOuter} strokeWidth="3" strokeLinecap="round" />
-                          {/* Ornamental Spoke Node Knob */}
-                          <circle cx={xMid} cy={yMid} r="4" fill="#a39683" />
-                          {/* Spoke Cap on Rim */}
-                          <circle cx={xOuter} cy={yOuter} r="5" fill="#a39683" />
+                          <circle cx={xMid} cy={yMid} r="4.5" fill="#bfb29e" />
+                          <circle cx={xOuter} cy={yOuter} r="5.5" fill="#bfb29e" />
                         </g>
                       );
                     })}
                   </g>
 
                   {/* 2. Ensō (Ink Brush Circle) with Sumi-E Texture */}
-                  {/* Heavy calligraphic stroke starting thin near top right (1 o'clock) and looping around */}
                   <path
-                    d="M 270 70 
-                       C 370 75, 435 155, 430 255 
-                       C 425 355, 345 435, 245 435 
-                       C 145 435, 65 355, 70 250 
-                       C 75 160, 145 85, 230 75"
+                    d="M 270 68 
+                       C 375 74, 438 152, 432 254 
+                       C 426 356, 344 436, 244 436 
+                       C 144 436, 62 356, 68 250 
+                       C 74 158, 144 82, 226 72"
                     fill="none"
-                    stroke="#1c1a17"
-                    strokeWidth="20"
+                    stroke="#1e1b18"
+                    strokeWidth="22"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     className="opacity-90"
                   />
-                  {/* Secondary Brush Hair Overlay for Organic Bristle Look */}
                   <path
-                    d="M 285 76 
-                       C 380 82, 440 162, 435 258 
-                       C 430 354, 348 430, 248 430 
-                       C 152 430, 75 354, 78 252 
-                       C 82 170, 142 88, 222 80"
+                    d="M 282 74 
+                       C 382 80, 442 160, 436 256 
+                       C 430 352, 348 430, 248 430 
+                       C 150 430, 72 352, 76 250 
+                       C 80 168, 142 86, 220 78"
                     fill="none"
-                    stroke="#2a2723"
-                    strokeWidth="8"
+                    stroke="#2e2a25"
+                    strokeWidth="10"
                     strokeLinecap="round"
-                    className="opacity-60"
-                  />
-                  {/* Subtle inner dry brush tail */}
-                  <path
-                    d="M 235 68 C 300 68, 380 110, 410 180"
-                    fill="none"
-                    stroke="#181614"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    className="opacity-40"
+                    className="opacity-50"
                   />
 
                   {/* 3. The 9 Stage Nodes along the Circle */}
@@ -620,10 +607,10 @@ export default function Game() {
                             r="22"
                             fill="none"
                             stroke="#c0392b"
-                            strokeWidth="1.8"
+                            strokeWidth="2"
                             strokeDasharray="4 3"
                             className="animate-spin"
-                            style={{ animationDuration: '10s' }}
+                            style={{ animationDuration: '9s' }}
                           />
                         )}
 
@@ -631,11 +618,19 @@ export default function Game() {
                         <circle
                           cx={node.x}
                           cy={node.y}
-                          r="16"
-                          fill={isPassed ? "#40916c" : "url(#cinnabarGrad)"}
+                          r="15.5"
+                          fill={isPassed ? "#389367" : "url(#cinnabarGrad)"}
                           stroke={isPassed ? "#a3e4c4" : "#f5b7b1"}
                           strokeWidth="1.8"
-                          className="shadow-sm"
+                        />
+                        {/* Subtle glossy highlight */}
+                        <ellipse
+                          cx={node.x - 4}
+                          cy={node.y - 5}
+                          rx="5"
+                          ry="2.5"
+                          fill="rgba(255,255,255,0.45)"
+                          transform={`rotate(-30 ${node.x - 4} ${node.y - 5})`}
                         />
 
                         {/* Node Icon: White Checkmark or Calligraphic Number */}
@@ -674,7 +669,7 @@ export default function Game() {
                     className="text-center mb-1 pointer-events-auto cursor-pointer group"
                     onClick={() => setSelectedLoreStage(currentStage)}
                   >
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#34705a] block font-serif-zen">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2d6a50] block font-serif-zen">
                       {currentStage.realm} • STAGE {currentStage.id}
                     </span>
                     <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors">
@@ -707,43 +702,46 @@ export default function Game() {
                         scale: feedback === 'correct' ? [1, 1.05, 1] : 1,
                         x: feedback === 'wrong' ? [-6, 6, -6, 6, 0] : 0,
                       }}
-                      className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-md border transition-all duration-300 ${
+                      className={`w-20 h-20 sm:w-22 sm:h-22 rounded-full flex items-center justify-center shadow-md border transition-all duration-300 ${
                         feedback === 'wrong' 
                           ? 'border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
-                          : 'border-white/80 shadow-[0_4px_12px_rgba(64,145,108,0.25)]'
+                          : 'border-white/90 shadow-[0_4px_14px_rgba(64,145,108,0.25)]'
                       }`}
                       style={{
                         background: 'radial-gradient(circle at 35% 30%, #eef9f4 0%, #cae8da 45%, #9bc7b2 85%, #6a9e86 100%)',
                       }}
                     >
-                      {/* Hand-Drawn Meditating Figure / Lotus in Black Ink Brush Lines */}
-                      <svg className="w-12 h-12 text-[#1c2c23]" viewBox="0 0 64 64" fill="none">
-                        {/* Head & Halo */}
-                        <circle cx="32" cy="18" r="3.2" fill="#1c2c23" />
-                        <path d="M26 18 C26 13, 38 13, 38 18" stroke="#1c2c23" strokeWidth="1.2" strokeLinecap="round" />
+                      {/* Meditating Figure on Lotus Flower in Black Ink Brush Lines */}
+                      <svg className="w-13 h-13 text-[#18281f]" viewBox="0 0 64 64" fill="none">
+                        {/* Meditating Figure Head */}
+                        <circle cx="32" cy="18" r="3.2" fill="#18281f" />
                         
-                        {/* Upper Body / Meditation Posture */}
+                        {/* Upper Body Torso */}
                         <path 
-                          d="M32 23 C29 27, 26 34, 23 41 C27 44, 37 44, 41 41 C38 34, 35 27, 32 23 Z" 
-                          fill="#1c2c23" 
+                          d="M32 23 C29 27, 27 33, 24 39 C28 42, 36 42, 40 39 C37 33, 35 27, 32 23 Z" 
+                          fill="#18281f" 
                         />
                         
-                        {/* Left Lotus Petal */}
+                        {/* Lotus Petal Center Cup */}
                         <path 
-                          d="M30 38 C23 37, 13 41, 16 48 C22 49, 27 45, 31 41 Z" 
-                          fill="#1c2c23" 
+                          d="M32 34 C30 38, 30 43, 32 46 C34 43, 34 38, 32 34 Z" 
+                          fill="#18281f" 
+                        />
+
+                        {/* Graceful Blooming Lotus Petals Left & Right */}
+                        <path 
+                          d="M30 40 C21 38, 12 43, 16 51 C24 51, 28 46, 31 42 Z" 
+                          fill="#18281f" 
+                        />
+                        <path 
+                          d="M34 40 C43 38, 52 43, 48 51 C40 51, 36 46, 33 42 Z" 
+                          fill="#18281f" 
                         />
                         
-                        {/* Right Lotus Petal */}
+                        {/* Base Lotus Leaf Pod */}
                         <path 
-                          d="M34 38 C41 37, 51 41, 48 48 C42 49, 37 45, 33 41 Z" 
-                          fill="#1c2c23" 
-                        />
-                        
-                        {/* Central Lotus Bud */}
-                        <path 
-                          d="M32 35 C30 38, 30 42, 32 45 C34 42, 34 38, 32 35 Z" 
-                          fill="#1c2c23" 
+                          d="M22 50 C28 53, 36 53, 42 50 C38 52, 26 52, 22 50 Z" 
+                          fill="#18281f" 
                         />
                       </svg>
                     </motion.div>
@@ -763,18 +761,18 @@ export default function Game() {
               </div>
 
               {/* Tone Input Buttons: Polished Jade River Stones with Carved Arrows */}
-              <div className="flex space-x-6 items-center justify-center pt-1 pb-2">
+              <div className="flex space-x-6 items-center justify-center pt-2 pb-2">
                 
                 {/* HIGHER TONE Stone */}
                 <button
                   type="button"
                   onClick={() => handleInput('up')}
                   disabled={isShowingSequence}
-                  className={`jade-stone w-28 sm:w-32 py-3 px-2 flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  className={`jade-stone w-32 sm:w-36 py-3.5 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
                     isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
                   }`}
                 >
-                  <span className="text-[8.5px] uppercase font-bold tracking-wider text-emerald-950/80 mb-0.5 font-serif-zen">
+                  <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-0.5 font-serif-zen">
                     Higher Tone
                   </span>
                   <span className="jade-carving text-2xl font-black leading-none">
@@ -787,11 +785,11 @@ export default function Game() {
                   type="button"
                   onClick={() => handleInput('down')}
                   disabled={isShowingSequence}
-                  className={`jade-stone w-28 sm:w-32 py-3 px-2 flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  className={`jade-stone w-32 sm:w-36 py-3.5 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
                     isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
                   }`}
                 >
-                  <span className="text-[8.5px] uppercase font-bold tracking-wider text-emerald-950/80 mb-0.5 font-serif-zen">
+                  <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-0.5 font-serif-zen">
                     Lower Tone
                   </span>
                   <span className="jade-carving text-2xl font-black leading-none">
