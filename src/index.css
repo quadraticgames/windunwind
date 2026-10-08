@@ -3,42 +3,140 @@
 @tailwind utilities;
 
 :root {
-  --primary: #6366f1;
-  --secondary: #ec4899;
-  --accent: #8b5cf6;
-  --background: #0f172a;
-  --foreground: #f8fafc;
+  --washi-bg: #f8f5ee;
+  --washi-card: #f6f3eb;
+  --sumi-ink: #1e1b18;
+  --cinnabar-red: #c0392b;
+  --jade-light: #bde0d0;
+  --jade-primary: #529f82;
+  --jade-dark: #275d49;
+  --dharma-wood: #c8b9a3;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
+  font-family: 'Shippori Mincho', serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #14171f;
+  color: #2c2824;
   overflow-x: hidden;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+.font-brush {
+  font-family: 'Ma Shan Zheng', cursive, 'Shippori Mincho', serif;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+.font-serif-zen {
+  font-family: 'Shippori Mincho', serif;
 }
 
-.neon-text {
-  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3);
-}
-
-.bg-aurora {
-  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%);
+/* Atmospheric Twilight Mountains & Bamboo Background */
+.bg-twilight-zen {
+  background-color: #12151c;
+  background-image: 
+    radial-gradient(ellipse at 50% 85%, rgba(138, 93, 108, 0.28) 0%, rgba(58, 48, 64, 0.4) 45%, rgba(18, 21, 28, 0.95) 85%),
+    linear-gradient(to bottom, #10131a 0%, #1c222e 40%, #302a35 75%, #181c24 100%);
   background-attachment: fixed;
+}
+
+/* Washi Paper Card */
+.washi-card {
+  background: #f7f4ec;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.6) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(235, 225, 208, 0.5) 0%, transparent 70%);
+  border: 1px solid rgba(200, 186, 165, 0.55);
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.65), 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 60px rgba(230, 218, 198, 0.35);
+}
+
+/* Polished Jade River Stone Buttons */
+.jade-stone {
+  background: radial-gradient(circle at 35% 28%, #cae8da 0%, #90cca8 38%, #579f83 75%, #34705a 100%);
+  border-radius: 2.2rem 2rem 2.1rem 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 
+    0 8px 18px rgba(0, 0, 0, 0.25),
+    0 2px 5px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -3px 6px rgba(18, 54, 40, 0.45);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.jade-stone:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 22px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    inset 0 3px 5px rgba(255, 255, 255, 0.9),
+    inset 0 -3px 6px rgba(18, 54, 40, 0.4);
+}
+
+.jade-stone:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    inset 0 2px 5px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Carved Glyphs on Jade */
+.jade-carving {
+  color: #17382c;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.45), 0 -1px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Rising Incense Smoke Animation */
+@keyframes smokeRise1 {
+  0% {
+    transform: translate(0, 0) scale(0.7);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-3px, -12px) scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(4px, -24px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeRise2 {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(3px, -14px) scale(1.2);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(-3px, -26px) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.smoke-curl-1 {
+  animation: smokeRise1 2.8s ease-out infinite;
+}
+
+.smoke-curl-2 {
+  animation: smokeRise2 3.2s ease-out infinite 0.7s;
+}
+
+/* Subtle Enso Pulse */
+@keyframes ensoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(45, 212, 191, 0.1));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(82, 183, 136, 0.3));
+  }
+}
+
+.enso-container {
+  animation: ensoGlow 4s ease-in-out infinite;
 }
