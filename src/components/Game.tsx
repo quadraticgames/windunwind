@@ -613,15 +613,15 @@ export default function Game() {
   // Node coordinates along the left-to-right winding ink brush path
   const stagePositions = useMemo(() => {
     const PATH_COORDINATES = [
-      { id: 1, x: 145, y: 228 },
-      { id: 2, x: 238, y: 250 },
-      { id: 3, x: 325, y: 285 },
-      { id: 4, x: 420, y: 280 },
-      { id: 5, x: 512, y: 215 },
-      { id: 6, x: 605, y: 160 },
-      { id: 7, x: 705, y: 150 },
-      { id: 8, x: 790, y: 180 },
-      { id: 9, x: 875, y: 205 },
+      { id: 1, x: 652.0, y: 1185.5 },
+      { id: 2, x: 1270.0, y: 1238.6 },
+      { id: 3, x: 1888.0, y: 1438.6 },
+      { id: 4, x: 2506.0, y: 1529.2 },
+      { id: 5, x: 3124.0, y: 1210.5 },
+      { id: 6, x: 3742.0, y: 904.2 },
+      { id: 7, x: 4360.0, y: 791.7 },
+      { id: 8, x: 4978.0, y: 819.9 },
+      { id: 9, x: 5596.0, y: 626.1 },
     ];
     return STAGES.map((s, idx) => ({
       ...s,
@@ -1013,142 +1013,27 @@ export default function Game() {
                   )}
                 </AnimatePresence>
 
-                <svg className="w-full h-auto max-h-[250px] sm:max-h-[285px] overflow-visible" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet">
+                <svg className="w-full h-auto max-h-[260px] sm:max-h-[300px] overflow-visible" viewBox="0 0 6292 1821" preserveAspectRatio="xMidYMid meet">
                   <defs>
-                    {/* Soft Scenic Wash across the card backdrop */}
-                    <linearGradient id="scenicWash" x1="0" y1="0" x2="1" y2="0.6">
-                      <stop offset="0%" stopColor={currentTheme.skyGradient[0]} stopOpacity="0.85" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                      <stop offset="40%" stopColor={currentTheme.skyGradient[1]} stopOpacity="0.75" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                      <stop offset="75%" stopColor={currentTheme.skyGradient[2]} stopOpacity="0.8" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                      <stop offset="100%" stopColor={currentTheme.skyGradient[3]} stopOpacity="0.9" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                    </linearGradient>
-
-                    {/* Celestial Glow Gradient */}
-                    <radialGradient id="celestialGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor={currentTheme.celestial.glow} stopOpacity={currentTheme.celestial.opacity} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                      <stop offset="65%" stopColor={currentTheme.celestial.glow} stopOpacity={currentTheme.celestial.opacity * 0.3} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                      <stop offset="100%" stopColor={currentTheme.celestial.glow} stopOpacity="0" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
-                    </radialGradient>
-
                     {/* Soft Celadon Glow for Completed Nodes */}
                     <radialGradient id="jadeGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#52b788" stopOpacity="0.55" />
+                      <stop offset="0%" stopColor="#52b788" stopOpacity="0.65" />
                       <stop offset="100%" stopColor="#52b788" stopOpacity="0" />
                     </radialGradient>
-                    
-                    {/* Celadon Medallion Gradient */}
-                    <radialGradient id="celadonGrad" cx="35%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor="#f0faf5" />
-                      <stop offset="45%" stopColor="#c8e8d8" />
-                      <stop offset="85%" stopColor="#9cc9b3" />
-                      <stop offset="100%" stopColor="#6ea389" />
-                    </radialGradient>
-
-                    {/* Cinnabar Stamp Gradient */}
-                    <radialGradient id="cinnabarGrad" cx="35%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor="#e67e22" />
-                      <stop offset="40%" stopColor="#c0392b" />
-                      <stop offset="100%" stopColor="#962d22" />
-                    </radialGradient>
-
-                    {/* Earthy Clay Gradient for Unreached Nodes (#844F24) */}
-                    <radialGradient id="earthGrad" cx="35%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor="#a36636" />
-                      <stop offset="45%" stopColor="#844F24" />
-                      <stop offset="100%" stopColor="#5d3515" />
-                    </radialGradient>
-
-                    {/* Subtle Spirit Sparkle Glow Filter */}
-                    <filter id="spiritGlow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" />
-                    </filter>
                   </defs>
 
-                  {/* 2. REALM LANDMARKS & PAGODAS */}
+                  {/* 1. THE AFFINITY DESIGNER SUMI-E INK BRUSH STROKE & BASE EARTHY CIRCLES */}
+                  <image
+                    href="/svg/path.svg"
+                    x="0"
+                    y="0"
+                    width="6292"
+                    height="1821"
+                    preserveAspectRatio="xMidYMid meet"
+                    className="select-none pointer-events-none drop-shadow-md"
+                  />
 
-                  {/* (A) Left Realm: Bamboo Grove, Water Bank & Wooden Torii Gate */}
-                  <g>
-                    {/* Bamboo Grove Silhouettes */}
-                    <g opacity="0.75">
-                      {/* Stalk 1 */}
-                      <path d="M 30 420 L 30 180 M 28 240 L 32 240 M 28 320 L 32 320" stroke="#3b3731" strokeWidth="6" strokeLinecap="round" />
-                      <path d="M 30 250 C 45 235, 65 245, 75 240 C 60 252, 45 255, 30 250 Z" fill="#3b3731" />
-                      <path d="M 30 330 C 15 315, 0 325, -10 320 C 10 332, 20 335, 30 330 Z" fill="#3b3731" />
-                      {/* Stalk 2 */}
-                      <path d="M 55 420 L 55 140 M 53 210 L 57 210 M 53 290 L 57 290" stroke="#292520" strokeWidth="8" strokeLinecap="round" />
-                      <path d="M 55 220 C 75 200, 105 210, 120 205 C 95 220, 75 225, 55 220 Z" fill="#292520" />
-                      <path d="M 55 300 C 40 280, 20 290, 10 285 C 30 300, 45 305, 55 300 Z" fill="#292520" />
-                      {/* Stalk 3 */}
-                      <path d="M 85 420 L 85 190 M 83 260 L 87 260 M 83 340 L 87 340" stroke="#443f38" strokeWidth="5" strokeLinecap="round" />
-                      <path d="M 85 270 C 100 255, 125 265, 135 260 C 115 272, 100 275, 85 270 Z" fill="#443f38" />
-                      {/* Stalk 4 (Far Left leafy cluster) */}
-                      <path d="M 12 420 L 12 220 M 12 280 C 26 265, 45 275, 55 270 C 40 280, 26 282, 12 280 Z" fill="#4a443c" stroke="#4a443c" strokeWidth="4" />
-                    </g>
-
-                    {/* Riverbank water wash & ripples */}
-                    <ellipse cx="110" cy="395" rx="110" ry="16" fill={currentTheme.waterColor} opacity="0.45" style={{ transition: 'fill 1.2s ease-in-out' }} />
-                    <line x1="30" y1="388" x2="160" y2="388" stroke="#a3967f" strokeWidth="1.2" opacity="0.5" />
-                    <line x1="60" y1="398" x2="200" y2="398" stroke="#a3967f" strokeWidth="1.5" opacity="0.4" />
-                  </g>
-
-                  {/* 3. THE SUMI-E INK BRUSH STROKE (MATCHING THE ZEN HERO'S JOURNEY PATH) */}
-                  <g className="select-none pointer-events-none drop-shadow-md">
-                    {/* Soft atmospheric ink wash behind the stroke */}
-                    <path
-                      d="M 85.0 260.0 C 104.2 249.8, 96.0 231.2, 145.0 228.0 C 194.0 224.8, 180.4 231.8, 238.0 250.0 C 295.6 268.2, 266.8 275.4, 325.0 285.0 C 383.2 294.6, 360.2 302.4, 420.0 280.0 C 479.8 257.6, 452.8 253.4, 512.0 215.0 C 571.2 176.6, 543.2 180.8, 605.0 160.0 C 666.8 139.2, 645.8 143.6, 705.0 150.0 C 764.2 156.4, 735.6 162.4, 790.0 180.0 C 844.4 197.6, 828.6 209.8, 875.0 205.0 C 921.4 200.2, 915.8 177.8, 935.0 165.0"
-                      fill="none"
-                      stroke="#000000"
-                      strokeWidth="32"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      opacity="0.12"
-                    />
-
-                    {/* Main solid ink brush body */}
-                    <path
-                      d="M 85.0 260.0 C 104.2 249.8, 96.0 231.2, 145.0 228.0 C 194.0 224.8, 180.4 231.8, 238.0 250.0 C 295.6 268.2, 266.8 275.4, 325.0 285.0 C 383.2 294.6, 360.2 302.4, 420.0 280.0 C 479.8 257.6, 452.8 253.4, 512.0 215.0 C 571.2 176.6, 543.2 180.8, 605.0 160.0 C 666.8 139.2, 645.8 143.6, 705.0 150.0 C 764.2 156.4, 735.6 162.4, 790.0 180.0 C 844.4 197.6, 828.6 209.8, 875.0 205.0 C 921.4 200.2, 915.8 177.8, 935.0 165.0"
-                      fill="none"
-                      stroke="#141210"
-                      strokeWidth="24"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Authentic dry-brush bristle strands (flying white) */}
-                    <path
-                      d="M 86.0 253.0 C 105.2 242.8, 97.0 221.0, 146.0 221.0 C 195.0 217.8, 181.4 224.8, 239.0 243.0 C 296.6 261.2, 267.8 268.4, 326.0 278.0 C 384.2 287.6, 361.2 295.4, 421.0 273.0 C 480.8 250.6, 453.8 246.4, 513.0 208.0 C 572.2 169.6, 544.2 173.8, 606.0 153.0 C 667.8 132.2, 646.8 136.6, 706.0 143.0 C 765.2 149.4, 736.6 155.4, 791.0 173.0 C 845.4 190.6, 829.6 202.8, 876.0 198.0 C 922.4 193.2, 916.8 170.8, 936.0 158.0"
-                      fill="none"
-                      stroke="#141210"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      opacity="0.45"
-                    />
-                    <path
-                      d="M 84.0 268.0 C 103.2 257.8, 95.0 236.0, 144.0 236.0 C 193.0 232.8, 179.4 239.8, 237.0 258.0 C 294.6 276.2, 265.8 283.4, 324.0 293.0 C 382.2 302.6, 359.2 310.4, 419.0 288.0 C 478.8 265.6, 451.8 261.4, 511.0 223.0 C 570.2 184.6, 542.2 188.8, 604.0 168.0 C 665.8 147.2, 644.8 151.6, 704.0 158.0 C 763.2 164.4, 734.6 170.4, 789.0 188.0 C 843.4 205.6, 827.6 217.8, 874.0 213.0 C 920.4 208.2, 914.8 185.8, 934.0 173.0"
-                      fill="none"
-                      stroke="#141210"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      opacity="0.4"
-                    />
-                    <path
-                      d="M 85.0 271.0 C 104.2 260.8, 96.0 239.0, 145.0 239.0 C 194.0 235.8, 180.4 242.8, 238.0 261.0 C 295.6 279.2, 266.8 286.4, 325.0 296.0 C 383.2 305.6, 360.2 313.4, 420.0 291.0 C 479.8 268.6, 452.8 264.4, 512.0 226.0 C 571.2 187.6, 543.2 191.8, 605.0 171.0 C 666.8 150.2, 645.8 154.6, 705.0 161.0 C 764.2 167.4, 735.6 173.4, 790.0 191.0 C 844.4 208.6, 828.6 220.8, 875.0 216.0 C 921.4 211.2, 915.8 188.8, 935.0 176.0"
-                      fill="none"
-                      stroke="#141210"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      opacity="0.3"
-                    />
-
-                    {/* Elegant upward calligraphy brush flick flourish at the right terminus */}
-                    <path
-                      d="M 870 215 Q 920 200, 942 160 Q 930 190, 860 215 Z"
-                      fill="#141210"
-                      opacity="0.9"
-                    />
-                  </g>
-
-                  {/* 4. THE 9 STAGE NODES ALONG THE PATH */}
+                  {/* 2. THE 9 INTERACTIVE STAGE NODES ALONG THE PATH */}
                   {stagePositions.map((node, i) => {
                     const isPassed = i < currentStageIndex;
                     const isActive = i === currentStageIndex;
@@ -1164,95 +1049,104 @@ export default function Game() {
                           <circle
                             cx={node.x}
                             cy={node.y}
-                            r="50"
+                            r="340"
                             fill="url(#jadeGlow)"
+                            className="pointer-events-none"
                           />
                         )}
 
-                        {/* White Pulsing Ring for Active Node */}
+                        {/* White Pulsing Dotted Ring for Active Node */}
                         {isActive && (
                           <circle
                             cx={node.x}
                             cy={node.y}
-                            r="43"
+                            r="290"
                             fill="none"
                             stroke="#ffffff"
-                            strokeWidth="3.2"
-                            strokeDasharray="6 4"
-                            className="animate-pulse drop-shadow-sm"
+                            strokeWidth="22"
+                            strokeDasharray="44 28"
+                            className="animate-pulse drop-shadow-md pointer-events-none"
                           />
                         )}
 
-                        {/* Node Disc: Active = Lotus Medallion; Completed = Jade finish; Unreached = Earthy clay #844F24 */}
+                        {/* Node Disc Content */}
                         {isActive ? (
                           <>
+                            {/* Active Stage: Lotus Medallion with White Circular Frame */}
                             <image
                               href="/svg/lotus.svg"
-                              x={node.x - 34}
-                              y={node.y - 34}
-                              width="68"
-                              height="68"
-                              className="drop-shadow-lg select-none pointer-events-none"
+                              x={node.x - 235.4}
+                              y={node.y - 235.4}
+                              width="470.8"
+                              height="470.8"
+                              className="drop-shadow-xl select-none pointer-events-none"
                             />
-                            {/* Subtle circular white border to frame the medallion */}
                             <circle
                               cx={node.x}
                               cy={node.y}
-                              r="34"
+                              r="235.4"
                               fill="none"
                               stroke="#ffffff"
-                              strokeWidth="2.5"
-                              opacity="0.85"
+                              strokeWidth="16"
+                              opacity="0.9"
                               className="pointer-events-none"
                             />
                           </>
-                        ) : (
+                        ) : isPassed ? (
                           <>
+                            {/* Completed Stage: Jade Disc with White Rim and Checkmark */}
                             <circle
                               cx={node.x}
                               cy={node.y}
-                              r="34"
-                              fill={isPassed ? "#389367" : "url(#earthGrad)"}
-                              stroke={isPassed ? "#a3e4c4" : "#b87d4d"}
-                              strokeWidth="3"
-                              className="shadow-md"
+                              r="235.4"
+                              fill="#389367"
+                              stroke="#a3e4c4"
+                              strokeWidth="22"
+                              className="drop-shadow-lg"
                             />
-
-                            {/* Subtle glossy highlight */}
                             <ellipse
-                              cx={node.x - 8}
-                              cy={node.y - 11}
-                              rx="11"
-                              ry="5.5"
-                              fill="rgba(255,255,255,0.45)"
-                              transform={`rotate(-30 ${node.x - 8} ${node.y - 11})`}
+                              cx={node.x - 55}
+                              cy={node.y - 75}
+                              rx="75"
+                              ry="38"
+                              fill="rgba(255,255,255,0.4)"
+                              transform={`rotate(-30 ${node.x - 55} ${node.y - 75})`}
+                              className="pointer-events-none"
                             />
-
-                            {/* Node Icon: White Checkmark or Calligraphic Number */}
-                            {isPassed ? (
+                            <g transform={`translate(${node.x - 105}, ${node.y - 105})`} className="pointer-events-none">
                               <Check
-                                x={node.x - 15}
-                                y={node.y - 15}
-                                size={30}
+                                size={210}
                                 strokeWidth={3.5}
                                 className="text-white drop-shadow-sm"
                               />
-                            ) : (
-                              <text
-                                x={node.x}
-                                y={node.y + 9}
-                                fill="#ffffff"
-                                fontSize="25"
-                                fontWeight="900"
-                                textAnchor="middle"
-                                fontFamily="Shippori Mincho, serif"
-                                className="drop-shadow-sm select-none"
-                              >
-                                {node.id}
-                              </text>
-                            )}
+                            </g>
+                          </>
+                        ) : (
+                          <>
+                            {/* Unreached Stage: Base circle from /svg/path.svg + Stage Number */}
+                            <text
+                              x={node.x}
+                              y={node.y}
+                              dominantBaseline="central"
+                              fill="#ffffff"
+                              fontSize="185"
+                              fontWeight="900"
+                              textAnchor="middle"
+                              fontFamily="Shippori Mincho, serif"
+                              className="drop-shadow-md select-none pointer-events-none"
+                            >
+                              {node.id}
+                            </text>
                           </>
                         )}
+
+                        {/* Invisible hit target circle covering the entire node area */}
+                        <circle
+                          cx={node.x}
+                          cy={node.y}
+                          r="245"
+                          fill="transparent"
+                        />
                       </g>
                     );
                   })}
@@ -1269,8 +1163,8 @@ export default function Game() {
                     {isShowingSequence
                       ? 'Listen closely to the tone...'
                       : sequence[playerSequence.length] === 'up'
-                        ? 'That tone was HIGHER — click "Higher Tone"'
-                        : 'That tone was LOWER — click "Lower Tone"'}
+                        ? 'That tone was HIGHER - click "Higher Tone"'
+                        : 'That tone was LOWER - click "Lower Tone"'}
                   </span>
                 ) : (
                   <span className="text-[10.5px] sm:text-[11.5px] italic text-stone-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
