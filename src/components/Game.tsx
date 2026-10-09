@@ -1062,11 +1062,6 @@ export default function Game() {
                     <filter id="spiritGlow" x="-50%" y="-50%" width="200%" height="200%">
                       <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" />
                     </filter>
-
-                    {/* Filter to erode the stroke thickness so circles are slightly taller than the line */}
-                    <filter id="thinnerPath" x="-10%" y="-10%" width="120%" height="120%">
-                      <feMorphology operator="erode" radius="9" />
-                    </filter>
                   </defs>
 
                   {/* 2. REALM LANDMARKS & PAGODAS */}
@@ -1100,11 +1095,10 @@ export default function Game() {
                   <image
                     href="/svg/path.svg"
                     x="0"
-                    y="10"
+                    y="50"
                     width="1000"
-                    height="400"
+                    height="320"
                     preserveAspectRatio="none"
-                    filter="url(#thinnerPath)"
                     className="select-none pointer-events-none drop-shadow-md"
                   />
 

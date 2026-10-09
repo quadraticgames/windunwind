@@ -116,7 +116,7 @@ export const initializeAudio = async () => {
     dronePlayer = new Tone.Player({
       url: '/drone.mp3',
       loop: true,
-      volume: -8,
+      volume: -24,
       fadeIn: 2,
       fadeOut: 2,
       autostart: false,
