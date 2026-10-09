@@ -1102,53 +1102,6 @@ export default function Game() {
                     className="select-none pointer-events-none drop-shadow-md"
                   />
 
-                  {/* REALM LABELS (BODY, MIND, SPIRIT) */}
-                  <g className="select-none pointer-events-none">
-                    {/* BODY Realm Label */}
-                    <text
-                      x="80"
-                      y="415"
-                      fill="#1c1917"
-                      fontSize="17"
-                      fontWeight="bold"
-                      fontFamily="Shippori Mincho, serif"
-                      letterSpacing="0.06em"
-                      className="drop-shadow-sm"
-                    >
-                      BODY
-                    </text>
-
-                    {/* MIND Realm Label */}
-                    <text
-                      x="491"
-                      y="335"
-                      textAnchor="middle"
-                      fill="#1c1917"
-                      fontSize="19"
-                      fontWeight="bold"
-                      fontFamily="Shippori Mincho, serif"
-                      letterSpacing="0.06em"
-                      className="drop-shadow-sm"
-                    >
-                      MIND
-                    </text>
-
-                    {/* SPIRIT Realm Label */}
-                    <text
-                      x="780"
-                      y="130"
-                      textAnchor="middle"
-                      fill="#1c1917"
-                      fontSize="17"
-                      fontWeight="bold"
-                      fontFamily="Shippori Mincho, serif"
-                      letterSpacing="0.06em"
-                      className="drop-shadow-sm"
-                    >
-                      SPIRIT
-                    </text>
-                  </g>
-
                   {/* 4. THE 9 STAGE NODES ALONG THE PATH */}
                   {stagePositions.map((node, i) => {
                     const isPassed = i < currentStageIndex;
