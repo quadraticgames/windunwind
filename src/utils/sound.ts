@@ -217,3 +217,29 @@ export const playStageFanfare = () => {
     }
   }, 820);
 };
+
+// Audio pool for instantaneous responsive button clicks
+const CLICK_POOL_SIZE = 5;
+let clickPool: HTMLAudioElement[] = [];
+let clickPoolIndex = 0;
+
+export const playClickSound = () => {
+  try {
+    if (typeof window !== 'undefined') {
+      if (clickPool.length === 0) {
+        for (let i = 0; i < CLICK_POOL_SIZE; i++) {
+          const audio = new Audio('/click.mp3');
+          audio.volume = 0.65;
+          audio.preload = 'auto';
+          clickPool.push(audio);
+        }
+      }
+      const sound = clickPool[clickPoolIndex];
+      clickPoolIndex = (clickPoolIndex + 1) % CLICK_POOL_SIZE;
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+    }
+  } catch (e) {
+    // Ignore audio playback errors
+  }
+};

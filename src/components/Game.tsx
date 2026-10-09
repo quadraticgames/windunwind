@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX } from 'lucide-react';
-import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted } from '../utils/sound';
+import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 
 type Direction = 'up' | 'down';
 
@@ -574,6 +574,33 @@ export default function Game() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 
+  // Global click sound effect for all UI buttons except tone buttons
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      if (!target) return;
+
+      // Check if clicked element or its parent is a button
+      const button = target.closest('button');
+      if (button) {
+        if (button.disabled || button.getAttribute('data-tone-button') === 'true' || button.getAttribute('aria-disabled') === 'true') {
+          return;
+        }
+        playClickSound();
+        return;
+      }
+
+      // Check if clicked element is a stage lore node along the path
+      const stageNode = target.closest('[data-stage-node]');
+      if (stageNode) {
+        playClickSound();
+      }
+    };
+
+    window.addEventListener('click', handleGlobalClick, true);
+    return () => window.removeEventListener('click', handleGlobalClick, true);
+  }, []);
+
   const startGame = async () => {
     if (pendingTimeoutRef.current) {
       clearTimeout(pendingTimeoutRef.current);
@@ -1041,6 +1068,7 @@ export default function Game() {
                     return (
                       <g 
                         key={node.id} 
+                        data-stage-node="true"
                         className="transition-all duration-300 cursor-pointer"
                         onClick={() => setSelectedLoreStage(node)}
                       >
@@ -1184,6 +1212,7 @@ export default function Game() {
                   )}
                   <button
                     type="button"
+                    data-tone-button="true"
                     onClick={() => handleInput('up')}
                     disabled={isShowingSequence}
                     className={`jade-stone w-32 sm:w-36 py-3 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
@@ -1210,6 +1239,7 @@ export default function Game() {
                   )}
                   <button
                     type="button"
+                    data-tone-button="true"
                     onClick={() => handleInput('down')}
                     disabled={isShowingSequence}
                     className={`jade-stone w-32 sm:w-36 py-3 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
