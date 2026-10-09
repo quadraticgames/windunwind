@@ -1,12 +1,12 @@
 # Wind & Unwind
 
-Wind & Unwind is an audiovisual memory game where players repeat sequences of higher and lower tones, moving along a circular spiritual hero's journey inspired by Hermann Hesse's *Siddhartha*.
+Wind & Unwind is an audiovisual memory game where players repeat sequences of higher and lower tones, moving along a winding left-to-right spiritual hero's journey inspired by Hermann Hesse's *Siddhartha*.
 
 ![Main Menu](https://github-production-user-asset-6210df.s3.amazonaws.com/6210df/placeholder-main-menu.png)
 
 ## Features
 
-- Circular journey layout tracking progression through 9 stages across Mind, Body, and Spirit.
+- Winding horizontal sumi-e ink path tracking progression through 9 stages across Body, Mind, and Spirit.
 - Progressive difficulty where each stage contains three tone puzzles of equal length, totaling 27 puzzles to reach Enlightenment.
 - In-game lore reader detailing the concept, conflict, and objective of every stage.
 - Interface with gradient styling built with Tailwind CSS and Framer Motion.

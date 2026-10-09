@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Sparkles, Check, X, BookOpen } from 'lucide-react';
-import { playCorrectNote, playWrongNote, initializeAudio } from '../utils/sound';
+import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted } from '../utils/sound';
 
 type Direction = 'up' | 'down';
 
@@ -17,12 +17,12 @@ type StageInfo = {
 };
 
 const STAGES: StageInfo[] = [
-  // MIND: Stages 1 - 3
+  // BODY: Stages 1 - 3
   {
     id: 1,
     name: "The Brahmin’s Cage",
     subtitle: "The Departure",
-    realm: "MIND",
+    realm: "BODY",
     angle: 35,
     concept: "The protagonist begins in a world of perfection, ritual, and intellectual privilege.",
     conflict: "Despite mastering all the texts, Siddhartha feels a profound inner emptiness. He must stand up to his father's traditional expectations to earn the right to leave.",
@@ -32,7 +32,7 @@ const STAGES: StageInfo[] = [
     id: 2,
     name: "The Samana Trials",
     subtitle: "Asceticism",
-    realm: "MIND",
+    realm: "BODY",
     angle: 75,
     concept: "A stage of extreme denial, survival, and testing the limits of the physical body.",
     conflict: "Siddhartha fasts, breathes minimally, and endures pain to kill the 'Self.' However, he realizes that self-mortification is just a temporary escape, not true enlightenment.",
@@ -42,19 +42,19 @@ const STAGES: StageInfo[] = [
     id: 3,
     name: "Confronting the Buddha",
     subtitle: "The Rejection of Doctrine",
-    realm: "MIND",
+    realm: "BODY",
     angle: 110,
-    concept: "Meeting the ultimate spiritual authority—Gotama, the Buddha.",
+    concept: "Meeting the ultimate spiritual authority - Gotama, the Buddha.",
     conflict: "Siddhartha recognizes the Buddha's perfection but realizes that wisdom cannot be taught through words or doctrines; it must be experienced firsthand. He leaves his companion Govinda behind to walk alone.",
     objective: "Walk away from ready-made answers and choose a solitary, unguided path.",
   },
 
-  // BODY: Stages 4 - 6
+  // MIND: Stages 4 - 6
   {
     id: 4,
     name: "The Garden of Kamala",
     subtitle: "The Awakening of Senses",
-    realm: "BODY",
+    realm: "MIND",
     angle: 145,
     concept: "Stepping into the vibrant, beautiful, and tactile material world.",
     conflict: "Siddhartha enters the city and encounters the beautiful courtesan Kamala. To win her love, he must learn the art of desire, trade, and love-making, transitioning from a monk to a creature of the flesh.",
@@ -62,19 +62,19 @@ const STAGES: StageInfo[] = [
   },
   {
     id: 5,
-    name: "The Gambler’s Trap",
-    subtitle: "The Descent into Samsara",
-    realm: "BODY",
+    name: "Rich Man",
+    subtitle: "Greed",
+    realm: "MIND",
     angle: 180,
     concept: "The slow decay of the soul through wealth, greed, and addiction.",
     conflict: "Over the years, Siddhartha becomes a wealthy merchant (working with Kamaswami). He falls victim to high-stakes gambling, drinking, and spiritual sloth, completely losing touch with his inner voice.",
-    objective: "Navigate a world of luxury while watching your spiritual health bar hit absolute rock bottom.",
+    objective: "Walk through worldly excess so you can finally leave it behind with zero regrets.",
   },
   {
     id: 6,
     name: "The River of Rebirth",
     subtitle: "The Dark Night of the Soul",
-    realm: "BODY",
+    realm: "MIND",
     angle: 215,
     concept: "Facing total despair and the death of the old self.",
     conflict: "Disgusted by his bloated, worldly existence, Siddhartha flees to the river to drown himself. At the edge of death, he hears the sacred sound 'Om' from the water, awakening him from spiritual slumber into pure joy.",
@@ -115,6 +115,136 @@ const STAGES: StageInfo[] = [
 ];
 
 const TOTAL_PUZZLES_TO_ENLIGHTENMENT = 27;
+
+type StageTheme = {
+  skyGradient: [string, string, string, string];
+  farMountain: string;
+  midMountain: string;
+  slopeMountain: string;
+  fogColor: string;
+  fogOpacity: number;
+  celestial: {
+    cx: number;
+    cy: number;
+    r: number;
+    fill: string;
+    glow: string;
+    opacity: number;
+  };
+  sparkleColor: string;
+  waterColor: string;
+};
+
+const STAGE_THEMES: Record<number, StageTheme> = {
+  // Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Green Bamboo Dawn
+  1: {
+    skyGradient: ['#fbf7ed', '#f4ece1', '#f7eae4', '#eeddd6'],
+    farMountain: '#e3dbcc',
+    midMountain: '#dbd1bd',
+    slopeMountain: '#cfc3af',
+    fogColor: '#52b788',
+    fogOpacity: 0.12,
+    celestial: { cx: 280, cy: 95, r: 38, fill: '#fff9ee', glow: '#fed7aa', opacity: 0.55 },
+    sparkleColor: '#a5f3fc',
+    waterColor: '#ded4be',
+  },
+  // Stage 2: The Samana Trials - Arid Desert Winds, Sunbaked Ochre, Dusty Sand
+  2: {
+    skyGradient: ['#fcf6ea', '#f5e8d3', '#edd6ba', '#dfc4a2'],
+    farMountain: '#ded0b8',
+    midMountain: '#d2c0a4',
+    slopeMountain: '#c4ad8e',
+    fogColor: '#d97706',
+    fogOpacity: 0.16,
+    celestial: { cx: 340, cy: 80, r: 42, fill: '#fff7e6', glow: '#f59e0b', opacity: 0.75 },
+    sparkleColor: '#fde68a',
+    waterColor: '#d6c4a8',
+  },
+  // Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Radiance
+  3: {
+    skyGradient: ['#fefce8', '#fef3c7', '#fde68a', '#fcd34d'],
+    farMountain: '#e5d19a',
+    midMountain: '#d9c283',
+    slopeMountain: '#c9b06b',
+    fogColor: '#f59e0b',
+    fogOpacity: 0.20,
+    celestial: { cx: 500, cy: 105, r: 64, fill: '#fef08a', glow: '#f59e0b', opacity: 0.7 },
+    sparkleColor: '#fef08a',
+    waterColor: '#e0c98f',
+  },
+  // Stage 4: The Garden of Kamala - Senses Awakening, Blooming Peach & Rose Dusk
+  4: {
+    skyGradient: ['#fdf2f4', '#fce7ed', '#fbcfe8', '#f5d0fe'],
+    farMountain: '#e2bccd',
+    midMountain: '#d4a9bc',
+    slopeMountain: '#c292a8',
+    fogColor: '#ec4899',
+    fogOpacity: 0.15,
+    celestial: { cx: 720, cy: 90, r: 46, fill: '#fdf2f8', glow: '#f472b6', opacity: 0.65 },
+    sparkleColor: '#fbcfe8',
+    waterColor: '#ddb8ca',
+  },
+  // Stage 5: Rich Man (Greed) - Opulent Cinnabar Dusk & Smoked Burgundy Lanterns
+  5: {
+    skyGradient: ['#fbf1f0', '#f6dcde', '#eec1c7', '#deb0b8'],
+    farMountain: '#cfabb4',
+    midMountain: '#bf94a0',
+    slopeMountain: '#af7e8c',
+    fogColor: '#e11d48',
+    fogOpacity: 0.17,
+    celestial: { cx: 780, cy: 85, r: 44, fill: '#ffe4e6', glow: '#fb7185', opacity: 0.75 },
+    sparkleColor: '#fda4af',
+    waterColor: '#caa2ab',
+  },
+  // Stage 6: The River of Rebirth - Dark Night of the Soul, Indigo Mist & Silvery Full Moon
+  6: {
+    skyGradient: ['#eff6ff', '#dbeafe', '#bfdbfe', '#93c5fd'],
+    farMountain: '#a5c4e8',
+    midMountain: '#8fb1d9',
+    slopeMountain: '#769ac5',
+    fogColor: '#3b82f6',
+    fogOpacity: 0.20,
+    celestial: { cx: 480, cy: 80, r: 36, fill: '#ffffff', glow: '#93c5fd', opacity: 0.95 },
+    sparkleColor: '#bfdbfe',
+    waterColor: '#9bbde3',
+  },
+  // Stage 7: The Ferryman’s Disciple - Deep Emerald River Waters & Sacred Flow
+  7: {
+    skyGradient: ['#f0fdf4', '#dcfce7', '#bbf7d0', '#86efac'],
+    farMountain: '#9fd4b6',
+    midMountain: '#86c2a1',
+    slopeMountain: '#6eac8b',
+    fogColor: '#10b981',
+    fogOpacity: 0.18,
+    celestial: { cx: 280, cy: 95, r: 48, fill: '#f0fdf4', glow: '#34d399', opacity: 0.7 },
+    sparkleColor: '#6ee7b7',
+    waterColor: '#93cca8',
+  },
+  // Stage 8: The Wound of Love - Amethyst Sunset, Grief & Transcendence
+  8: {
+    skyGradient: ['#faf5ff', '#f3e8ff', '#e9d5ff', '#d8b4fe'],
+    farMountain: '#c6a8dc',
+    midMountain: '#b28ecb',
+    slopeMountain: '#9e73ba',
+    fogColor: '#8b5cf6',
+    fogOpacity: 0.18,
+    celestial: { cx: 640, cy: 90, r: 45, fill: '#faf5ff', glow: '#c084fc', opacity: 0.8 },
+    sparkleColor: '#e9d5ff',
+    waterColor: '#baa0d2',
+  },
+  // Stage 9: The Eternal Flow - Radiant Celestial Aurora, Ultimate Oneness
+  9: {
+    skyGradient: ['#f0fdfa', '#ccfbf1', '#99f6e4', '#5eead4'],
+    farMountain: '#7ecec1',
+    midMountain: '#62baa9',
+    slopeMountain: '#47a492',
+    fogColor: '#14b8a6',
+    fogOpacity: 0.24,
+    celestial: { cx: 885, cy: 80, r: 56, fill: '#ffffff', glow: '#2dd4bf', opacity: 0.95 },
+    sparkleColor: '#5eead4',
+    waterColor: '#75c8b9',
+  },
+};
 
 /* Incense Burner Component with smoking wisps */
 function IncenseBurner({ active }: { active: boolean }) {
@@ -189,29 +319,104 @@ export default function Game() {
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isTranscendence, setIsTranscendence] = useState(false);
   const [selectedLoreStage, setSelectedLoreStage] = useState<StageInfo | null>(null);
+  const [stageCelebration, setStageCelebration] = useState<{ stageId: number; name: string; realm: string } | null>(null);
+  const [isMuted, setIsMuted] = useState(() => getIsMuted());
+
+  const handleToggleMute = useCallback(() => {
+    const next = toggleMute();
+    setIsMuted(next);
+  }, []);
+
+  // Keyboard shortcut: Press 'M' to toggle mute
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'm' || e.key === 'M') {
+        handleToggleMute();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleToggleMute]);
+
+  // Start ambient drone at the start screen
+  useEffect(() => {
+    // Attempt playback on load
+    startDrone();
+
+    // Browser autoplay policy fallback: unlock and start drone on first gesture if suspended
+    const handleFirstInteraction = () => {
+      startDrone();
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    window.addEventListener('click', handleFirstInteraction, { passive: true });
+    window.addEventListener('pointerdown', handleFirstInteraction, { passive: true });
+    window.addEventListener('keydown', handleFirstInteraction, { passive: true });
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, []);
 
   // Each stage has 3 puzzles (total 27 puzzles)
   const currentStageIndex = Math.min(Math.floor(puzzleCount / 3), 8);
   const currentStage = STAGES[currentStageIndex];
   const puzzleInStage = (puzzleCount % 3) + 1;
   const currentPuzzleLength = currentStageIndex + 1;
+  const currentTheme = STAGE_THEMES[currentStage.id] || STAGE_THEMES[1];
+
+  const tutorialTonesRef = useRef<Direction[]>([]);
+  const puzzleCountRef = useRef(puzzleCount);
+  puzzleCountRef.current = puzzleCount;
+  const sequenceIdRef = useRef<number>(0);
+  const pendingTimeoutRef = useRef<number | null>(null);
+
+  const generateTutorialTones = useCallback((): Direction[] => {
+    // Stage 1 (tutorial) has 3 single-tone puzzles.
+    // Guarantee that both 'up' and 'down' tones are played at least once during this stage:
+    // First two puzzles contain both tones ('up' and 'down') in random order,
+    // and the third puzzle is randomly either 'up' or 'down'.
+    const firstTwo: Direction[] = Math.random() > 0.5 ? ['up', 'down'] : ['down', 'up'];
+    const third: Direction = Math.random() > 0.5 ? 'up' : 'down';
+    return [...firstTwo, third];
+  }, []);
 
   const generateSequenceForPuzzle = useCallback((count: number): Direction[] => {
+    // Tutorial stage (Stage 1 = puzzles 0, 1, 2): guarantee each tone is played at least once
+    if (count < 3) {
+      if (!tutorialTonesRef.current || tutorialTonesRef.current.length < 3) {
+        tutorialTonesRef.current = generateTutorialTones();
+      }
+      return [tutorialTonesRef.current[count]];
+    }
+
     const stageIdx = Math.min(Math.floor(count / 3), 8);
     const len = stageIdx + 1;
     return Array(len)
       .fill(null)
       .map(() => (Math.random() > 0.5 ? 'up' : 'down'));
-  }, []);
+  }, [generateTutorialTones]);
 
   const showSequence = useCallback(async (seq: Direction[]) => {
+    const seqId = ++sequenceIdRef.current;
     setIsShowingSequence(true);
     for (let i = 0; i < seq.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 800));
+      if (sequenceIdRef.current !== seqId) return;
       playCorrectNote(seq[i]);
       setFeedback('correct'); 
-      setTimeout(() => setFeedback(null), 320);
+      setTimeout(() => {
+        if (sequenceIdRef.current === seqId) {
+          setFeedback(null);
+        }
+      }, 320);
     }
+    if (sequenceIdRef.current !== seqId) return;
     setIsShowingSequence(false);
     setPlayerSequence([]);
   }, []);
@@ -234,7 +439,8 @@ export default function Game() {
         return newStrikes;
       });
       setPlayerSequence([]); 
-      setTimeout(() => {
+      pendingTimeoutRef.current = window.setTimeout(() => {
+        pendingTimeoutRef.current = null;
         if (strikes + 1 < 3) {
           showSequence(sequence);
         }
@@ -249,6 +455,7 @@ export default function Game() {
 
       if (newPlayerSequence.length === sequence.length) {
         const nextCount = puzzleCount + 1;
+        puzzleCountRef.current = nextCount;
         setPuzzleCount(nextCount);
         setStreak(s => s + 1);
 
@@ -257,19 +464,110 @@ export default function Game() {
           return;
         }
 
-        setTimeout(() => {
+        const isAdvancingStage = Math.floor(nextCount / 3) > Math.floor(puzzleCount / 3);
+        if (isAdvancingStage) {
+          const nextStage = STAGES[Math.min(Math.floor(nextCount / 3), 8)];
+          playStageFanfare();
+          setStageCelebration({
+            stageId: nextStage.id,
+            name: nextStage.name,
+            realm: nextStage.realm,
+          });
+          setTimeout(() => setStageCelebration(null), 2500);
+        }
+
+        pendingTimeoutRef.current = window.setTimeout(() => {
+          pendingTimeoutRef.current = null;
           const nextSeq = generateSequenceForPuzzle(nextCount);
           setSequence(nextSeq);
           showSequence(nextSeq);
-        }, 800);
+        }, isAdvancingStage ? 2400 : 800);
       }
     }
   }, [isPlaying, isShowingSequence, gameOver, isTranscendence, playerSequence, sequence, strikes, puzzleCount, generateSequenceForPuzzle, showSequence]);
 
+  const advanceToNextStage = useCallback(async () => {
+    if (pendingTimeoutRef.current) {
+      clearTimeout(pendingTimeoutRef.current);
+      pendingTimeoutRef.current = null;
+    }
+    const curSeqId = ++sequenceIdRef.current;
+    setFeedback(null);
+
+    await initializeAudio();
+    startDrone();
+
+    if (!isPlaying || gameOver) {
+      setIsPlaying(true);
+      setGameOver(false);
+      setStrikes(0);
+      setStreak(0);
+      setSelectedLoreStage(null);
+    }
+
+    if (isTranscendence) {
+      setIsTranscendence(false);
+      puzzleCountRef.current = 0;
+      setPuzzleCount(0);
+      setStrikes(0);
+      setPlayerSequence([]);
+      const initialSeq = generateSequenceForPuzzle(0);
+      setSequence(initialSeq);
+      showSequence(initialSeq);
+      return;
+    }
+
+    const currentCount = puzzleCountRef.current;
+    const currentStageIdx = Math.min(Math.floor(currentCount / 3), 8);
+    const nextStageIdx = currentStageIdx + 1;
+    const nextPuzzleCount = nextStageIdx * 3;
+
+    if (nextPuzzleCount >= TOTAL_PUZZLES_TO_ENLIGHTENMENT) {
+      puzzleCountRef.current = TOTAL_PUZZLES_TO_ENLIGHTENMENT;
+      setPuzzleCount(TOTAL_PUZZLES_TO_ENLIGHTENMENT);
+      setIsTranscendence(true);
+      setIsShowingSequence(false);
+      setPlayerSequence([]);
+      playStageFanfare();
+      return;
+    }
+
+    const nextStage = STAGES[nextStageIdx];
+    puzzleCountRef.current = nextPuzzleCount;
+    setPuzzleCount(nextPuzzleCount);
+    setStrikes(0);
+    setPlayerSequence([]);
+    setIsShowingSequence(true);
+    playStageFanfare();
+    setStageCelebration({
+      stageId: nextStage.id,
+      name: nextStage.name,
+      realm: nextStage.realm,
+    });
+    setTimeout(() => setStageCelebration(null), 2500);
+
+    pendingTimeoutRef.current = window.setTimeout(() => {
+      pendingTimeoutRef.current = null;
+      if (sequenceIdRef.current === curSeqId) {
+        const nextSeq = generateSequenceForPuzzle(nextPuzzleCount);
+        setSequence(nextSeq);
+        showSequence(nextSeq);
+      }
+    }, 1500);
+  }, [isPlaying, gameOver, isTranscendence, generateSequenceForPuzzle, showSequence]);
+
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+    if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.code === 'KeyA')) {
+      e.preventDefault();
+      advanceToNextStage();
+      return;
+    }
+
     if (e.key === 'ArrowUp') handleInput('up');
     if (e.key === 'ArrowDown') handleInput('down');
-  }, [handleInput]);
+  }, [advanceToNextStage, handleInput]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
@@ -277,72 +575,75 @@ export default function Game() {
   }, [handleKeyPress]);
 
   const startGame = async () => {
+    if (pendingTimeoutRef.current) {
+      clearTimeout(pendingTimeoutRef.current);
+      pendingTimeoutRef.current = null;
+    }
+    sequenceIdRef.current++;
     await initializeAudio();
+    startDrone();
     setIsPlaying(true);
     setGameOver(false);
     setIsTranscendence(false);
     setStrikes(0);
     setStreak(0);
+    puzzleCountRef.current = 0;
     setPuzzleCount(0);
     setSelectedLoreStage(null);
+    setStageCelebration(null);
+    tutorialTonesRef.current = generateTutorialTones();
     const initialSeq = generateSequenceForPuzzle(0);
     setSequence(initialSeq);
     showSequence(initialSeq);
   };
 
   const continueCycle = () => {
+    if (pendingTimeoutRef.current) {
+      clearTimeout(pendingTimeoutRef.current);
+      pendingTimeoutRef.current = null;
+    }
+    sequenceIdRef.current++;
     setIsTranscendence(false);
-    const nextSeq = generateSequenceForPuzzle(puzzleCount);
+    startDrone();
+    const nextSeq = generateSequenceForPuzzle(puzzleCountRef.current);
     setSequence(nextSeq);
     showSequence(nextSeq);
   };
 
-  // Node position coordinates around center (250, 250) with expanded radius 208 for generous text breathing room
+  // Node coordinates along the left-to-right winding ink brush path
   const stagePositions = useMemo(() => {
-    const cx = 250;
-    const cy = 250;
-    const r = 208;
-    return STAGES.map((s) => {
-      const rad = (s.angle - 90) * (Math.PI / 180);
-      return {
-        ...s,
-        x: cx + r * Math.cos(rad),
-        y: cy + r * Math.sin(rad),
-      };
-    });
+    const PATH_COORDINATES = [
+      { id: 1, x: 128, y: 289 },
+      { id: 2, x: 224, y: 248 },
+      { id: 3, x: 318, y: 293 },
+      { id: 4, x: 410, y: 329 },
+      { id: 5, x: 491, y: 254 },
+      { id: 6, x: 581, y: 200 },
+      { id: 7, x: 680, y: 232 },
+      { id: 8, x: 780, y: 260 },
+      { id: 9, x: 867, y: 200 },
+    ];
+    return STAGES.map((s, idx) => ({
+      ...s,
+      x: PATH_COORDINATES[idx].x,
+      y: PATH_COORDINATES[idx].y,
+    }));
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-twilight-zen flex flex-col items-center justify-center p-3 sm:p-6 md:p-8 select-none overflow-hidden">
+    <div className="relative min-h-screen bg-twilight-zen flex flex-col items-center justify-center p-0 sm:p-3 md:p-4 select-none overflow-hidden">
       
       {/* Serene Background Landscape: Misty Mountain Ridges and Bamboo Silhouettes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Soft Twilight Sky Glow */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#261f2d]/60 via-[#161a24]/40 to-transparent" />
 
-        {/* Mountain Layer 1 (Distant soft ridge) */}
-        <svg className="absolute bottom-0 w-full h-[55%] min-w-[1200px] opacity-40" preserveAspectRatio="none" viewBox="0 0 1440 380">
-          <path
-            d="M0 240 Q180 140 380 200 T800 160 T1200 210 T1440 180 L1440 380 L0 380 Z"
-            fill="#232836"
-          />
-        </svg>
-
-        {/* Mountain Layer 2 (Mid-distance misty peaks) */}
-        <svg className="absolute bottom-0 w-full h-[45%] min-w-[1200px] opacity-65" preserveAspectRatio="none" viewBox="0 0 1440 320">
-          <path
-            d="M0 210 C220 130 350 240 600 150 C850 70 1020 220 1260 140 C1380 100 1440 180 1440 180 L1440 320 L0 320 Z"
-            fill="#181c26"
-          />
-        </svg>
-
-        {/* Mountain Layer 3 (Foreground dark silhouettes) */}
-        <svg className="absolute bottom-0 w-full h-[32%] min-w-[1200px] opacity-85" preserveAspectRatio="none" viewBox="0 0 1440 260">
-          <path
-            d="M0 160 Q260 110 520 170 T1040 140 T1440 160 L1440 260 L0 260 Z"
-            fill="#0f1218"
-          />
-        </svg>
+        {/* Tibet Scenic Panorama Outer Backdrop */}
+        <div 
+          className="absolute inset-0 opacity-40 bg-cover bg-bottom pointer-events-none filter contrast-125 brightness-95 saturate-95"
+          style={{ backgroundImage: `url('/svg/tibet.svg')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#161a24]/80 via-transparent to-[#161a24]/30 pointer-events-none" />
 
         {/* Misty Horizontal Fog Ribbons */}
         <div className="absolute bottom-28 w-full h-24 bg-gradient-to-r from-transparent via-[#b5a9bc]/15 to-transparent blur-xl" />
@@ -376,19 +677,137 @@ export default function Game() {
       </div>
 
       {/* Main Content Area */}
-      <div className="relative z-10 w-full max-w-[510px] sm:max-w-[550px] flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-[1240px] flex flex-col items-center px-0 sm:px-2 md:px-4">
         
-        {/* Washi Paper Card Container */}
+        {/* Game Area Card Container */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="washi-card rounded-[2.5rem] p-5 sm:p-7 w-full flex flex-col items-center justify-between min-h-[600px] relative overflow-hidden"
+          className="rounded-none sm:rounded-[2rem] md:rounded-[2.5rem] w-full flex flex-col items-center justify-between min-h-0 relative overflow-hidden shadow-2xl border border-stone-800/30 p-0"
         >
+          {/* Full-Bleed Game Area Backdrop: Dynamic Stage Lighting, Sun/Moon, and Tibet Artwork covering the entire game area with NO side padding */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+            {/* Sky Background Gradient */}
+            <div 
+              className="absolute inset-0 transition-all duration-1000 pointer-events-none"
+              style={{
+                background: `linear-gradient(135deg, ${currentTheme.skyGradient[0]} 0%, ${currentTheme.skyGradient[1]} 35%, ${currentTheme.skyGradient[2]} 70%, ${currentTheme.skyGradient[3]} 100%)`
+              }}
+            />
+
+            {/* Celestial Sun / Moon Orb (True 1:1 Circular Disc & Radiant Glow, Never Stretched) */}
+            <div
+              className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 z-0"
+              style={{
+                left: `${(currentTheme.celestial.cx / 1000) * 100}%`,
+                top: `${(currentTheme.celestial.cy / 620) * 60 + 40}px`,
+                transition: 'left 1.2s ease-in-out, top 1.2s ease-in-out',
+              }}
+            >
+              {/* Outer Radiant Flare */}
+              <div
+                className="rounded-full blur-2xl pointer-events-none"
+                style={{
+                  width: `${currentTheme.celestial.r * 4.2}px`,
+                  height: `${currentTheme.celestial.r * 4.2}px`,
+                  backgroundColor: currentTheme.celestial.glow,
+                  opacity: currentTheme.celestial.opacity * 0.85,
+                  transform: 'translate(-50%, -50%)',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transition: 'width 1.2s ease-in-out, height 1.2s ease-in-out, background-color 1.2s ease-in-out, opacity 1.2s ease-in-out',
+                }}
+              />
+              {/* Middle Luminous Glow */}
+              <div
+                className="rounded-full blur-md pointer-events-none"
+                style={{
+                  width: `${currentTheme.celestial.r * 2.4}px`,
+                  height: `${currentTheme.celestial.r * 2.4}px`,
+                  backgroundColor: currentTheme.celestial.glow,
+                  opacity: currentTheme.celestial.opacity,
+                  transform: 'translate(-50%, -50%)',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  boxShadow: `0 0 ${currentTheme.celestial.r * 1.5}px ${currentTheme.celestial.glow}`,
+                  transition: 'width 1.2s ease-in-out, height 1.2s ease-in-out, background-color 1.2s ease-in-out, opacity 1.2s ease-in-out',
+                }}
+              />
+              {/* Crisp Core Celestial Disc */}
+              <div
+                className="rounded-full pointer-events-none"
+                style={{
+                  width: `${currentTheme.celestial.r * 1.8}px`,
+                  height: `${currentTheme.celestial.r * 1.8}px`,
+                  backgroundColor: currentTheme.celestial.fill,
+                  opacity: currentTheme.celestial.opacity,
+                  transform: 'translate(-50%, -50%)',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  filter: 'blur(1.2px)',
+                  boxShadow: `0 0 ${currentTheme.celestial.r * 0.8}px ${currentTheme.celestial.fill}`,
+                  transition: 'width 1.2s ease-in-out, height 1.2s ease-in-out, background-color 1.2s ease-in-out, opacity 1.2s ease-in-out',
+                }}
+              />
+            </div>
+
+            {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
+            <img
+              src="/svg/tibet.svg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
+              style={{
+                mixBlendMode: 'multiply',
+                opacity: 0.94,
+              }}
+            />
+
+            {/* Atmospheric Stage Color Wash Tint */}
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-1000 z-0"
+              style={{
+                background: `linear-gradient(135deg, ${currentTheme.skyGradient[0]} 0%, ${currentTheme.skyGradient[1]} 35%, ${currentTheme.skyGradient[2]} 70%, ${currentTheme.skyGradient[3]} 100%)`,
+                opacity: 0.22,
+                mixBlendMode: 'color',
+              }}
+            />
+
+            {/* Subtle Horizon Mist / Fog Ribbon */}
+            <div
+              className="absolute bottom-12 left-0 right-0 h-12 pointer-events-none blur-lg transition-all duration-1000 z-0"
+              style={{
+                backgroundColor: currentTheme.fogColor,
+                opacity: currentTheme.fogOpacity,
+              }}
+            />
+          </div>
           
           {!isPlaying ? (
             /* Intro / Start Journey Screen in Zen Aesthetic */
-            <div className="flex flex-col items-center justify-center my-auto py-4 text-center max-w-sm space-y-6">
+            <div className="relative z-10 flex flex-col items-center justify-center my-auto py-8 sm:py-10 px-6 sm:px-8 text-center max-w-md space-y-6 bg-[#fbf9f4]/90 backdrop-blur-md rounded-3xl m-4 sm:m-8 border border-[#e4decb] shadow-2xl">
+              
+              {/* Mute Toggle Button on Intro Screen */}
+              <button
+                type="button"
+                onClick={handleToggleMute}
+                title={isMuted ? "Unmute drone (M)" : "Mute drone (M)"}
+                aria-label={isMuted ? "Unmute ambient drone" : "Mute ambient drone"}
+                className={`absolute top-4 right-4 p-2 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
+                  isMuted
+                    ? 'bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border-amber-300/80 ring-1 ring-amber-400/40'
+                    : 'bg-stone-200/60 hover:bg-stone-300/60 text-stone-700 hover:text-stone-900 border-stone-300/70'
+                }`}
+              >
+                {isMuted ? (
+                  <VolumeX size={16} className="text-amber-800" />
+                ) : (
+                  <Volume2 size={16} className="text-emerald-800" />
+                )}
+              </button>
               
               {/* Central Lotus & Enso Crest */}
               <div className="relative w-32 h-32 flex items-center justify-center">
@@ -434,10 +853,10 @@ export default function Game() {
                   Wind & Unwind
                 </h1>
                 <p className="text-stone-600 text-xs sm:text-sm leading-relaxed px-2 font-serif-zen">
-                  Travel the 9 circles of <strong className="text-stone-900">Mind</strong>, <strong className="text-stone-900">Body</strong>, and <strong className="text-stone-900">Spirit</strong>. Solve 3 tone puzzles at each stage—27 in total—to reach Enlightenment.
+                  Travel the 9 circles of <strong className="text-stone-900">Mind</strong>, <strong className="text-stone-900">Body</strong>, and <strong className="text-stone-900">Spirit</strong>. Solve 3 tone puzzles at each stage (27 in total) to reach Enlightenment and Oneness.
                 </p>
                 <div className="text-[11px] text-stone-500 italic mt-3 font-serif-zen">
-                  Stage 1 begins with single-tone repetition; each circle broadens the melody.
+                  Stage 1 begins with a tutorial and single-tone repetitions. Each successive circle broadens the number of notes used.
                 </div>
               </div>
 
@@ -454,18 +873,18 @@ export default function Game() {
 
             </div>
           ) : (
-            /* Active Game Loop: The Asian / Zen Interface */
-            <div className="w-full flex flex-col items-center justify-between h-full space-y-3">
+            /* Active Game Loop: The Asian / Zen Landscape Interface */
+            <div className="relative z-10 w-full flex flex-col items-center justify-between h-full space-y-1">
               
               {/* Header HUD */}
-              <div className="w-full flex justify-between items-start pt-1 px-1">
+              <div className="w-full grid grid-cols-[1fr_auto_1fr] items-start pt-3 sm:pt-4 px-4 sm:px-8 select-none gap-2">
                 
                 {/* Left: CURRENT STREAK with Calligraphy Script '道' */}
-                <div className="flex flex-col text-left">
-                  <span className="text-[10px] tracking-widest text-stone-500 uppercase font-bold font-serif-zen">
+                <div className="flex flex-col text-left justify-self-start">
+                  <span className="text-[10px] sm:text-[11px] tracking-widest text-stone-500 uppercase font-bold font-serif-zen whitespace-nowrap">
                     Current Streak
                   </span>
-                  <div className="flex items-baseline space-x-1.5 mt-0.5">
+                  <div className="flex items-baseline space-x-1.5 mt-0.5 whitespace-nowrap">
                     <span className="font-brush text-3xl sm:text-4xl text-stone-900 font-bold leading-none">
                       {streak}
                     </span>
@@ -478,20 +897,93 @@ export default function Game() {
                   </div>
                 </div>
 
-                {/* Right: Three Incense Burners (Strikes) & Lore Button */}
-                <div className="flex items-center space-x-3">
+                {/* Center: Stage Progression Breadcrumb & Title */}
+                <div className="flex flex-col items-center text-center justify-self-center px-2">
+                  {/* Stages Breadcrumb: BODY ➔ MIND ➔ SPIRIT */}
+                  <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-[11.5px] font-serif-zen font-bold tracking-widest text-stone-700 uppercase mb-0.5 whitespace-nowrap">
+                    <span className="opacity-60 text-[9.5px]">STAGES:</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
+                        currentStage.realm === 'BODY'
+                          ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
+                          : 'opacity-70'
+                      }`}
+                    >
+                      BODY
+                    </span>
+                    <span className="text-stone-400 font-black text-[9px]">➔</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
+                        currentStage.realm === 'MIND'
+                          ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
+                          : 'opacity-70'
+                      }`}
+                    >
+                      MIND
+                    </span>
+                    <span className="text-stone-400 font-black text-[9px]">➔</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
+                        currentStage.realm === 'SPIRIT'
+                          ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
+                          : 'opacity-70'
+                      }`}
+                    >
+                      SPIRIT
+                    </span>
+                  </div>
+
+                  {/* Stage Realm & Title */}
+                  <div 
+                    className="cursor-pointer group select-none mt-0.5 flex flex-col items-center"
+                    onClick={() => setSelectedLoreStage(currentStage)}
+                    title="Click to view stage details"
+                  >
+                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] text-[#34705a] block font-serif-zen whitespace-nowrap">
+                      {currentStage.realm} • STAGE {currentStage.id}
+                    </span>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors whitespace-nowrap">
+                      {currentStage.name}
+                    </h2>
+                    <div className="text-[11px] sm:text-[14.5px] text-stone-500 font-serif-zen tracking-widest flex items-center justify-center space-x-2 whitespace-nowrap">
+                      <span className="font-bold uppercase text-stone-700">({currentStage.subtitle})</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Mute Button, Lore Button & Three Incense Burners (Strikes) */}
+                <div className="flex items-center justify-end space-x-2 sm:space-x-2.5 justify-self-end shrink-0">
+                  {/* Mute Toggle Button */}
+                  <button
+                    type="button"
+                    onClick={handleToggleMute}
+                    title={isMuted ? "Unmute drone (M)" : "Mute drone (M)"}
+                    aria-label={isMuted ? "Unmute ambient drone" : "Mute ambient drone"}
+                    className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
+                      isMuted
+                        ? 'bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border-amber-300/80 ring-1 ring-amber-400/40'
+                        : 'bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 border-stone-300/60'
+                    }`}
+                  >
+                    {isMuted ? (
+                      <VolumeX size={13} className="text-amber-800" />
+                    ) : (
+                      <Volume2 size={13} className="text-emerald-800" />
+                    )}
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setSelectedLoreStage(currentStage)}
                     title="View Stage Lore & Conflict"
-                    className="p-1.5 rounded-xl bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 transition-all border border-stone-300/60 cursor-pointer active:scale-95 flex items-center space-x-1 shadow-sm"
+                    className="p-1.5 rounded-xl bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 transition-all border border-stone-300/60 cursor-pointer active:scale-95 flex items-center space-x-1 shadow-sm whitespace-nowrap"
                   >
                     <BookOpen size={13} />
                     <span className="text-[9px] font-bold uppercase tracking-wider pr-0.5 font-serif-zen">Lore</span>
                   </button>
 
                   {/* Three Incense Burners */}
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1 shrink-0">
                     {[0, 1, 2].map((i) => (
                       <IncenseBurner key={i} active={i >= strikes} />
                     ))}
@@ -500,22 +992,56 @@ export default function Game() {
 
               </div>
 
-              {/* The Central Circular Wheel: Faded Dharmachakra + Ensō + Jade & Stamp Nodes */}
-              <div className="relative w-full max-w-[395px] sm:max-w-[430px] aspect-square flex items-center justify-center my-0.5 select-none">
-                <svg className="w-full h-full enso-container" viewBox="0 0 500 500">
+              {/* The Central Path: Left-to-Right Sumi-e Brush Stroke Line with Scenic Landscape Backdrop */}
+              <div className="relative w-full overflow-hidden select-none my-0.5 flex items-center justify-center">
+                {/* Stage Advancement Fanfare Banner */}
+                <AnimatePresence>
+                  {stageCelebration && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -16, scale: 0.95 }}
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
+                      className="absolute top-3 z-40 px-5 py-2 rounded-full bg-stone-900/90 backdrop-blur-md text-amber-100 border border-amber-400/50 shadow-2xl flex items-center space-x-2.5 pointer-events-none whitespace-nowrap"
+                    >
+                      <Sparkles size={16} className="text-amber-300 animate-pulse shrink-0" />
+                      <span className="text-xs font-serif-zen tracking-widest uppercase font-bold text-amber-200 whitespace-nowrap">
+                        Stage {stageCelebration.stageId}: {stageCelebration.name}
+                      </span>
+                      <span className="text-[10px] text-amber-300/80 font-mono whitespace-nowrap">[{stageCelebration.realm}]</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <svg className="w-full h-auto max-h-[250px] sm:max-h-[285px] overflow-visible" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet">
                   <defs>
-                    {/* Jade Completed Glow */}
+                    {/* Soft Scenic Wash across the card backdrop */}
+                    <linearGradient id="scenicWash" x1="0" y1="0" x2="1" y2="0.6">
+                      <stop offset="0%" stopColor={currentTheme.skyGradient[0]} stopOpacity="0.85" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                      <stop offset="40%" stopColor={currentTheme.skyGradient[1]} stopOpacity="0.75" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                      <stop offset="75%" stopColor={currentTheme.skyGradient[2]} stopOpacity="0.8" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                      <stop offset="100%" stopColor={currentTheme.skyGradient[3]} stopOpacity="0.9" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                    </linearGradient>
+
+                    {/* Celestial Glow Gradient */}
+                    <radialGradient id="celestialGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor={currentTheme.celestial.glow} stopOpacity={currentTheme.celestial.opacity} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                      <stop offset="65%" stopColor={currentTheme.celestial.glow} stopOpacity={currentTheme.celestial.opacity * 0.3} style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                      <stop offset="100%" stopColor={currentTheme.celestial.glow} stopOpacity="0" style={{ transition: 'stop-color 1.2s ease-in-out' }} />
+                    </radialGradient>
+
+                    {/* Soft Celadon Glow for Completed Nodes */}
                     <radialGradient id="jadeGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#52b788" stopOpacity="0.5" />
+                      <stop offset="0%" stopColor="#52b788" stopOpacity="0.55" />
                       <stop offset="100%" stopColor="#52b788" stopOpacity="0" />
                     </radialGradient>
                     
                     {/* Celadon Medallion Gradient */}
                     <radialGradient id="celadonGrad" cx="35%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor="#eaf7f1" />
-                      <stop offset="50%" stopColor="#c5e6d6" />
+                      <stop offset="0%" stopColor="#f0faf5" />
+                      <stop offset="45%" stopColor="#c8e8d8" />
                       <stop offset="85%" stopColor="#9cc9b3" />
-                      <stop offset="100%" stopColor="#76a891" />
+                      <stop offset="100%" stopColor="#6ea389" />
                     </radialGradient>
 
                     {/* Cinnabar Stamp Gradient */}
@@ -524,61 +1050,106 @@ export default function Game() {
                       <stop offset="40%" stopColor="#c0392b" />
                       <stop offset="100%" stopColor="#962d22" />
                     </radialGradient>
+
+                    {/* Earthy Clay Gradient for Unreached Nodes (#844F24) */}
+                    <radialGradient id="earthGrad" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#a36636" />
+                      <stop offset="45%" stopColor="#844F24" />
+                      <stop offset="100%" stopColor="#5d3515" />
+                    </radialGradient>
+
+                    {/* Subtle Spirit Sparkle Glow Filter */}
+                    <filter id="spiritGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" />
+                    </filter>
                   </defs>
 
-                  {/* 1. Stylized Faded Dharmachakra (Dharma Wheel) in Background */}
-                  <g className="opacity-25" stroke="#a89a85" fill="none">
-                    {/* Outer Wheel Rim */}
-                    <circle cx="250" cy="250" r="176" strokeWidth="3.5" />
-                    <circle cx="250" cy="250" r="188" strokeWidth="1.5" strokeDasharray="5 7" />
-                    
-                    {/* 8 Radiating Dharmachakra Spokes Angled (22.5° offset) to Keep Vertical Corridor Clear of Lines */}
-                    {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((angle, idx) => {
-                      const rad = (angle * Math.PI) / 180;
-                      const xInner = 250 + 66 * Math.cos(rad);
-                      const yInner = 250 + 66 * Math.sin(rad);
-                      const xOuter = 250 + 176 * Math.cos(rad);
-                      const yOuter = 250 + 176 * Math.sin(rad);
-                      const xMid = 250 + 122 * Math.cos(rad);
-                      const yMid = 250 + 122 * Math.sin(rad);
-                      return (
-                        <g key={idx}>
-                          <line x1={xInner} y1={yInner} x2={xOuter} y2={yOuter} strokeWidth="3" strokeLinecap="round" />
-                          <circle cx={xMid} cy={yMid} r="4.5" fill="#a89a85" />
-                          <circle cx={xOuter} cy={yOuter} r="5.5" fill="#a89a85" />
-                        </g>
-                      );
-                    })}
+                  {/* 2. REALM LANDMARKS & PAGODAS */}
+
+                  {/* (A) Left Realm: Bamboo Grove, Water Bank & Wooden Torii Gate */}
+                  <g>
+                    {/* Bamboo Grove Silhouettes */}
+                    <g opacity="0.75">
+                      {/* Stalk 1 */}
+                      <path d="M 30 420 L 30 180 M 28 240 L 32 240 M 28 320 L 32 320" stroke="#3b3731" strokeWidth="6" strokeLinecap="round" />
+                      <path d="M 30 250 C 45 235, 65 245, 75 240 C 60 252, 45 255, 30 250 Z" fill="#3b3731" />
+                      <path d="M 30 330 C 15 315, 0 325, -10 320 C 10 332, 20 335, 30 330 Z" fill="#3b3731" />
+                      {/* Stalk 2 */}
+                      <path d="M 55 420 L 55 140 M 53 210 L 57 210 M 53 290 L 57 290" stroke="#292520" strokeWidth="8" strokeLinecap="round" />
+                      <path d="M 55 220 C 75 200, 105 210, 120 205 C 95 220, 75 225, 55 220 Z" fill="#292520" />
+                      <path d="M 55 300 C 40 280, 20 290, 10 285 C 30 300, 45 305, 55 300 Z" fill="#292520" />
+                      {/* Stalk 3 */}
+                      <path d="M 85 420 L 85 190 M 83 260 L 87 260 M 83 340 L 87 340" stroke="#443f38" strokeWidth="5" strokeLinecap="round" />
+                      <path d="M 85 270 C 100 255, 125 265, 135 260 C 115 272, 100 275, 85 270 Z" fill="#443f38" />
+                      {/* Stalk 4 (Far Left leafy cluster) */}
+                      <path d="M 12 420 L 12 220 M 12 280 C 26 265, 45 275, 55 270 C 40 280, 26 282, 12 280 Z" fill="#4a443c" stroke="#4a443c" strokeWidth="4" />
+                    </g>
+
+                    {/* Riverbank water wash & ripples */}
+                    <ellipse cx="110" cy="395" rx="110" ry="16" fill={currentTheme.waterColor} opacity="0.45" style={{ transition: 'fill 1.2s ease-in-out' }} />
+                    <line x1="30" y1="388" x2="160" y2="388" stroke="#a3967f" strokeWidth="1.2" opacity="0.5" />
+                    <line x1="60" y1="398" x2="200" y2="398" stroke="#a3967f" strokeWidth="1.5" opacity="0.4" />
                   </g>
 
-                  {/* 2. Ensō (Ink Brush Circle) with Sumi-E Texture */}
-                  <path
-                    d="M 272 44 
-                       C 378 48, 462 142, 458 252 
-                       C 454 362, 356 456, 246 456 
-                       C 136 456, 44 362, 48 250 
-                       C 52 148, 138 56, 226 48"
-                    fill="none"
-                    stroke="#1e1b18"
-                    strokeWidth="24"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="opacity-90"
-                  />
-                  <path
-                    d="M 284 50 
-                       C 386 56, 466 148, 462 254 
-                       C 458 358, 360 450, 250 450 
-                       C 142 450, 54 358, 58 250 
-                       C 62 158, 136 60, 220 54"
-                    fill="none"
-                    stroke="#2e2a25"
-                    strokeWidth="11"
-                    strokeLinecap="round"
-                    className="opacity-50"
+                  {/* 3. THE SUMI-E INK BRUSH STROKE (FROM path.svg) */}
+                  <image
+                    href="/svg/path.svg"
+                    x="0"
+                    y="10"
+                    width="1000"
+                    height="400"
+                    preserveAspectRatio="none"
+                    className="select-none pointer-events-none drop-shadow-md"
                   />
 
-                  {/* 3. The 9 Stage Nodes along the Circle */}
+                  {/* REALM LABELS (BODY, MIND, SPIRIT) */}
+                  <g className="select-none pointer-events-none">
+                    {/* BODY Realm Label */}
+                    <text
+                      x="80"
+                      y="415"
+                      fill="#1c1917"
+                      fontSize="17"
+                      fontWeight="bold"
+                      fontFamily="Shippori Mincho, serif"
+                      letterSpacing="0.06em"
+                      className="drop-shadow-sm"
+                    >
+                      BODY
+                    </text>
+
+                    {/* MIND Realm Label */}
+                    <text
+                      x="491"
+                      y="335"
+                      textAnchor="middle"
+                      fill="#1c1917"
+                      fontSize="19"
+                      fontWeight="bold"
+                      fontFamily="Shippori Mincho, serif"
+                      letterSpacing="0.06em"
+                      className="drop-shadow-sm"
+                    >
+                      MIND
+                    </text>
+
+                    {/* SPIRIT Realm Label */}
+                    <text
+                      x="780"
+                      y="130"
+                      textAnchor="middle"
+                      fill="#1c1917"
+                      fontSize="17"
+                      fontWeight="bold"
+                      fontFamily="Shippori Mincho, serif"
+                      letterSpacing="0.06em"
+                      className="drop-shadow-sm"
+                    >
+                      SPIRIT
+                    </text>
+                  </g>
+
+                  {/* 4. THE 9 STAGE NODES ALONG THE PATH */}
                   {stagePositions.map((node, i) => {
                     const isPassed = i < currentStageIndex;
                     const isActive = i === currentStageIndex;
@@ -594,7 +1165,7 @@ export default function Game() {
                           <circle
                             cx={node.x}
                             cy={node.y}
-                            r="26"
+                            r="50"
                             fill="url(#jadeGlow)"
                           />
                         )}
@@ -604,49 +1175,51 @@ export default function Game() {
                           <circle
                             cx={node.x}
                             cy={node.y}
-                            r="21"
+                            r="43"
                             fill="none"
                             stroke="#c0392b"
-                            strokeWidth="2"
-                            strokeDasharray="4 3"
+                            strokeWidth="3.2"
+                            strokeDasharray="6 4"
                             className="animate-pulse"
                           />
                         )}
 
-                        {/* Node Disc: Completed = Jade finish; Upcoming = Cinnabar red stamp seal */}
+                        {/* Node Disc: Completed = Jade finish; Active = Cinnabar stamp; Unreached = Earthy clay #844F24 */}
                         <circle
                           cx={node.x}
                           cy={node.y}
-                          r="15.5"
-                          fill={isPassed ? "#389367" : "url(#cinnabarGrad)"}
-                          stroke={isPassed ? "#a3e4c4" : "#f5b7b1"}
-                          strokeWidth="1.8"
+                          r="34"
+                          fill={isPassed ? "#389367" : isActive ? "url(#cinnabarGrad)" : "url(#earthGrad)"}
+                          stroke={isPassed ? "#a3e4c4" : isActive ? "#f5b7b1" : "#b87d4d"}
+                          strokeWidth="3"
+                          className="shadow-md"
                         />
+
                         {/* Subtle glossy highlight */}
                         <ellipse
-                          cx={node.x - 4}
-                          cy={node.y - 5}
-                          rx="5"
-                          ry="2.5"
+                          cx={node.x - 8}
+                          cy={node.y - 11}
+                          rx="11"
+                          ry="5.5"
                           fill="rgba(255,255,255,0.45)"
-                          transform={`rotate(-30 ${node.x - 4} ${node.y - 5})`}
+                          transform={`rotate(-30 ${node.x - 8} ${node.y - 11})`}
                         />
 
                         {/* Node Icon: White Checkmark or Calligraphic Number */}
                         {isPassed ? (
                           <Check
-                            x={node.x - 7.5}
-                            y={node.y - 7.5}
-                            size={15}
-                            strokeWidth={3}
+                            x={node.x - 15}
+                            y={node.y - 15}
+                            size={30}
+                            strokeWidth={3.5}
                             className="text-white drop-shadow-sm"
                           />
                         ) : (
                           <text
                             x={node.x}
-                            y={node.y + 4.5}
+                            y={node.y + 9}
                             fill="#ffffff"
-                            fontSize="12"
+                            fontSize="25"
                             fontWeight="900"
                             textAnchor="middle"
                             fontFamily="Shippori Mincho, serif"
@@ -659,143 +1232,83 @@ export default function Game() {
                     );
                   })}
                 </svg>
-
-                {/* Central Medallion Overlay with Roomy Breathing Space */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-8 py-4">
-                  
-                  {/* Stage Realm & Title (Above Lotus) */}
-                  <div 
-                    className="text-center mb-2 pointer-events-auto cursor-pointer group"
-                    onClick={() => setSelectedLoreStage(currentStage)}
-                  >
-                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.22em] text-[#2d6a50] block font-serif-zen">
-                      {currentStage.realm} • STAGE {currentStage.id}
-                    </span>
-                    <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors mt-0.5">
-                      {currentStage.name}
-                    </h3>
-                    <div className="text-[9.5px] sm:text-[10px] text-stone-500 font-serif-zen tracking-widest flex items-center justify-center space-x-2 mt-0.5">
-                      <span className="opacity-60 uppercase text-[9px]">SPIRIT</span>
-                      <span className="italic font-bold text-stone-700">({currentStage.subtitle})</span>
-                      <span className="opacity-60 uppercase text-[9px]">MIND</span>
-                    </div>
-                  </div>
-
-                  {/* Pale Jade Celadon Disk with Hand-Drawn Lotus / Meditating Symbol */}
-                  <div className="relative flex items-center justify-center w-20 h-20 sm:w-22 sm:h-22 my-1">
-                    {/* Audio Feedback Pulse */}
-                    <AnimatePresence>
-                      {feedback === 'correct' && (
-                        <motion.div 
-                          initial={{ scale: 0.8, opacity: 0 }}
-                          animate={{ scale: 1.4, opacity: 0.4 }}
-                          exit={{ opacity: 0 }}
-                          className="absolute inset-0 bg-[#52b788] rounded-full blur-sm"
-                        />
-                      )}
-                    </AnimatePresence>
-
-                    {/* Jade Celadon Disk */}
-                    <motion.div
-                      animate={{
-                        scale: feedback === 'correct' ? [1, 1.05, 1] : 1,
-                        x: feedback === 'wrong' ? [-6, 6, -6, 6, 0] : 0,
-                      }}
-                      className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-md border transition-all duration-300 ${
-                        feedback === 'wrong' 
-                          ? 'border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
-                          : 'border-white/90 shadow-[0_4px_14px_rgba(64,145,108,0.25)]'
-                      }`}
-                      style={{
-                        background: 'radial-gradient(circle at 35% 30%, #eef9f4 0%, #cae8da 45%, #9bc7b2 85%, #6a9e86 100%)',
-                      }}
-                    >
-                      {/* Meditating Figure on Lotus Flower in Black Ink Brush Lines */}
-                      <svg className="w-12 h-12 text-[#18281f]" viewBox="0 0 64 64" fill="none">
-                        {/* Meditating Figure Head */}
-                        <circle cx="32" cy="18" r="3.2" fill="#18281f" />
-                        
-                        {/* Upper Body Torso */}
-                        <path 
-                          d="M32 23 C29 27, 27 33, 24 39 C28 42, 36 42, 40 39 C37 33, 35 27, 32 23 Z" 
-                          fill="#18281f" 
-                        />
-                        
-                        {/* Lotus Petal Center Cup */}
-                        <path 
-                          d="M32 34 C30 38, 30 43, 32 46 C34 43, 34 38, 32 34 Z" 
-                          fill="#18281f" 
-                        />
-
-                        {/* Graceful Blooming Lotus Petals Left & Right */}
-                        <path 
-                          d="M30 40 C21 38, 12 43, 16 51 C24 51, 28 46, 31 42 Z" 
-                          fill="#18281f" 
-                        />
-                        <path 
-                          d="M34 40 C43 38, 52 43, 48 51 C40 51, 36 46, 33 42 Z" 
-                          fill="#18281f" 
-                        />
-                        
-                        {/* Base Lotus Leaf Pod */}
-                        <path 
-                          d="M22 50 C28 53, 36 53, 42 50 C38 52, 26 52, 22 50 Z" 
-                          fill="#18281f" 
-                        />
-                      </svg>
-                    </motion.div>
-                  </div>
-
-                  {/* Stage Progress & Tone Count (Below Lotus) */}
-                  <div className="text-center mt-2">
-                    <span className="text-[10px] sm:text-[10.5px] uppercase tracking-widest text-stone-600 font-bold font-serif-zen block">
-                      CIRCLE {currentStageIndex + 1} • PUZZLE {puzzleInStage}/3 ({currentPuzzleLength} {currentPuzzleLength === 1 ? 'TONE' : 'TONES'})
-                    </span>
-                    <span className="text-[10.5px] sm:text-[11px] italic text-stone-500 font-serif-zen mt-0.5 block">
-                      {isShowingSequence ? 'Listen to the bells...' : 'Repeat the tone'}
-                    </span>
-                  </div>
-
-                </div>
               </div>
 
-              {/* Tone Input Buttons: Polished Jade River Stones with Carved Arrows */}
-              <div className="flex space-x-6 items-center justify-center pt-2 pb-2">
+              {/* Stage Progress Info & Tone Input Buttons (Below the Path) */}
+              <div className="w-full flex flex-col items-center justify-center pt-2 pb-3 sm:pb-4 px-4 sm:px-8 select-none bg-gradient-to-t from-stone-950/80 via-stone-950/45 to-transparent">
+                <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-amber-200/90 font-bold font-serif-zen block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  STAGE {currentStageIndex + 1} • PUZZLE {puzzleInStage}/3 ({currentPuzzleLength} {currentPuzzleLength === 1 ? 'TONE' : 'TONES'})
+                </span>
+                {currentStageIndex === 0 ? (
+                  <span className="text-[11px] sm:text-[12px] font-bold text-emerald-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                    {isShowingSequence
+                      ? 'Listen closely to the tone...'
+                      : sequence[playerSequence.length] === 'up'
+                        ? 'That tone was HIGHER — click "Higher Tone"'
+                        : 'That tone was LOWER — click "Lower Tone"'}
+                  </span>
+                ) : (
+                  <span className="text-[10.5px] sm:text-[11.5px] italic text-stone-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                    {isShowingSequence ? 'Listen to the bells...' : 'Repeat the tone'}
+                  </span>
+                )}
+
+                {/* Tone Input Buttons: Polished Jade River Stones with Yin-Yang */}
+                <div className="flex space-x-6 items-center justify-center pt-5 pb-0.5">
                 
                 {/* HIGHER TONE Stone */}
-                <button
-                  type="button"
-                  onClick={() => handleInput('up')}
-                  disabled={isShowingSequence}
-                  className={`jade-stone w-32 sm:w-36 py-3.5 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                    isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
-                  }`}
-                >
-                  <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-0.5 font-serif-zen">
-                    Higher Tone
-                  </span>
-                  <span className="jade-carving text-2xl font-black leading-none">
-                    ↑
-                  </span>
-                </button>
+                <div className="relative flex flex-col items-center">
+                  {currentStageIndex === 0 && !isShowingSequence && sequence[playerSequence.length] === 'up' && (
+                    <div className="absolute -top-3.5 z-20 px-2.5 py-0.5 bg-emerald-800 text-amber-100 text-[9px] font-black uppercase tracking-wider rounded-full shadow-lg animate-bounce whitespace-nowrap border border-emerald-400/50">
+                      Click Here
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleInput('up')}
+                    disabled={isShowingSequence}
+                    className={`jade-stone w-32 sm:w-36 py-3 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
+                      isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
+                    } ${
+                      currentStageIndex === 0 && !isShowingSequence && sequence[playerSequence.length] === 'up'
+                        ? 'ring-2 ring-emerald-600 shadow-[0_0_16px_rgba(52,112,90,0.6)] scale-105'
+                        : ''
+                    }`}
+                  >
+                    <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-1.5 font-serif-zen">
+                      Higher Tone
+                    </span>
+                    <img src="/svg/yinyang.svg" alt="" className="w-7 h-7 object-contain drop-shadow-sm" />
+                  </button>
+                </div>
 
                 {/* LOWER TONE Stone */}
-                <button
-                  type="button"
-                  onClick={() => handleInput('down')}
-                  disabled={isShowingSequence}
-                  className={`jade-stone w-32 sm:w-36 py-3.5 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                    isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
-                  }`}
-                >
-                  <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-0.5 font-serif-zen">
-                    Lower Tone
-                  </span>
-                  <span className="jade-carving text-2xl font-black leading-none">
-                    ↓
-                  </span>
-                </button>
+                <div className="relative flex flex-col items-center">
+                  {currentStageIndex === 0 && !isShowingSequence && sequence[playerSequence.length] === 'down' && (
+                    <div className="absolute -top-3.5 z-20 px-2.5 py-0.5 bg-emerald-800 text-amber-100 text-[9px] font-black uppercase tracking-wider rounded-full shadow-lg animate-bounce whitespace-nowrap border border-emerald-400/50">
+                      Click Here
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleInput('down')}
+                    disabled={isShowingSequence}
+                    className={`jade-stone w-32 sm:w-36 py-3 px-3 flex flex-col items-center justify-center cursor-pointer transition-all ${
+                      isShowingSequence ? 'opacity-40 cursor-not-allowed scale-95' : 'hover:scale-105 active:scale-95'
+                    } ${
+                      currentStageIndex === 0 && !isShowingSequence && sequence[playerSequence.length] === 'down'
+                        ? 'ring-2 ring-emerald-600 shadow-[0_0_16px_rgba(52,112,90,0.6)] scale-105'
+                        : ''
+                    }`}
+                  >
+                    <span className="text-[8.5px] uppercase font-black tracking-widest text-emerald-950/80 mb-1.5 font-serif-zen">
+                      Lower Tone
+                    </span>
+                    <img src="/svg/yinyang.svg" alt="" className="w-7 h-7 object-contain drop-shadow-sm" />
+                  </button>
+                </div>
 
+                </div>
               </div>
 
             </div>
@@ -823,13 +1336,13 @@ export default function Game() {
                     <X size={16} />
                   </button>
 
-                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#34705a] mb-1 font-serif-zen">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#34705a] mb-1 font-serif-zen whitespace-nowrap">
                     {selectedLoreStage.realm} • Stage {selectedLoreStage.id} of 9
                   </div>
-                  <h3 className="text-xl font-bold text-stone-900 font-serif-zen mb-0.5">
+                  <h3 className="text-xl font-bold text-stone-900 font-serif-zen mb-0.5 whitespace-nowrap">
                     {selectedLoreStage.name}
                   </h3>
-                  <div className="text-xs text-stone-500 font-serif-zen italic mb-4">
+                  <div className="text-xs text-stone-500 font-serif-zen italic mb-4 whitespace-nowrap">
                     ({selectedLoreStage.subtitle})
                   </div>
 
@@ -843,7 +1356,7 @@ export default function Game() {
                       <p>{selectedLoreStage.conflict}</p>
                     </div>
                     <div>
-                      <strong className="text-[#275d49] uppercase tracking-wider text-[10px] block mb-0.5">Game Objective</strong>
+                      <strong className="text-[#275d49] uppercase tracking-wider text-[10px] block mb-0.5">The Lesson</strong>
                       <p className="font-semibold text-stone-900">{selectedLoreStage.objective}</p>
                     </div>
                   </div>
