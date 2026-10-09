@@ -1123,63 +1123,89 @@ export default function Game() {
                           />
                         )}
 
-                        {/* Auspicious Pulsing Ring for Active Node */}
+                        {/* White Pulsing Ring for Active Node */}
                         {isActive && (
                           <circle
                             cx={node.x}
                             cy={node.y}
                             r="43"
                             fill="none"
-                            stroke="#c0392b"
+                            stroke="#ffffff"
                             strokeWidth="3.2"
                             strokeDasharray="6 4"
-                            className="animate-pulse"
+                            className="animate-pulse drop-shadow-sm"
                           />
                         )}
 
-                        {/* Node Disc: Completed = Jade finish; Active = Cinnabar stamp; Unreached = Earthy clay #844F24 */}
-                        <circle
-                          cx={node.x}
-                          cy={node.y}
-                          r="34"
-                          fill={isPassed ? "#389367" : isActive ? "url(#cinnabarGrad)" : "url(#earthGrad)"}
-                          stroke={isPassed ? "#a3e4c4" : isActive ? "#f5b7b1" : "#b87d4d"}
-                          strokeWidth="3"
-                          className="shadow-md"
-                        />
-
-                        {/* Subtle glossy highlight */}
-                        <ellipse
-                          cx={node.x - 8}
-                          cy={node.y - 11}
-                          rx="11"
-                          ry="5.5"
-                          fill="rgba(255,255,255,0.45)"
-                          transform={`rotate(-30 ${node.x - 8} ${node.y - 11})`}
-                        />
-
-                        {/* Node Icon: White Checkmark or Calligraphic Number */}
-                        {isPassed ? (
-                          <Check
-                            x={node.x - 15}
-                            y={node.y - 15}
-                            size={30}
-                            strokeWidth={3.5}
-                            className="text-white drop-shadow-sm"
-                          />
+                        {/* Node Disc: Active = Lotus Medallion; Completed = Jade finish; Unreached = Earthy clay #844F24 */}
+                        {isActive ? (
+                          <>
+                            <image
+                              href="/svg/lotus.svg"
+                              x={node.x - 34}
+                              y={node.y - 34}
+                              width="68"
+                              height="68"
+                              className="drop-shadow-lg select-none pointer-events-none"
+                            />
+                            {/* Subtle circular white border to frame the medallion */}
+                            <circle
+                              cx={node.x}
+                              cy={node.y}
+                              r="34"
+                              fill="none"
+                              stroke="#ffffff"
+                              strokeWidth="2.5"
+                              opacity="0.85"
+                              className="pointer-events-none"
+                            />
+                          </>
                         ) : (
-                          <text
-                            x={node.x}
-                            y={node.y + 9}
-                            fill="#ffffff"
-                            fontSize="25"
-                            fontWeight="900"
-                            textAnchor="middle"
-                            fontFamily="Shippori Mincho, serif"
-                            className="drop-shadow-sm select-none"
-                          >
-                            {node.id}
-                          </text>
+                          <>
+                            <circle
+                              cx={node.x}
+                              cy={node.y}
+                              r="34"
+                              fill={isPassed ? "#389367" : "url(#earthGrad)"}
+                              stroke={isPassed ? "#a3e4c4" : "#b87d4d"}
+                              strokeWidth="3"
+                              className="shadow-md"
+                            />
+
+                            {/* Subtle glossy highlight */}
+                            <ellipse
+                              cx={node.x - 8}
+                              cy={node.y - 11}
+                              rx="11"
+                              ry="5.5"
+                              fill="rgba(255,255,255,0.45)"
+                              transform={`rotate(-30 ${node.x - 8} ${node.y - 11})`}
+                            />
+
+                            {/* Node Icon: White Checkmark or Calligraphic Number */}
+                            {isPassed ? (
+                              <Check
+                                x={node.x - 15}
+                                y={node.y - 15}
+                                size={30}
+                                strokeWidth={3.5}
+                                className="text-white drop-shadow-sm"
+                              />
+                            ) : (
+                              <text
+                                x={node.x}
+                                y={node.y + 9}
+                                fill="#ffffff"
+                                fontSize="25"
+                                fontWeight="900"
+                                textAnchor="middle"
+                                fontFamily="Shippori Mincho, serif"
+                                className="drop-shadow-sm select-none"
+                              >
+                                {node.id}
+                              </text>
+                            )}
+                          </>
                         )}
                       </g>
                     );
