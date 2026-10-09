@@ -860,16 +860,12 @@ export default function Game() {
                   />
                 </svg>
 
-                {/* Pale Celadon Jade Medallion */}
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#d9eee5] via-[#aed7c4] to-[#7dbb9f] shadow-md flex items-center justify-center border border-white/60">
-                  {/* Calligraphic Meditating Figure / Lotus */}
-                  <svg className="w-12 h-12" viewBox="0 0 64 64" fill="none">
-                    <circle cx="32" cy="18" r="3.5" fill="#1b3226" />
-                    <path d="M32 23 C29 28, 26 36, 23 44 C28 47, 36 47, 41 44 C38 36, 35 28, 32 23 Z" fill="#1b3226" />
-                    {/* Lotus Petals Base */}
-                    <path d="M32 37 C24 38, 14 44, 18 50 C25 50, 29 46, 32 43 C35 46, 39 50, 46 50 C50 44, 40 38, 32 37 Z" fill="#1b3226" />
-                  </svg>
-                </div>
+                {/* Lotus Medallion */}
+                <img
+                  src="/svg/lotus.svg"
+                  alt="Lotus"
+                  className="w-20 h-20 rounded-full shadow-lg border-2 border-white/80 object-contain drop-shadow-md select-none pointer-events-none"
+                />
               </div>
 
               <div>
