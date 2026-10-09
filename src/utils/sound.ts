@@ -17,6 +17,20 @@ try {
   // Ignore localStorage access errors
 }
 
+let droneAudio: HTMLAudioElement | null = null;
+
+const getDroneAudio = () => {
+  if (typeof window === 'undefined') return null;
+  if (!droneAudio) {
+    droneAudio = new Audio('/drone.mp3');
+    droneAudio.loop = true;
+    droneAudio.volume = 0.35;
+    droneAudio.muted = isDroneMuted;
+    droneAudio.preload = 'auto';
+  }
+  return droneAudio;
+};
+
 export const setDroneMuted = (muted: boolean) => {
   isDroneMuted = muted;
   try {
@@ -26,8 +40,9 @@ export const setDroneMuted = (muted: boolean) => {
   } catch (e) {
     // Ignore localStorage errors
   }
-  if (dronePlayer) {
-    dronePlayer.mute = muted;
+  const audio = getDroneAudio();
+  if (audio) {
+    audio.muted = muted;
   }
 };
 
@@ -111,49 +126,30 @@ export const initializeAudio = async () => {
     console.warn('Failed to load high tone player', e);
   }
 
-  // Looping drone player for drone.mp3
-  try {
-    dronePlayer = new Tone.Player({
-      url: '/drone.mp3',
-      loop: true,
-      volume: -24,
-      fadeIn: 2,
-      fadeOut: 2,
-      autostart: false,
-    }).toDestination();
-    dronePlayer.mute = isDroneMuted;
-  } catch (e) {
-    console.warn('Failed to load drone player', e);
-  }
-
   isInitialized = true;
 };
 
 export const startDrone = async () => {
-  await initializeAudio();
-  if (!dronePlayer) return;
-  dronePlayer.mute = isDroneMuted;
-  // If player buffer is already loaded, start immediately
-  if (dronePlayer.loaded) {
-    if (dronePlayer.state !== 'started') {
-      dronePlayer.start();
+  const audio = getDroneAudio();
+  if (audio) {
+    audio.muted = isDroneMuted;
+    if (audio.paused) {
+      audio.play().catch(() => {
+        // Autoplay policy prevented immediate playback; unlocks on user gesture
+      });
     }
-  } else {
-    // Wait until loaded
-    const checkLoaded = setInterval(() => {
-      if (dronePlayer && dronePlayer.loaded) {
-        clearInterval(checkLoaded);
-        if (dronePlayer.state !== 'started') {
-          dronePlayer.start();
-        }
-      }
-    }, 100);
+  }
+
+  // Also resume Tone context if already initialized
+  if (isInitialized && Tone.context.state === 'suspended') {
+    Tone.context.resume().catch(() => {});
   }
 };
 
 export const stopDrone = () => {
-  if (dronePlayer && dronePlayer.state === 'started') {
-    dronePlayer.stop();
+  const audio = getDroneAudio();
+  if (audio && !audio.paused) {
+    audio.pause();
   }
 };
 

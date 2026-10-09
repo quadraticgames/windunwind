@@ -339,27 +339,26 @@ export default function Game() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleToggleMute]);
 
-  // Start ambient drone at the start screen
+  // Start ambient drone at the start screen / main menu
   useEffect(() => {
-    // Attempt playback on load
+    // Attempt playback immediately on load
     startDrone();
 
-    // Browser autoplay policy fallback: unlock and start drone on first gesture if suspended
+    // Browser autoplay policy fallback: unlock and start drone on user gesture
     const handleFirstInteraction = () => {
       startDrone();
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('pointerdown', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
     };
 
     window.addEventListener('click', handleFirstInteraction, { passive: true });
     window.addEventListener('pointerdown', handleFirstInteraction, { passive: true });
     window.addEventListener('keydown', handleFirstInteraction, { passive: true });
+    window.addEventListener('touchstart', handleFirstInteraction, { passive: true });
 
     return () => {
       window.removeEventListener('click', handleFirstInteraction);
       window.removeEventListener('pointerdown', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
     };
   }, []);
 
