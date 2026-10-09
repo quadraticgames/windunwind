@@ -613,15 +613,15 @@ export default function Game() {
   // Node coordinates along the left-to-right winding ink brush path
   const stagePositions = useMemo(() => {
     const PATH_COORDINATES = [
-      { id: 1, x: 128, y: 289 },
-      { id: 2, x: 224, y: 248 },
-      { id: 3, x: 318, y: 293 },
-      { id: 4, x: 410, y: 329 },
-      { id: 5, x: 491, y: 254 },
-      { id: 6, x: 581, y: 200 },
-      { id: 7, x: 680, y: 232 },
-      { id: 8, x: 780, y: 260 },
-      { id: 9, x: 867, y: 200 },
+      { id: 1, x: 145, y: 228 },
+      { id: 2, x: 238, y: 250 },
+      { id: 3, x: 325, y: 285 },
+      { id: 4, x: 420, y: 280 },
+      { id: 5, x: 512, y: 215 },
+      { id: 6, x: 605, y: 160 },
+      { id: 7, x: 705, y: 150 },
+      { id: 8, x: 790, y: 180 },
+      { id: 9, x: 875, y: 205 },
     ];
     return STAGES.map((s, idx) => ({
       ...s,
@@ -1091,16 +1091,62 @@ export default function Game() {
                     <line x1="60" y1="398" x2="200" y2="398" stroke="#a3967f" strokeWidth="1.5" opacity="0.4" />
                   </g>
 
-                  {/* 3. THE SUMI-E INK BRUSH STROKE (FROM path.svg) */}
-                  <image
-                    href="/svg/path.svg"
-                    x="0"
-                    y="50"
-                    width="1000"
-                    height="320"
-                    preserveAspectRatio="none"
-                    className="select-none pointer-events-none drop-shadow-md"
-                  />
+                  {/* 3. THE SUMI-E INK BRUSH STROKE (MATCHING THE ZEN HERO'S JOURNEY PATH) */}
+                  <g className="select-none pointer-events-none drop-shadow-md">
+                    {/* Soft atmospheric ink wash behind the stroke */}
+                    <path
+                      d="M 85.0 260.0 C 104.2 249.8, 96.0 231.2, 145.0 228.0 C 194.0 224.8, 180.4 231.8, 238.0 250.0 C 295.6 268.2, 266.8 275.4, 325.0 285.0 C 383.2 294.6, 360.2 302.4, 420.0 280.0 C 479.8 257.6, 452.8 253.4, 512.0 215.0 C 571.2 176.6, 543.2 180.8, 605.0 160.0 C 666.8 139.2, 645.8 143.6, 705.0 150.0 C 764.2 156.4, 735.6 162.4, 790.0 180.0 C 844.4 197.6, 828.6 209.8, 875.0 205.0 C 921.4 200.2, 915.8 177.8, 935.0 165.0"
+                      fill="none"
+                      stroke="#000000"
+                      strokeWidth="32"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.12"
+                    />
+
+                    {/* Main solid ink brush body */}
+                    <path
+                      d="M 85.0 260.0 C 104.2 249.8, 96.0 231.2, 145.0 228.0 C 194.0 224.8, 180.4 231.8, 238.0 250.0 C 295.6 268.2, 266.8 275.4, 325.0 285.0 C 383.2 294.6, 360.2 302.4, 420.0 280.0 C 479.8 257.6, 452.8 253.4, 512.0 215.0 C 571.2 176.6, 543.2 180.8, 605.0 160.0 C 666.8 139.2, 645.8 143.6, 705.0 150.0 C 764.2 156.4, 735.6 162.4, 790.0 180.0 C 844.4 197.6, 828.6 209.8, 875.0 205.0 C 921.4 200.2, 915.8 177.8, 935.0 165.0"
+                      fill="none"
+                      stroke="#141210"
+                      strokeWidth="24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+
+                    {/* Authentic dry-brush bristle strands (flying white) */}
+                    <path
+                      d="M 86.0 253.0 C 105.2 242.8, 97.0 221.0, 146.0 221.0 C 195.0 217.8, 181.4 224.8, 239.0 243.0 C 296.6 261.2, 267.8 268.4, 326.0 278.0 C 384.2 287.6, 361.2 295.4, 421.0 273.0 C 480.8 250.6, 453.8 246.4, 513.0 208.0 C 572.2 169.6, 544.2 173.8, 606.0 153.0 C 667.8 132.2, 646.8 136.6, 706.0 143.0 C 765.2 149.4, 736.6 155.4, 791.0 173.0 C 845.4 190.6, 829.6 202.8, 876.0 198.0 C 922.4 193.2, 916.8 170.8, 936.0 158.0"
+                      fill="none"
+                      stroke="#141210"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      opacity="0.45"
+                    />
+                    <path
+                      d="M 84.0 268.0 C 103.2 257.8, 95.0 236.0, 144.0 236.0 C 193.0 232.8, 179.4 239.8, 237.0 258.0 C 294.6 276.2, 265.8 283.4, 324.0 293.0 C 382.2 302.6, 359.2 310.4, 419.0 288.0 C 478.8 265.6, 451.8 261.4, 511.0 223.0 C 570.2 184.6, 542.2 188.8, 604.0 168.0 C 665.8 147.2, 644.8 151.6, 704.0 158.0 C 763.2 164.4, 734.6 170.4, 789.0 188.0 C 843.4 205.6, 827.6 217.8, 874.0 213.0 C 920.4 208.2, 914.8 185.8, 934.0 173.0"
+                      fill="none"
+                      stroke="#141210"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      opacity="0.4"
+                    />
+                    <path
+                      d="M 85.0 271.0 C 104.2 260.8, 96.0 239.0, 145.0 239.0 C 194.0 235.8, 180.4 242.8, 238.0 261.0 C 295.6 279.2, 266.8 286.4, 325.0 296.0 C 383.2 305.6, 360.2 313.4, 420.0 291.0 C 479.8 268.6, 452.8 264.4, 512.0 226.0 C 571.2 187.6, 543.2 191.8, 605.0 171.0 C 666.8 150.2, 645.8 154.6, 705.0 161.0 C 764.2 167.4, 735.6 173.4, 790.0 191.0 C 844.4 208.6, 828.6 220.8, 875.0 216.0 C 921.4 211.2, 915.8 188.8, 935.0 176.0"
+                      fill="none"
+                      stroke="#141210"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      opacity="0.3"
+                    />
+
+                    {/* Elegant upward calligraphy brush flick flourish at the right terminus */}
+                    <path
+                      d="M 870 215 Q 920 200, 942 160 Q 930 190, 860 215 Z"
+                      fill="#141210"
+                      opacity="0.9"
+                    />
+                  </g>
 
                   {/* 4. THE 9 STAGE NODES ALONG THE PATH */}
                   {stagePositions.map((node, i) => {
