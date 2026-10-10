@@ -1843,8 +1843,7 @@ export default function Game() {
                 <button
                   type="button"
                   onClick={() => setShowAboutModal(true)}
-                  style={{ borderRadius: '2.2rem 2rem 2.1rem 2.2rem' }}
-                  className="w-full py-2.5 px-4 flex items-center justify-center space-x-1.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-[2.2rem_2rem_2.1rem_2.2rem] transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer shadow-sm border border-stone-300/60"
+                  className="stone-btn-secondary w-full py-2.5 px-4 flex items-center justify-center space-x-1.5 bg-stone-200/90 hover:bg-stone-100 text-stone-700 hover:text-stone-900 font-bold transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer"
                 >
                   <BookOpen size={14} />
                   <span>About This Game</span>
@@ -2400,8 +2399,7 @@ export default function Game() {
                     </button>
                     <button
                       onClick={() => setShowAboutModal(true)}
-                      style={{ borderRadius: '2.2rem 2rem 2.1rem 2.2rem' }}
-                      className="w-full py-2.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-[2.2rem_2rem_2.1rem_2.2rem] transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen shadow-sm border border-stone-300/60"
+                      className="stone-btn-secondary w-full py-2.5 bg-stone-200/90 hover:bg-stone-100 text-stone-700 hover:text-stone-900 font-bold transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen"
                     >
                       About This Game
                     </button>
@@ -2478,7 +2476,7 @@ export default function Game() {
                     </div>
 
                     <div className="pt-1 text-[10px] text-stone-500 border-t border-stone-200">
-                      Created with reverence by Quadratic Games.
+                      Created with reverence by Joe Stallings | Quadratic Games.
                     </div>
                   </div>
 
