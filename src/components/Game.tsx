@@ -1930,7 +1930,7 @@ export default function Game() {
 
                   {/* Stage Realm & Title */}
                   <div 
-                    className="cursor-pointer group select-none mt-0.5 flex flex-col items-center"
+                    className="relative cursor-pointer group select-none mt-0.5 flex flex-col items-center"
                     onClick={() => setSelectedLoreStage(currentStage)}
                     title="Click to view stage details"
                   >
@@ -1956,6 +1956,25 @@ export default function Game() {
                         ({currentStage.subtitle})
                       </span>
                     </div>
+
+                    {/* Stage Advancement Fanfare Banner (Anchored immediately beneath Title & Subtitle) */}
+                    <AnimatePresence>
+                      {stageCelebration && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                          transition={{ duration: 0.35, ease: 'easeOut' }}
+                          className="absolute top-[calc(100%+8px)] z-40 px-4 sm:px-5 py-1.5 rounded-full bg-stone-900/95 backdrop-blur-md text-amber-100 border border-amber-400/50 shadow-2xl flex items-center space-x-2.5 pointer-events-none whitespace-nowrap"
+                        >
+                          <RealmBannerIcon realm={stageCelebration.realm} />
+                          <span className="text-xs font-serif-zen tracking-widest uppercase font-bold text-amber-200 whitespace-nowrap">
+                            Stage {stageCelebration.stageId}: {stageCelebration.name}
+                          </span>
+                          <span className="text-[10px] text-amber-300/80 font-mono whitespace-nowrap">[{stageCelebration.realm}]</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -2024,24 +2043,6 @@ export default function Game() {
 
               {/* The Central Path: Left-to-Right Sumi-e Brush Stroke Line with Scenic Landscape Backdrop */}
               <div className="relative w-full overflow-hidden select-none my-0.5 flex items-center justify-center">
-                {/* Stage Advancement Fanfare Banner */}
-                <AnimatePresence>
-                  {stageCelebration && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -16, scale: 0.95 }}
-                      transition={{ duration: 0.35, ease: 'easeOut' }}
-                      className="absolute top-3 z-40 px-5 py-2 rounded-full bg-stone-900/90 backdrop-blur-md text-amber-100 border border-amber-400/50 shadow-2xl flex items-center space-x-2.5 pointer-events-none whitespace-nowrap"
-                    >
-                      <RealmBannerIcon realm={stageCelebration.realm} />
-                      <span className="text-xs font-serif-zen tracking-widest uppercase font-bold text-amber-200 whitespace-nowrap">
-                        Stage {stageCelebration.stageId}: {stageCelebration.name}
-                      </span>
-                      <span className="text-[10px] text-amber-300/80 font-mono whitespace-nowrap">[{stageCelebration.realm}]</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
 
                 <svg className="w-full h-auto max-h-[260px] sm:max-h-[300px] overflow-visible" viewBox="0 0 6292 1821" preserveAspectRatio="xMidYMid meet">
                   <defs>
