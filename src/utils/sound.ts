@@ -162,11 +162,11 @@ export const initializeAudio = async () => {
     volume: -8,
   }).connect(reverb);
 
-  // Player for lowtone.mp3 with anti-click crossfades
+  // Player for lowtone.mp3 with anti-click crossfades (boosted to balance with hightone)
   try {
     lowTonePlayer = new Tone.Player({
       url: '/lowtone.mp3',
-      volume: -4,
+      volume: 0.5,
       fadeIn: 0.005,
       fadeOut: 0.04,
     }).connect(reverb);
