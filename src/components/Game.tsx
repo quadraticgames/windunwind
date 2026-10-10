@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind } from 'lucide-react';
 import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 
 type Direction = 'up' | 'down';
@@ -305,6 +305,38 @@ function IncenseBurner({ active }: { active: boolean }) {
       </svg>
     </div>
   );
+}
+
+// Realm icons for stage announcement banner (Body, Mind, Spirit)
+function RealmBannerIcon({ realm }: { realm: string }) {
+  switch (realm) {
+    case 'BODY':
+      return (
+        <svg
+          width={16}
+          height={16}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-amber-300 animate-pulse shrink-0"
+        >
+          {/* Contemplative Human Body in Lotus Posture */}
+          <circle cx="12" cy="5" r="2.2" />
+          <path d="M12 7.5v6.5" />
+          <path d="M7.5 14l4.5-2 4.5 2" />
+          <path d="M5.5 19.5c2-2 4-2.5 6.5-2.5s4.5.5 6.5 2.5" />
+        </svg>
+      );
+    case 'MIND':
+      return <Brain size={16} className="text-amber-300 animate-pulse shrink-0" strokeWidth={2.2} />;
+    case 'SPIRIT':
+      return <Wind size={16} className="text-amber-300 animate-pulse shrink-0" strokeWidth={2.2} />;
+    default:
+      return <Wind size={16} className="text-amber-300 animate-pulse shrink-0" strokeWidth={2.2} />;
+  }
 }
 
 export default function Game() {
@@ -1085,7 +1117,7 @@ export default function Game() {
                       transition={{ duration: 0.35, ease: 'easeOut' }}
                       className="absolute top-3 z-40 px-5 py-2 rounded-full bg-stone-900/90 backdrop-blur-md text-amber-100 border border-amber-400/50 shadow-2xl flex items-center space-x-2.5 pointer-events-none whitespace-nowrap"
                     >
-                      <Sparkles size={16} className="text-amber-300 animate-pulse shrink-0" />
+                      <RealmBannerIcon realm={stageCelebration.realm} />
                       <span className="text-xs font-serif-zen tracking-widest uppercase font-bold text-amber-200 whitespace-nowrap">
                         Stage {stageCelebration.stageId}: {stageCelebration.name}
                       </span>
