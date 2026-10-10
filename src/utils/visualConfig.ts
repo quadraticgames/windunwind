@@ -68,9 +68,9 @@ export const STAGE_PARTICLE_CONFIG = {
       widthRange: [260, 420] as [number, number], // px width (less width, more compact)
       heightRange: [120, 185] as [number, number], // px height (much fatter, plump curved silhouettes)
       opacityRange: [0.55, 0.82] as [number, number], // clearly visible ethereal wisps
-      durationRange: [22, 34] as [number, number], // drift duration in seconds for graceful transit
+      durationRange: [16, 46] as [number, number], // randomized drift speed duration range in seconds (fast & slow variety)
       blurRange: [1.5, 3.5] as [number, number], // gentle Gaussian blur preserving curved edges
-      movementRandomness: 1.0,
+      movementRandomness: 1.4, // speed and drift variance factor
     },
   },
 
@@ -328,15 +328,22 @@ export function getStage1CloudWisps(): CloudWispItem[] {
   const prng = createPRNG(202);
   const items: CloudWispItem[] = [];
 
-  const baseElevations = [8, 16, 26, 36, 48, 58, 68, 78];
+  // Strictly confined to the top half of the game interface (3% to 45%)
+  const baseElevations = [4, 9, 15, 21, 27, 33, 39, 44];
 
   for (let i = 0; i < count; i++) {
-    const y = baseElevations[i % baseElevations.length];
+    // Keep strictly in the top half (below 48%)
+    const rawY = baseElevations[i % baseElevations.length] + lerp(-1.5, 1.5, prng());
+    const y = +Math.min(46, Math.max(3, rawY)).toFixed(1);
     const width = Math.round(lerp(cfg.widthRange[0], cfg.widthRange[1], prng()));
     const height = Math.round(lerp(cfg.heightRange[0], cfg.heightRange[1], prng()));
     const opacity = +(lerp(cfg.opacityRange[0], cfg.opacityRange[1], prng())).toFixed(2);
-    const dur = Math.round(lerp(cfg.durationRange[0], cfg.durationRange[1], prng()) / GLOBAL_VISUAL_CONFIG.speedMultiplier);
-    const delay = +(-lerp(1, dur * 0.9, prng())).toFixed(1);
+
+    // Randomize speed with jitter based on movementRandomness
+    const speedJitter = lerp(0.72, 1.38, prng() * cfg.movementRandomness * GLOBAL_VISUAL_CONFIG.movementRandomness);
+    const baseDur = lerp(cfg.durationRange[0], cfg.durationRange[1], prng());
+    const dur = Math.max(12, Math.round((baseDur * speedJitter) / GLOBAL_VISUAL_CONFIG.speedMultiplier));
+    const delay = +(-lerp(0.5, dur * 0.95, prng())).toFixed(1);
     const variant = ((i % 3) + 1) as 1 | 2 | 3;
     const blur = Math.round(lerp(cfg.blurRange[0], cfg.blurRange[1], prng()));
 
