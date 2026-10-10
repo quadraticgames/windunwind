@@ -64,12 +64,12 @@ export const STAGE_PARTICLE_CONFIG = {
       colors: ['#bbf7d0', '#fef3c7', '#e2f5ec'],
     },
     cloudWisps: {
-      count: 6, // Number of drifting horizontal cloud wisps
-      widthRange: [480, 720] as [number, number], // px width
-      heightRange: [44, 68] as [number, number], // px height
-      opacityRange: [0.30, 0.48] as [number, number],
-      durationRange: [38, 54] as [number, number], // drift duration in seconds
-      blurRange: [4, 7] as [number, number], // Gaussian blur in px
+      count: 8, // Number of drifting horizontal cloud wisps
+      widthRange: [540, 880] as [number, number], // px width
+      heightRange: [52, 90] as [number, number], // px height
+      opacityRange: [0.55, 0.82] as [number, number], // clearly visible ethereal wisps
+      durationRange: [22, 34] as [number, number], // drift duration in seconds for noticeable, graceful transit
+      blurRange: [2, 5] as [number, number], // Gaussian blur in px
       movementRandomness: 1.0,
     },
   },
@@ -320,7 +320,7 @@ export function getStage1CloudWisps(): CloudWispItem[] {
   const prng = createPRNG(202);
   const items: CloudWispItem[] = [];
 
-  const baseElevations = [12, 22, 35, 48, 64, 78];
+  const baseElevations = [12, 20, 30, 42, 54, 66, 76, 86];
 
   for (let i = 0; i < count; i++) {
     const y = baseElevations[i % baseElevations.length];
@@ -328,7 +328,7 @@ export function getStage1CloudWisps(): CloudWispItem[] {
     const height = Math.round(lerp(cfg.heightRange[0], cfg.heightRange[1], prng()));
     const opacity = +(lerp(cfg.opacityRange[0], cfg.opacityRange[1], prng())).toFixed(2);
     const dur = Math.round(lerp(cfg.durationRange[0], cfg.durationRange[1], prng()) / GLOBAL_VISUAL_CONFIG.speedMultiplier);
-    const delay = +(-lerp(4, dur * 0.8, prng())).toFixed(1);
+    const delay = +(-lerp(1, dur * 0.9, prng())).toFixed(1);
     const variant = ((i % 3) + 1) as 1 | 2 | 3;
     const blur = Math.round(lerp(cfg.blurRange[0], cfg.blurRange[1], prng()));
 

@@ -257,7 +257,9 @@ function StageOneCloudWisps() {
               height: `${wisp.height}px`,
               '--wisp-opacity': wisp.opacity,
               opacity: wisp.opacity,
-              filter: `blur(${wisp.blur}px)`,
+              filter: `blur(${wisp.blur}px) drop-shadow(0 2px 10px rgba(255, 255, 255, 0.5))`,
+              animationDuration: `${wisp.dur}s`,
+              animationDelay: `${wisp.delay}s`,
             } as CustomCSSProperties}
           >
             <svg
@@ -268,10 +270,10 @@ function StageOneCloudWisps() {
               <defs>
                 <linearGradient id={`wispGrad-${idx}`} x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-                  <stop offset="18%" stopColor="#ffffff" stopOpacity="0.45" />
-                  <stop offset="38%" stopColor="#f0fdf4" stopOpacity="0.8" />
-                  <stop offset="65%" stopColor="#ffffff" stopOpacity="0.7" />
-                  <stop offset="85%" stopColor="#f0fdf4" stopOpacity="0.4" />
+                  <stop offset="15%" stopColor="#ffffff" stopOpacity="0.85" />
+                  <stop offset="38%" stopColor="#f0fdf4" stopOpacity="0.95" />
+                  <stop offset="65%" stopColor="#ffffff" stopOpacity="0.90" />
+                  <stop offset="85%" stopColor="#f0fdf4" stopOpacity="0.80" />
                   <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
                 </linearGradient>
               </defs>
@@ -1638,9 +1640,6 @@ export default function Game() {
 
 
 
-            {/* Stage-Specific Subtle Ambient Particle Effects (Falling Snow for Stage 2, petals, embers, fireflies, etc.) */}
-            <StageAtmosphericParticles stageId={currentStage.id} />
-
             {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
             <img
               src="/svg/tibet.svg"
@@ -1673,6 +1672,9 @@ export default function Game() {
                 opacity: currentTheme.fogOpacity,
               }}
             />
+
+            {/* Stage-Specific Subtle Ambient Particle Effects (Falling Snow, clouds, petals, embers, fireflies, etc.) */}
+            <StageAtmosphericParticles stageId={currentStage.id} />
 
             {/* Stage 7: The Ferryman’s Disciple - Dedicated Aqua Blue River Atmosphere Overlay */}
             {currentStage.id === 7 && <StageSevenAquaRiverOverlay />}

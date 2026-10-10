@@ -503,76 +503,73 @@ body {
    ========================================================================= */
 @keyframes cloudWispDrift-1 {
   0% {
-    transform: translate3d(-35%, 0, 0);
+    transform: translate3d(-105%, 0, 0);
     opacity: 0;
   }
-  15% {
-    opacity: var(--wisp-opacity, 0.42);
+  10% {
+    opacity: var(--wisp-opacity, 0.65);
   }
-  50% {
-    transform: translate3d(35%, -6px, 0);
-  }
-  85% {
-    opacity: var(--wisp-opacity, 0.42);
+  88% {
+    opacity: var(--wisp-opacity, 0.65);
   }
   100% {
-    transform: translate3d(115%, 0, 0);
+    transform: translate3d(260%, 0, 0);
     opacity: 0;
   }
 }
 
 @keyframes cloudWispDrift-2 {
   0% {
-    transform: translate3d(-40%, 0, 0);
+    transform: translate3d(-115%, 0, 0);
     opacity: 0;
   }
-  15% {
-    opacity: var(--wisp-opacity, 0.38);
+  12% {
+    opacity: var(--wisp-opacity, 0.60);
   }
   50% {
-    transform: translate3d(30%, 8px, 0);
+    transform: translate3d(70%, 8px, 0);
   }
-  85% {
-    opacity: var(--wisp-opacity, 0.38);
+  86% {
+    opacity: var(--wisp-opacity, 0.60);
   }
   100% {
-    transform: translate3d(120%, 0, 0);
+    transform: translate3d(250%, 0, 0);
     opacity: 0;
   }
 }
 
 @keyframes cloudWispDrift-3 {
   0% {
-    transform: translate3d(-30%, 0, 0);
+    transform: translate3d(-110%, 0, 0);
     opacity: 0;
   }
-  18% {
-    opacity: var(--wisp-opacity, 0.35);
+  14% {
+    opacity: var(--wisp-opacity, 0.55);
   }
   50% {
-    transform: translate3d(40%, -10px, 0);
+    transform: translate3d(75%, -8px, 0);
   }
-  82% {
-    opacity: var(--wisp-opacity, 0.35);
+  84% {
+    opacity: var(--wisp-opacity, 0.55);
   }
   100% {
-    transform: translate3d(110%, 0, 0);
+    transform: translate3d(255%, 0, 0);
     opacity: 0;
   }
 }
 
 .anim-cloud-wisp-1 {
-  animation: cloudWispDrift-1 linear infinite;
+  animation: cloudWispDrift-1 26s linear infinite;
   will-change: transform, opacity;
 }
 
 .anim-cloud-wisp-2 {
-  animation: cloudWispDrift-2 linear infinite;
+  animation: cloudWispDrift-2 30s linear infinite;
   will-change: transform, opacity;
 }
 
 .anim-cloud-wisp-3 {
-  animation: cloudWispDrift-3 linear infinite;
+  animation: cloudWispDrift-3 28s linear infinite;
   will-change: transform, opacity;
 }
 
