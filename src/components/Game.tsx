@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind, Maximize, Minimize } from 'lucide-react';
-import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
+import { playCorrectNote, playWrongNote, initializeAudio, startDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 
 type Direction = 'up' | 'down';
 
@@ -115,6 +115,13 @@ const STAGES: StageInfo[] = [
 ];
 
 const TOTAL_PUZZLES_TO_ENLIGHTENMENT = 27;
+
+interface CustomCSSProperties extends React.CSSProperties {
+  '--star-opacity'?: number;
+  '--star-glow'?: string;
+  '--wisp-opacity'?: number;
+  '--particle-opacity'?: number;
+}
 
 type StageTheme = {
   isNight?: boolean;
@@ -375,15 +382,15 @@ function GlowingStarField({ stars, defaultGlow }: { stars: GlowingStarItem[]; de
                   width: `${star.size * 4.8}px`,
                   height: `${star.size * 4.8}px`,
                   transform: 'translate(-50%, -50%)',
-                  ['--star-opacity' as any]: star.opacity,
-                  ['--star-glow' as any]: glowColor,
+                  '--star-opacity': star.opacity,
+                  '--star-glow': glowColor,
                   animationDuration: `${star.dur}s`,
                   animationDelay: `${star.delay}s`,
-                }}
+                } as CustomCSSProperties}
               >
                 <svg viewBox="0 0 24 24" className="w-full h-full overflow-visible">
                   <path
-                    d="M12 2 Q12 12 22 12 Q12 12 12 22 Q12 12 2 12 Q12 12 12 2 Z"
+                    d="M12 2 Q12 12 22 12 Q12 12 12 2 Z"
                     fill={starColor}
                     filter={`drop-shadow(0 0 3px ${glowColor})`}
                   />
@@ -402,8 +409,8 @@ function GlowingStarField({ stars, defaultGlow }: { stars: GlowingStarItem[]; de
                 height: `${star.size}px`,
                 backgroundColor: starColor,
                 transform: 'translate(-50%, -50%)',
-                ['--star-opacity' as any]: star.opacity,
-                ['--star-glow' as any]: glowColor,
+                '--star-opacity': star.opacity,
+                '--star-glow': glowColor,
                 opacity: star.opacity,
                 boxShadow:
                   star.size > 2.2
@@ -411,7 +418,7 @@ function GlowingStarField({ stars, defaultGlow }: { stars: GlowingStarItem[]; de
                     : `0 0 3px ${starColor}, 0 0 6px ${glowColor}`,
                 animationDuration: `${star.dur}s`,
                 animationDelay: `${star.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           </React.Fragment>
         );
@@ -423,6 +430,78 @@ function GlowingStarField({ stars, defaultGlow }: { stars: GlowingStarItem[]; de
 // -------------------------------------------------------------------------
 // STAGE-SPECIFIC AMBIENT PARTICLES (Delicate Zen Atmosphere)
 // -------------------------------------------------------------------------
+
+// Stage 1: The Brahmin’s Cage - Ethereal Mountain Cloud Wisps
+type CloudWispItem = {
+  y: number; // percentage from top
+  width: number; // px width
+  height: number; // px height
+  opacity: number;
+  dur: number;
+  delay: number;
+  variant: 1 | 2 | 3;
+  blur: number;
+};
+
+const STAGE_1_CLOUD_WISPS: CloudWispItem[] = [
+  { y: 12, width: 560, height: 52, opacity: 0.42, dur: 44, delay: -8, variant: 1, blur: 5 },
+  { y: 22, width: 660, height: 62, opacity: 0.48, dur: 38, delay: -24, variant: 2, blur: 6 },
+  { y: 35, width: 480, height: 46, opacity: 0.35, dur: 50, delay: -14, variant: 3, blur: 4 },
+  { y: 48, width: 720, height: 68, opacity: 0.44, dur: 42, delay: -32, variant: 1, blur: 7 },
+  { y: 64, width: 580, height: 56, opacity: 0.38, dur: 46, delay: -18, variant: 2, blur: 5 },
+  { y: 78, width: 500, height: 50, opacity: 0.32, dur: 54, delay: -36, variant: 3, blur: 5 },
+];
+
+function StageOneCloudWisps() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {STAGE_1_CLOUD_WISPS.map((wisp, idx) => {
+        const animClass =
+          wisp.variant === 1
+            ? 'anim-cloud-wisp-1'
+            : wisp.variant === 2
+            ? 'anim-cloud-wisp-2'
+            : 'anim-cloud-wisp-3';
+        return (
+          <div
+            key={idx}
+            className={`absolute pointer-events-none ${animClass}`}
+            style={{
+              top: `${wisp.y}%`,
+              left: 0,
+              width: `${wisp.width}px`,
+              height: `${wisp.height}px`,
+              '--wisp-opacity': wisp.opacity,
+              opacity: wisp.opacity,
+              filter: `blur(${wisp.blur}px)`,
+            } as CustomCSSProperties}
+          >
+            <svg
+              viewBox="0 0 500 60"
+              preserveAspectRatio="none"
+              className="w-full h-full overflow-visible"
+            >
+              <defs>
+                <linearGradient id={`wispGrad-${idx}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+                  <stop offset="18%" stopColor="#ffffff" stopOpacity="0.45" />
+                  <stop offset="38%" stopColor="#f0fdf4" stopOpacity="0.8" />
+                  <stop offset="65%" stopColor="#ffffff" stopOpacity="0.7" />
+                  <stop offset="85%" stopColor="#f0fdf4" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M 0 30 C 50 14, 110 10, 170 20 C 230 30, 290 12, 350 18 C 410 24, 460 12, 500 30 C 450 48, 380 54, 320 44 C 260 34, 200 50, 140 44 C 80 38, 40 46, 0 30 Z"
+                fill={`url(#wispGrad-${idx})`}
+              />
+            </svg>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 // Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Bamboo Dust (2x Density: 30 motes)
 const MIST_MOTES = [
@@ -519,6 +598,91 @@ const FALLING_SNOWFLAKES = [
   { x: 52, size: 3.8, opacity: 0.88, dur: 5.3, delay: -4.9, variant: 1 as const },
   { x: 74, size: 2.5, opacity: 0.70, dur: 6.7, delay: -1.3, variant: 2 as const },
 ];
+
+// Stage 3: Confronting the Buddha - Sacred Ascetic Heat Waves & Vertical Motion Blur
+const STAGE_3_HEAT_HAZE_BANDS = [
+  { y: 35, height: 120, dur: 4.8, delay: -0.6, variant: 1 as const },
+  { y: 50, height: 140, dur: 5.6, delay: -2.4, variant: 2 as const },
+  { y: 65, height: 160, dur: 4.5, delay: -1.2, variant: 1 as const },
+  { y: 78, height: 180, dur: 5.2, delay: -3.8, variant: 2 as const },
+];
+
+const STAGE_3_HEAT_STREAKS = [
+  { x: 10, width: 32, height: 240, opacity: 0.38, dur: 4.6, delay: -1.1, variant: 1 as const },
+  { x: 22, width: 40, height: 280, opacity: 0.44, dur: 5.2, delay: -3.4, variant: 2 as const },
+  { x: 36, width: 30, height: 220, opacity: 0.40, dur: 4.8, delay: -0.8, variant: 1 as const },
+  { x: 48, width: 44, height: 300, opacity: 0.48, dur: 5.5, delay: -2.7, variant: 2 as const },
+  { x: 62, width: 34, height: 250, opacity: 0.42, dur: 4.4, delay: -4.0, variant: 1 as const },
+  { x: 76, width: 38, height: 270, opacity: 0.45, dur: 5.1, delay: -1.9, variant: 2 as const },
+  { x: 88, width: 28, height: 220, opacity: 0.35, dur: 4.7, delay: -3.1, variant: 1 as const },
+];
+
+function StageThreeHeatDistortion() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Ambient Rising Heat Mirage Horizon Glow with Shimmer Pulse */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-3/5 anim-heat-flutter pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 90% 60% at 50% 100%, rgba(245, 158, 11, 0.18) 0%, rgba(254, 240, 138, 0.09) 45%, transparent 80%)',
+        }}
+      />
+
+      {/* Vertical Motion-Blurred Heat Shimmer Streaks */}
+      {STAGE_3_HEAT_STREAKS.map((streak, idx) => (
+        <div
+          key={`streak-${idx}`}
+          className={`absolute bottom-0 pointer-events-none ${streak.variant === 1 ? 'anim-heat-shimmer-1' : 'anim-heat-shimmer-2'}`}
+          style={{
+            left: `${streak.x}%`,
+            width: `${streak.width}px`,
+            height: `${streak.height}px`,
+            background:
+              'linear-gradient(to top, rgba(245, 158, 11, 0.35) 0%, rgba(253, 224, 71, 0.2) 55%, transparent 100%)',
+            opacity: streak.opacity,
+            filter: 'blur(2px)',
+            transform: 'scaleY(1.35)',
+            animationDuration: `${streak.dur}s`,
+            animationDelay: `${streak.delay}s`,
+          }}
+        />
+      ))}
+
+      {/* Layered Horizontal Heat Haze Mirage Wave Bands with Backdrop Motion Blur */}
+      {STAGE_3_HEAT_HAZE_BANDS.map((band, idx) => (
+        <div
+          key={`band-${idx}`}
+          className={`absolute left-0 right-0 pointer-events-none ${band.variant === 1 ? 'anim-heat-shimmer-1' : 'anim-heat-shimmer-2'}`}
+          style={{
+            top: `${band.y}%`,
+            height: `${band.height}px`,
+            backdropFilter: 'blur(2px) contrast(1.06) brightness(1.05)',
+            WebkitBackdropFilter: 'blur(2px) contrast(1.06) brightness(1.05)',
+            background:
+              'linear-gradient(180deg, transparent 0%, rgba(245, 158, 11, 0.07) 35%, rgba(254, 240, 138, 0.1) 65%, transparent 100%)',
+            animationDuration: `${band.dur}s`,
+            animationDelay: `${band.delay}s`,
+          }}
+        />
+      ))}
+
+      {/* Buddha Aura Heat Corona Shimmer */}
+      <div
+        className="absolute rounded-full pointer-events-none anim-heat-flutter"
+        style={{
+          width: '260px',
+          height: '260px',
+          left: '50%',
+          top: '26%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, rgba(253, 224, 71, 0.25) 0%, rgba(245, 158, 11, 0.14) 50%, transparent 75%)',
+          filter: 'blur(3.5px)',
+        }}
+      />
+    </div>
+  );
+}
 
 // Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Sparks (2x Density: 24 sparks)
 const GOLDEN_SPARKS = [
@@ -641,6 +805,9 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
     case 1:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {/* Ethereal Mountain Cloud Wisps */}
+          <StageOneCloudWisps />
+          {/* Morning Mist Particles */}
           {MIST_MOTES.map((mote, idx) => (
             <div
               key={idx}
@@ -651,12 +818,12 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 width: `${mote.size}px`,
                 height: `${mote.size}px`,
                 backgroundColor: mote.color,
-                ['--particle-opacity' as any]: mote.opacity,
+                '--particle-opacity': mote.opacity,
                 opacity: mote.opacity,
                 boxShadow: `0 0 3px ${mote.color}`,
                 animationDuration: `${mote.dur}s`,
                 animationDelay: `${mote.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           ))}
         </div>
@@ -676,7 +843,7 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                   top: 0,
                   width: `${flake.size}px`,
                   height: `${flake.size}px`,
-                  ['--particle-opacity' as any]: flake.opacity,
+                  '--particle-opacity': flake.opacity,
                   opacity: flake.opacity,
                   filter: flake.size > 2.8 ? 'blur(0.5px)' : undefined,
                   boxShadow:
@@ -685,7 +852,7 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                       : '0 0 2px rgba(255, 255, 255, 0.6)',
                   animationDuration: `${flake.dur}s`,
                   animationDelay: `${flake.delay}s`,
-                }}
+                } as CustomCSSProperties}
               />
             );
           })}
@@ -694,6 +861,9 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
     case 3:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {/* Sacred Ascetic Heat Waves & Motion Blur */}
+          <StageThreeHeatDistortion />
+          {/* Sacred Golden Enlightenment Sparks */}
           {GOLDEN_SPARKS.map((spark, idx) => (
             <div
               key={idx}
@@ -704,12 +874,12 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 width: `${spark.size}px`,
                 height: `${spark.size}px`,
                 backgroundColor: spark.color,
-                ['--particle-opacity' as any]: spark.opacity,
+                '--particle-opacity': spark.opacity,
                 opacity: spark.opacity,
                 boxShadow: `0 0 5px ${spark.color}`,
                 animationDuration: `${spark.dur}s`,
                 animationDelay: `${spark.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           ))}
         </div>
@@ -728,12 +898,12 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 height: `${petal.size * 0.65}px`,
                 borderRadius: '65% 15% 65% 15%',
                 backgroundColor: petal.color,
-                ['--particle-opacity' as any]: petal.opacity,
+                '--particle-opacity': petal.opacity,
                 opacity: petal.opacity,
                 boxShadow: '0 0 4px rgba(244, 114, 182, 0.35)',
                 animationDuration: `${petal.dur}s`,
                 animationDelay: `${petal.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           ))}
         </div>
@@ -756,12 +926,12 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 height: `${leaf.size * 0.42}px`,
                 borderRadius: '15% 85% 15% 85%',
                 backgroundColor: leaf.color,
-                ['--particle-opacity' as any]: leaf.opacity,
+                '--particle-opacity': leaf.opacity,
                 opacity: leaf.opacity,
                 boxShadow: '0 0 3px rgba(52, 211, 153, 0.4)',
                 animationDuration: `${leaf.dur}s`,
                 animationDelay: `${leaf.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           ))}
         </div>
@@ -781,12 +951,12 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 width: `${spirit.size}px`,
                 height: `${spirit.size}px`,
                 backgroundColor: spirit.color,
-                ['--particle-opacity' as any]: spirit.opacity,
+                '--particle-opacity': spirit.opacity,
                 opacity: spirit.opacity,
                 boxShadow: `0 0 7px ${spirit.color}`,
                 animationDuration: `${spirit.dur}s`,
                 animationDelay: `${spirit.delay}s`,
-              }}
+              } as CustomCSSProperties}
             />
           ))}
         </div>

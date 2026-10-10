@@ -498,4 +498,158 @@ body {
   will-change: transform, opacity, filter;
 }
 
+/* =========================================================================
+   STAGE 1: ETHEREAL MOUNTAIN CLOUD WISPS
+   ========================================================================= */
+@keyframes cloudWispDrift-1 {
+  0% {
+    transform: translate3d(-35%, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--wisp-opacity, 0.42);
+  }
+  50% {
+    transform: translate3d(35%, -6px, 0);
+  }
+  85% {
+    opacity: var(--wisp-opacity, 0.42);
+  }
+  100% {
+    transform: translate3d(115%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes cloudWispDrift-2 {
+  0% {
+    transform: translate3d(-40%, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--wisp-opacity, 0.38);
+  }
+  50% {
+    transform: translate3d(30%, 8px, 0);
+  }
+  85% {
+    opacity: var(--wisp-opacity, 0.38);
+  }
+  100% {
+    transform: translate3d(120%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes cloudWispDrift-3 {
+  0% {
+    transform: translate3d(-30%, 0, 0);
+    opacity: 0;
+  }
+  18% {
+    opacity: var(--wisp-opacity, 0.35);
+  }
+  50% {
+    transform: translate3d(40%, -10px, 0);
+  }
+  82% {
+    opacity: var(--wisp-opacity, 0.35);
+  }
+  100% {
+    transform: translate3d(110%, 0, 0);
+    opacity: 0;
+  }
+}
+
+.anim-cloud-wisp-1 {
+  animation: cloudWispDrift-1 linear infinite;
+  will-change: transform, opacity;
+}
+
+.anim-cloud-wisp-2 {
+  animation: cloudWispDrift-2 linear infinite;
+  will-change: transform, opacity;
+}
+
+.anim-cloud-wisp-3 {
+  animation: cloudWispDrift-3 linear infinite;
+  will-change: transform, opacity;
+}
+
+/* =========================================================================
+   STAGE 3: HEAT MOTION BLUR & SHIMMER
+   ========================================================================= */
+@keyframes heatHazeRise-1 {
+  0% {
+    transform: translate3d(0, 14px, 0) scaleY(1) skewX(0deg);
+    opacity: 0.15;
+  }
+  25% {
+    transform: translate3d(3px, -10px, 0) scaleY(1.22) skewX(1.4deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(-4px, -32px, 0) scaleY(1.36) skewX(-1.6deg);
+    opacity: 0.48;
+  }
+  75% {
+    transform: translate3d(3px, -52px, 0) scaleY(1.2) skewX(0.9deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate3d(0, -72px, 0) scaleY(1) skewX(0deg);
+    opacity: 0.12;
+  }
+}
+
+@keyframes heatHazeRise-2 {
+  0% {
+    transform: translate3d(0, 10px, 0) scaleY(1) skewX(0deg);
+    opacity: 0.18;
+  }
+  30% {
+    transform: translate3d(-4px, -16px, 0) scaleY(1.28) skewX(-1.5deg);
+    opacity: 0.4;
+  }
+  60% {
+    transform: translate3d(5px, -38px, 0) scaleY(1.38) skewX(1.3deg);
+    opacity: 0.46;
+  }
+  85% {
+    transform: translate3d(-3px, -58px, 0) scaleY(1.22) skewX(-0.8deg);
+    opacity: 0.28;
+  }
+  100% {
+    transform: translate3d(0, -78px, 0) scaleY(1) skewX(0deg);
+    opacity: 0.15;
+  }
+}
+
+@keyframes heatFlutterPulse {
+  0%, 100% {
+    filter: blur(1.5px) contrast(1.05);
+    opacity: 0.25;
+  }
+  50% {
+    filter: blur(3px) contrast(1.15);
+    opacity: 0.48;
+  }
+}
+
+.anim-heat-shimmer-1 {
+  animation: heatHazeRise-1 4.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-heat-shimmer-2 {
+  animation: heatHazeRise-2 5.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-heat-flutter {
+  animation: heatFlutterPulse 2.8s ease-in-out infinite;
+  will-change: filter, opacity;
+}
+
+
 
