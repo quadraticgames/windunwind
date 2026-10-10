@@ -374,6 +374,8 @@ export default function Game() {
   puzzleCountRef.current = puzzleCount;
   const sequenceIdRef = useRef<number>(0);
   const pendingTimeoutRef = useRef<number | null>(null);
+  const isAwaitingLoreContinueRef = useRef<boolean>(false);
+  const pendingStageSequenceRef = useRef<Direction[] | null>(null);
 
   const generateTutorialTones = useCallback((): Direction[] => {
     // Stage 1 (tutorial) has 3 single-tone puzzles.
@@ -419,6 +421,20 @@ export default function Game() {
     setIsShowingSequence(false);
     setPlayerSequence([]);
   }, []);
+
+  const handleCloseLore = useCallback(() => {
+    setSelectedLoreStage(null);
+    if (isAwaitingLoreContinueRef.current && pendingStageSequenceRef.current) {
+      isAwaitingLoreContinueRef.current = false;
+      const seqToPlay = pendingStageSequenceRef.current;
+      pendingStageSequenceRef.current = null;
+      setIsShowingSequence(true);
+      setTimeout(() => {
+        setSequence(seqToPlay);
+        showSequence(seqToPlay);
+      }, 350);
+    }
+  }, [showSequence]);
 
   const handleInput = useCallback((direction: Direction) => {
     if (!isPlaying || isShowingSequence || gameOver || isTranscendence) return;
@@ -472,15 +488,24 @@ export default function Game() {
             name: nextStage.name,
             realm: nextStage.realm,
           });
-          setTimeout(() => setStageCelebration(null), 2500);
-        }
-
-        pendingTimeoutRef.current = window.setTimeout(() => {
-          pendingTimeoutRef.current = null;
           const nextSeq = generateSequenceForPuzzle(nextCount);
-          setSequence(nextSeq);
-          showSequence(nextSeq);
-        }, isAdvancingStage ? 2400 : 800);
+          pendingStageSequenceRef.current = nextSeq;
+          isAwaitingLoreContinueRef.current = true;
+          setIsShowingSequence(false);
+
+          pendingTimeoutRef.current = window.setTimeout(() => {
+            pendingTimeoutRef.current = null;
+            setStageCelebration(null);
+            setSelectedLoreStage(nextStage);
+          }, 2500);
+        } else {
+          pendingTimeoutRef.current = window.setTimeout(() => {
+            pendingTimeoutRef.current = null;
+            const nextSeq = generateSequenceForPuzzle(nextCount);
+            setSequence(nextSeq);
+            showSequence(nextSeq);
+          }, 800);
+        }
       }
     }
   }, [isPlaying, isShowingSequence, gameOver, isTranscendence, playerSequence, sequence, strikes, puzzleCount, generateSequenceForPuzzle, showSequence]);
@@ -536,23 +561,24 @@ export default function Game() {
     setPuzzleCount(nextPuzzleCount);
     setStrikes(0);
     setPlayerSequence([]);
-    setIsShowingSequence(true);
+    setIsShowingSequence(false);
     playStageFanfare();
     setStageCelebration({
       stageId: nextStage.id,
       name: nextStage.name,
       realm: nextStage.realm,
     });
-    setTimeout(() => setStageCelebration(null), 2500);
+    const nextSeq = generateSequenceForPuzzle(nextPuzzleCount);
+    pendingStageSequenceRef.current = nextSeq;
+    isAwaitingLoreContinueRef.current = true;
 
     pendingTimeoutRef.current = window.setTimeout(() => {
       pendingTimeoutRef.current = null;
       if (sequenceIdRef.current === curSeqId) {
-        const nextSeq = generateSequenceForPuzzle(nextPuzzleCount);
-        setSequence(nextSeq);
-        showSequence(nextSeq);
+        setStageCelebration(null);
+        setSelectedLoreStage(nextStage);
       }
-    }, 1500);
+    }, 2500);
   }, [isPlaying, gameOver, isTranscendence, generateSequenceForPuzzle, showSequence]);
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
@@ -605,7 +631,7 @@ export default function Game() {
       clearTimeout(pendingTimeoutRef.current);
       pendingTimeoutRef.current = null;
     }
-    sequenceIdRef.current++;
+    const curSeqId = ++sequenceIdRef.current;
     await initializeAudio();
     startDrone();
     setIsPlaying(true);
@@ -616,11 +642,27 @@ export default function Game() {
     puzzleCountRef.current = 0;
     setPuzzleCount(0);
     setSelectedLoreStage(null);
-    setStageCelebration(null);
     tutorialTonesRef.current = generateTutorialTones();
     const initialSeq = generateSequenceForPuzzle(0);
-    setSequence(initialSeq);
-    showSequence(initialSeq);
+
+    const stage1 = STAGES[0];
+    playStageFanfare();
+    setStageCelebration({
+      stageId: stage1.id,
+      name: stage1.name,
+      realm: stage1.realm,
+    });
+    pendingStageSequenceRef.current = initialSeq;
+    isAwaitingLoreContinueRef.current = true;
+    setIsShowingSequence(false);
+
+    pendingTimeoutRef.current = window.setTimeout(() => {
+      pendingTimeoutRef.current = null;
+      if (sequenceIdRef.current === curSeqId) {
+        setStageCelebration(null);
+        setSelectedLoreStage(stage1);
+      }
+    }, 2500);
   };
 
   const continueCycle = () => {
@@ -628,12 +670,29 @@ export default function Game() {
       clearTimeout(pendingTimeoutRef.current);
       pendingTimeoutRef.current = null;
     }
-    sequenceIdRef.current++;
+    const curSeqId = ++sequenceIdRef.current;
     setIsTranscendence(false);
     startDrone();
     const nextSeq = generateSequenceForPuzzle(puzzleCountRef.current);
-    setSequence(nextSeq);
-    showSequence(nextSeq);
+    const stageIdx = Math.min(Math.floor(puzzleCountRef.current / 3), 8);
+    const stage = STAGES[stageIdx];
+    playStageFanfare();
+    setStageCelebration({
+      stageId: stage.id,
+      name: stage.name,
+      realm: stage.realm,
+    });
+    pendingStageSequenceRef.current = nextSeq;
+    isAwaitingLoreContinueRef.current = true;
+    setIsShowingSequence(false);
+
+    pendingTimeoutRef.current = window.setTimeout(() => {
+      pendingTimeoutRef.current = null;
+      if (sequenceIdRef.current === curSeqId) {
+        setStageCelebration(null);
+        setSelectedLoreStage(stage);
+      }
+    }, 2500);
   };
 
   // Node coordinates along the left-to-right winding ink brush path
@@ -1265,6 +1324,9 @@ export default function Game() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) handleCloseLore();
+                }}
                 className="absolute inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-left"
               >
                 <motion.div
@@ -1274,7 +1336,7 @@ export default function Game() {
                   className="washi-card rounded-3xl p-6 sm:p-7 max-w-sm w-full relative shadow-2xl"
                 >
                   <button
-                    onClick={() => setSelectedLoreStage(null)}
+                    onClick={handleCloseLore}
                     className="absolute top-4 right-4 p-1.5 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-600 hover:text-stone-900 transition-all cursor-pointer"
                   >
                     <X size={16} />
@@ -1306,7 +1368,7 @@ export default function Game() {
                   </div>
 
                   <button
-                    onClick={() => setSelectedLoreStage(null)}
+                    onClick={handleCloseLore}
                     className="jade-stone mt-5 w-full py-2.5 text-emerald-950 font-bold rounded-xl transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen shadow-sm"
                   >
                     Continue Journey
