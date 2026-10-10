@@ -1773,7 +1773,6 @@ export default function Game() {
                 type="button"
                 data-fullscreen-btn="true"
                 onClick={handleToggleFullscreen}
-                title={isFullscreen ? "Exit Fullscreen (F / F11)" : "Enter Fullscreen (F / F11)"}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                 className="absolute top-4 right-4 py-1.5 px-2.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center space-x-1.5 shadow-sm bg-stone-200/70 hover:bg-stone-300/80 text-stone-700 hover:text-stone-900 border-stone-300/80 z-20"
               >
@@ -1932,7 +1931,6 @@ export default function Game() {
                   <div 
                     className="relative cursor-pointer group select-none mt-0.5 flex flex-col items-center"
                     onClick={() => setSelectedLoreStage(currentStage)}
-                    title="Click to view stage details"
                   >
                     <span
                       style={{ paddingTop: '100px' }}
@@ -1985,7 +1983,6 @@ export default function Game() {
                     type="button"
                     data-fullscreen-btn="true"
                     onClick={handleToggleFullscreen}
-                    title={isFullscreen ? "Exit Fullscreen (F / F11)" : "Full Screen (F / F11)"}
                     aria-label={isFullscreen ? "Exit Fullscreen" : "Full Screen"}
                     className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
                       currentTheme.isNight
@@ -2000,7 +1997,6 @@ export default function Game() {
                   <button
                     type="button"
                     onClick={handleToggleMute}
-                    title={isMuted ? "Unmute drone (M)" : "Mute drone (M)"}
                     aria-label={isMuted ? "Unmute ambient drone" : "Mute ambient drone"}
                     className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
                       isMuted
@@ -2020,7 +2016,7 @@ export default function Game() {
                   <button
                     type="button"
                     onClick={() => setSelectedLoreStage(currentStage)}
-                    title="View Stage Lore & Conflict"
+                    aria-label="View Stage Lore & Conflict"
                     className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center space-x-1 shadow-sm whitespace-nowrap ${
                       currentTheme.isNight
                         ? 'bg-stone-900/70 hover:bg-stone-800/80 text-amber-100 border-stone-700/60'
