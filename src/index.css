@@ -149,3 +149,301 @@ body {
 .enso-container {
   animation: ensoGlow 4s ease-in-out infinite;
 }
+
+/* =========================================================================
+   STAGE-SPECIFIC AMBIENT PARTICLES (SUBTLE ZEN AESTHETIC)
+   ========================================================================= */
+
+/* Stage 2: Himalayan Winter Falling Snow */
+@keyframes snowfall-1 {
+  0% {
+    transform: translate3d(0, -10vh, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--particle-opacity, 0.75);
+  }
+  50% {
+    transform: translate3d(24px, 50vh, 0);
+  }
+  88% {
+    opacity: var(--particle-opacity, 0.75);
+  }
+  100% {
+    transform: translate3d(-14px, 108vh, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes snowfall-2 {
+  0% {
+    transform: translate3d(0, -10vh, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--particle-opacity, 0.7);
+  }
+  48% {
+    transform: translate3d(-26px, 50vh, 0);
+  }
+  88% {
+    opacity: var(--particle-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(18px, 108vh, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes snowfall-3 {
+  0% {
+    transform: translate3d(0, -10vh, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--particle-opacity, 0.65);
+  }
+  55% {
+    transform: translate3d(12px, 52vh, 0);
+  }
+  90% {
+    opacity: var(--particle-opacity, 0.65);
+  }
+  100% {
+    transform: translate3d(-8px, 108vh, 0);
+    opacity: 0;
+  }
+}
+
+/* Ambient Floating Dust / Mist Motes (Stage 1, Stage 8) */
+@keyframes ambientMote-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(22px, -24px, 0);
+    opacity: var(--particle-opacity, 0.7);
+  }
+}
+
+@keyframes ambientMote-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate3d(-20px, 18px, 0);
+    opacity: var(--particle-opacity, 0.65);
+  }
+}
+
+/* Sacred Golden Radiance Ascending (Stage 3, Stage 9) */
+@keyframes goldenAscend-1 {
+  0% {
+    transform: translate3d(0, 6vh, 0) scale(0.85);
+    opacity: 0;
+  }
+  20% {
+    opacity: var(--particle-opacity, 0.75);
+  }
+  80% {
+    opacity: var(--particle-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(16px, -22vh, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes goldenAscend-2 {
+  0% {
+    transform: translate3d(0, 6vh, 0) scale(0.75);
+    opacity: 0;
+  }
+  25% {
+    opacity: var(--particle-opacity, 0.8);
+  }
+  75% {
+    opacity: var(--particle-opacity, 0.65);
+  }
+  100% {
+    transform: translate3d(-20px, -24vh, 0) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Drifting Blossom Petals & Bamboo Leaves (Stage 4, Stage 7) */
+@keyframes petalDrift-1 {
+  0% {
+    transform: translate3d(-10px, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--particle-opacity, 0.75);
+  }
+  50% {
+    transform: translate3d(38px, 46vh, 0) rotate(85deg);
+  }
+  85% {
+    opacity: var(--particle-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(85px, 108vh, 0) rotate(175deg);
+    opacity: 0;
+  }
+}
+
+@keyframes petalDrift-2 {
+  0% {
+    transform: translate3d(10px, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--particle-opacity, 0.7);
+  }
+  50% {
+    transform: translate3d(-34px, 46vh, 0) rotate(-70deg);
+  }
+  85% {
+    opacity: var(--particle-opacity, 0.65);
+  }
+  100% {
+    transform: translate3d(-65px, 108vh, 0) rotate(-155deg);
+    opacity: 0;
+  }
+}
+
+/* Rising Lantern Embers (Stage 5) */
+@keyframes emberFloat-1 {
+  0% {
+    transform: translate3d(0, 4vh, 0) scale(0.7);
+    opacity: 0;
+  }
+  20% {
+    opacity: var(--particle-opacity, 0.85);
+  }
+  60% {
+    transform: translate3d(14px, -26vh, 0) scale(1);
+    opacity: var(--particle-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(-10px, -52vh, 0) scale(0.45);
+    opacity: 0;
+  }
+}
+
+@keyframes emberFloat-2 {
+  0% {
+    transform: translate3d(0, 4vh, 0) scale(0.65);
+    opacity: 0;
+  }
+  20% {
+    opacity: var(--particle-opacity, 0.8);
+  }
+  60% {
+    transform: translate3d(-18px, -28vh, 0) scale(0.95);
+    opacity: var(--particle-opacity, 0.65);
+  }
+  100% {
+    transform: translate3d(12px, -55vh, 0) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Nocturnal River Fireflies Wandering (Stage 6) */
+@keyframes fireflyWander-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.75);
+    opacity: 0.2;
+  }
+  30% {
+    transform: translate3d(24px, -20px, 0) scale(1.15);
+    opacity: var(--particle-opacity, 0.85);
+  }
+  70% {
+    transform: translate3d(-18px, 16px, 0) scale(0.9);
+    opacity: var(--particle-opacity, 0.75);
+  }
+}
+
+@keyframes fireflyWander-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.8);
+    opacity: 0.25;
+  }
+  40% {
+    transform: translate3d(-28px, -16px, 0) scale(1.2);
+    opacity: var(--particle-opacity, 0.9);
+  }
+  75% {
+    transform: translate3d(20px, 22px, 0) scale(0.85);
+    opacity: var(--particle-opacity, 0.6);
+  }
+}
+
+.anim-snow-1 {
+  animation: snowfall-1 linear infinite;
+  will-change: transform, opacity;
+}
+
+.anim-snow-2 {
+  animation: snowfall-2 linear infinite;
+  will-change: transform, opacity;
+}
+
+.anim-snow-3 {
+  animation: snowfall-3 linear infinite;
+  will-change: transform, opacity;
+}
+
+.anim-mote-1 {
+  animation: ambientMote-1 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-mote-2 {
+  animation: ambientMote-2 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-golden-1 {
+  animation: goldenAscend-1 ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-golden-2 {
+  animation: goldenAscend-2 ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-petal-1 {
+  animation: petalDrift-1 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-petal-2 {
+  animation: petalDrift-2 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-ember-1 {
+  animation: emberFloat-1 ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-ember-2 {
+  animation: emberFloat-2 ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-firefly-1 {
+  animation: fireflyWander-1 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-firefly-2 {
+  animation: fireflyWander-2 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+

@@ -158,21 +158,397 @@ const NIGHT_STARS = [
   { x: 86, y: 33, size: 1.5, opacity: 0.75, dur: 4.3, delay: 0.2 },
 ];
 
-const WINTER_SNOWFLAKES = [
-  { x: 5, y: 12, size: 2.2, opacity: 0.75, dur: 3.2, delay: 0.1 },
-  { x: 12, y: 28, size: 3.0, opacity: 0.85, dur: 4.1, delay: 0.8 },
-  { x: 19, y: 8, size: 1.8, opacity: 0.65, dur: 2.8, delay: 1.5 },
-  { x: 26, y: 22, size: 2.6, opacity: 0.80, dur: 3.6, delay: 0.3 },
-  { x: 34, y: 15, size: 3.2, opacity: 0.90, dur: 4.5, delay: 1.1 },
-  { x: 42, y: 32, size: 2.0, opacity: 0.70, dur: 3.0, delay: 0.5 },
-  { x: 49, y: 10, size: 2.8, opacity: 0.85, dur: 3.8, delay: 1.8 },
-  { x: 57, y: 25, size: 1.6, opacity: 0.60, dur: 2.6, delay: 0.2 },
-  { x: 65, y: 18, size: 3.4, opacity: 0.90, dur: 4.3, delay: 1.4 },
-  { x: 73, y: 30, size: 2.2, opacity: 0.75, dur: 3.4, delay: 0.7 },
-  { x: 81, y: 14, size: 2.9, opacity: 0.80, dur: 3.9, delay: 1.0 },
-  { x: 89, y: 26, size: 1.7, opacity: 0.65, dur: 2.9, delay: 0.4 },
-  { x: 95, y: 19, size: 2.5, opacity: 0.75, dur: 3.5, delay: 1.6 },
+// -------------------------------------------------------------------------
+// STAGE-SPECIFIC AMBIENT PARTICLES (Delicate Zen Atmosphere)
+// -------------------------------------------------------------------------
+
+// Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Bamboo Dust
+const MIST_MOTES = [
+  { x: 8, y: 32, size: 2.2, opacity: 0.55, dur: 8.5, delay: -1.2, variant: 1 as const, color: '#bbf7d0' },
+  { x: 16, y: 55, size: 3.0, opacity: 0.65, dur: 9.8, delay: -4.5, variant: 2 as const, color: '#fef3c7' },
+  { x: 25, y: 22, size: 1.8, opacity: 0.45, dur: 7.2, delay: -2.8, variant: 1 as const, color: '#bbf7d0' },
+  { x: 33, y: 48, size: 2.6, opacity: 0.60, dur: 10.2, delay: -6.1, variant: 2 as const, color: '#e2f5ec' },
+  { x: 42, y: 28, size: 2.0, opacity: 0.50, dur: 8.0, delay: -0.9, variant: 1 as const, color: '#fef3c7' },
+  { x: 50, y: 62, size: 3.2, opacity: 0.70, dur: 11.0, delay: -5.3, variant: 2 as const, color: '#bbf7d0' },
+  { x: 58, y: 35, size: 1.9, opacity: 0.45, dur: 7.6, delay: -3.7, variant: 1 as const, color: '#e2f5ec' },
+  { x: 67, y: 52, size: 2.8, opacity: 0.65, dur: 9.2, delay: -7.0, variant: 2 as const, color: '#fef3c7' },
+  { x: 76, y: 25, size: 2.3, opacity: 0.55, dur: 8.8, delay: -1.8, variant: 1 as const, color: '#bbf7d0' },
+  { x: 84, y: 58, size: 3.0, opacity: 0.60, dur: 10.5, delay: -4.2, variant: 2 as const, color: '#e2f5ec' },
+  { x: 92, y: 38, size: 2.1, opacity: 0.50, dur: 7.9, delay: -6.4, variant: 1 as const, color: '#fef3c7' },
+  { x: 12, y: 72, size: 2.5, opacity: 0.55, dur: 9.0, delay: -3.1, variant: 2 as const, color: '#bbf7d0' },
+  { x: 38, y: 75, size: 2.9, opacity: 0.60, dur: 8.4, delay: -5.8, variant: 1 as const, color: '#fef3c7' },
+  { x: 63, y: 68, size: 2.2, opacity: 0.50, dur: 9.6, delay: -2.4, variant: 2 as const, color: '#e2f5ec' },
+  { x: 88, y: 70, size: 2.7, opacity: 0.55, dur: 8.7, delay: -4.9, variant: 1 as const, color: '#bbf7d0' },
 ];
+
+// Stage 2: The Samana Trials - Frosty Himalayan Winter Falling Snow
+const FALLING_SNOWFLAKES = [
+  { x: 3, size: 2.2, opacity: 0.65, dur: 7.2, delay: -1.2, variant: 1 as const },
+  { x: 7, size: 3.4, opacity: 0.85, dur: 5.6, delay: -4.5, variant: 2 as const },
+  { x: 11, size: 1.8, opacity: 0.50, dur: 8.4, delay: -2.1, variant: 3 as const },
+  { x: 15, size: 2.8, opacity: 0.75, dur: 6.2, delay: -0.8, variant: 1 as const },
+  { x: 19, size: 4.0, opacity: 0.90, dur: 5.1, delay: -3.4, variant: 2 as const },
+  { x: 23, size: 2.0, opacity: 0.55, dur: 7.8, delay: -5.7, variant: 3 as const },
+  { x: 27, size: 3.1, opacity: 0.80, dur: 6.0, delay: -1.9, variant: 1 as const },
+  { x: 31, size: 1.7, opacity: 0.45, dur: 8.8, delay: -4.0, variant: 2 as const },
+  { x: 35, size: 2.9, opacity: 0.75, dur: 6.4, delay: -2.7, variant: 3 as const },
+  { x: 39, size: 3.8, opacity: 0.88, dur: 5.3, delay: -0.5, variant: 1 as const },
+  { x: 43, size: 2.2, opacity: 0.60, dur: 7.5, delay: -4.8, variant: 2 as const },
+  { x: 47, size: 3.0, opacity: 0.80, dur: 5.9, delay: -3.1, variant: 3 as const },
+  { x: 51, size: 1.9, opacity: 0.50, dur: 8.2, delay: -1.4, variant: 1 as const },
+  { x: 55, size: 4.2, opacity: 0.92, dur: 5.0, delay: -4.3, variant: 2 as const },
+  { x: 59, size: 2.5, opacity: 0.70, dur: 6.8, delay: -2.2, variant: 3 as const },
+  { x: 63, size: 3.3, opacity: 0.85, dur: 5.7, delay: -0.9, variant: 1 as const },
+  { x: 67, size: 1.8, opacity: 0.50, dur: 8.6, delay: -5.2, variant: 2 as const },
+  { x: 71, size: 2.7, opacity: 0.75, dur: 6.3, delay: -3.6, variant: 3 as const },
+  { x: 75, size: 3.6, opacity: 0.88, dur: 5.4, delay: -1.6, variant: 1 as const },
+  { x: 79, size: 2.1, opacity: 0.60, dur: 7.6, delay: -4.1, variant: 2 as const },
+  { x: 83, size: 3.2, opacity: 0.82, dur: 5.8, delay: -2.5, variant: 3 as const },
+  { x: 87, size: 1.7, opacity: 0.45, dur: 9.0, delay: -0.3, variant: 1 as const },
+  { x: 91, size: 3.9, opacity: 0.90, dur: 5.2, delay: -3.9, variant: 2 as const },
+  { x: 95, size: 2.4, opacity: 0.70, dur: 7.0, delay: -1.7, variant: 3 as const },
+  { x: 98, size: 3.0, opacity: 0.80, dur: 6.1, delay: -4.6, variant: 1 as const },
+  { x: 14, size: 2.3, opacity: 0.65, dur: 7.1, delay: -6.0, variant: 2 as const },
+  { x: 38, size: 3.5, opacity: 0.85, dur: 5.5, delay: -5.1, variant: 3 as const },
+  { x: 62, size: 2.0, opacity: 0.55, dur: 8.0, delay: -6.8, variant: 1 as const },
+  { x: 86, size: 3.2, opacity: 0.80, dur: 5.8, delay: -6.3, variant: 2 as const },
+];
+
+// Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Sparks
+const GOLDEN_SPARKS = [
+  { x: 10, y: 8, size: 2.2, opacity: 0.65, dur: 7.4, delay: -1.5, variant: 1 as const, color: '#fde047' },
+  { x: 22, y: 14, size: 3.2, opacity: 0.75, dur: 8.6, delay: -3.8, variant: 2 as const, color: '#f59e0b' },
+  { x: 34, y: 6, size: 2.6, opacity: 0.60, dur: 6.8, delay: -2.2, variant: 1 as const, color: '#fef08a' },
+  { x: 45, y: 12, size: 3.6, opacity: 0.85, dur: 9.0, delay: -5.1, variant: 2 as const, color: '#fde047' },
+  { x: 55, y: 5, size: 2.4, opacity: 0.70, dur: 7.2, delay: -0.7, variant: 1 as const, color: '#f59e0b' },
+  { x: 66, y: 15, size: 3.4, opacity: 0.80, dur: 8.8, delay: -4.3, variant: 2 as const, color: '#fef08a' },
+  { x: 77, y: 8, size: 2.0, opacity: 0.55, dur: 6.5, delay: -2.9, variant: 1 as const, color: '#fde047' },
+  { x: 88, y: 13, size: 3.0, opacity: 0.75, dur: 8.2, delay: -6.0, variant: 2 as const, color: '#f59e0b' },
+  { x: 18, y: 18, size: 2.8, opacity: 0.70, dur: 7.8, delay: -3.2, variant: 1 as const, color: '#fef08a' },
+  { x: 40, y: 16, size: 3.5, opacity: 0.82, dur: 9.4, delay: -5.7, variant: 2 as const, color: '#fde047' },
+  { x: 62, y: 19, size: 2.2, opacity: 0.60, dur: 7.0, delay: -1.8, variant: 1 as const, color: '#f59e0b' },
+  { x: 82, y: 17, size: 3.2, opacity: 0.78, dur: 8.5, delay: -4.6, variant: 2 as const, color: '#fef08a' },
+];
+
+// Stage 4: The Garden of Kamala - Awakening of Senses Drifting Peach Blossom Petals
+const BLOSSOM_PETALS = [
+  { x: 5, size: 6.5, opacity: 0.65, dur: 8.5, delay: -1.0, variant: 1 as const, color: '#fbcfe8' },
+  { x: 14, size: 5.2, opacity: 0.55, dur: 9.8, delay: -4.2, variant: 2 as const, color: '#f472b6' },
+  { x: 23, size: 7.0, opacity: 0.70, dur: 8.0, delay: -2.6, variant: 1 as const, color: '#fce7f3' },
+  { x: 32, size: 5.8, opacity: 0.60, dur: 10.4, delay: -6.3, variant: 2 as const, color: '#fbcfe8' },
+  { x: 41, size: 6.8, opacity: 0.75, dur: 8.2, delay: -0.8, variant: 1 as const, color: '#f472b6' },
+  { x: 50, size: 5.4, opacity: 0.55, dur: 9.5, delay: -5.0, variant: 2 as const, color: '#fce7f3' },
+  { x: 59, size: 7.2, opacity: 0.72, dur: 8.6, delay: -3.4, variant: 1 as const, color: '#fbcfe8' },
+  { x: 68, size: 5.6, opacity: 0.58, dur: 10.0, delay: -7.1, variant: 2 as const, color: '#f472b6' },
+  { x: 77, size: 6.6, opacity: 0.68, dur: 8.4, delay: -1.9, variant: 1 as const, color: '#fce7f3' },
+  { x: 86, size: 5.5, opacity: 0.55, dur: 9.6, delay: -4.7, variant: 2 as const, color: '#fbcfe8' },
+  { x: 94, size: 6.9, opacity: 0.70, dur: 8.8, delay: -6.5, variant: 1 as const, color: '#f472b6' },
+  { x: 28, size: 6.0, opacity: 0.62, dur: 9.2, delay: -3.8, variant: 2 as const, color: '#fce7f3' },
+  { x: 63, size: 6.4, opacity: 0.65, dur: 8.9, delay: -5.5, variant: 1 as const, color: '#fbcfe8' },
+  { x: 82, size: 5.7, opacity: 0.58, dur: 9.4, delay: -2.3, variant: 2 as const, color: '#f472b6' },
+];
+
+// Stage 5: Rich Man - Opulent Cinnabar Lantern Embers & Night Sparks
+const LANTERN_EMBERS = [
+  { x: 12, y: 15, size: 2.2, opacity: 0.75, dur: 6.8, delay: -1.2, variant: 1 as const, color: '#fb7185' },
+  { x: 24, y: 10, size: 3.2, opacity: 0.85, dur: 7.8, delay: -3.9, variant: 2 as const, color: '#fb923c' },
+  { x: 36, y: 18, size: 2.0, opacity: 0.65, dur: 6.2, delay: -2.4, variant: 1 as const, color: '#fda4af' },
+  { x: 48, y: 8, size: 3.4, opacity: 0.90, dur: 8.2, delay: -5.0, variant: 2 as const, color: '#f43f5e' },
+  { x: 60, y: 16, size: 2.5, opacity: 0.70, dur: 6.5, delay: -0.9, variant: 1 as const, color: '#fb923c' },
+  { x: 72, y: 12, size: 3.0, opacity: 0.80, dur: 7.5, delay: -4.4, variant: 2 as const, color: '#fb7185' },
+  { x: 84, y: 19, size: 2.1, opacity: 0.65, dur: 6.0, delay: -2.8, variant: 1 as const, color: '#fda4af' },
+  { x: 92, y: 9, size: 2.8, opacity: 0.75, dur: 7.2, delay: -5.8, variant: 2 as const, color: '#f43f5e' },
+  { x: 20, y: 22, size: 2.6, opacity: 0.72, dur: 7.0, delay: -3.5, variant: 1 as const, color: '#fb7185' },
+  { x: 42, y: 24, size: 3.1, opacity: 0.82, dur: 8.0, delay: -5.2, variant: 2 as const, color: '#fb923c' },
+  { x: 66, y: 20, size: 2.3, opacity: 0.68, dur: 6.6, delay: -1.6, variant: 1 as const, color: '#fda4af' },
+  { x: 80, y: 25, size: 2.9, opacity: 0.78, dur: 7.6, delay: -4.8, variant: 2 as const, color: '#f43f5e' },
+];
+
+// Stage 6: The River of Rebirth - Nocturnal River Fireflies & Luminous Mist
+const RIVER_FIREFLIES = [
+  { x: 10, y: 45, size: 2.4, opacity: 0.75, dur: 6.5, delay: -1.4, variant: 1 as const, color: '#c7d2fe' },
+  { x: 22, y: 62, size: 3.4, opacity: 0.85, dur: 7.8, delay: -4.2, variant: 2 as const, color: '#a5f3fc' },
+  { x: 34, y: 40, size: 2.2, opacity: 0.65, dur: 6.0, delay: -2.6, variant: 1 as const, color: '#e0e7ff' },
+  { x: 46, y: 58, size: 3.6, opacity: 0.90, dur: 8.0, delay: -5.5, variant: 2 as const, color: '#c7d2fe' },
+  { x: 58, y: 42, size: 2.6, opacity: 0.70, dur: 6.2, delay: -0.8, variant: 1 as const, color: '#a5f3fc' },
+  { x: 70, y: 65, size: 3.2, opacity: 0.80, dur: 7.4, delay: -4.0, variant: 2 as const, color: '#e0e7ff' },
+  { x: 82, y: 48, size: 2.0, opacity: 0.60, dur: 5.8, delay: -2.3, variant: 1 as const, color: '#c7d2fe' },
+  { x: 92, y: 55, size: 3.0, opacity: 0.75, dur: 7.2, delay: -5.8, variant: 2 as const, color: '#a5f3fc' },
+  { x: 18, y: 52, size: 2.8, opacity: 0.72, dur: 6.9, delay: -3.2, variant: 1 as const, color: '#e0e7ff' },
+  { x: 52, y: 50, size: 3.3, opacity: 0.82, dur: 7.6, delay: -4.8, variant: 2 as const, color: '#c7d2fe' },
+  { x: 76, y: 56, size: 2.5, opacity: 0.68, dur: 6.4, delay: -1.7, variant: 1 as const, color: '#a5f3fc' },
+];
+
+// Stage 7: The Ferryman’s Disciple - Whispering Bamboo Leaves & River Dew
+const BAMBOO_LEAVES = [
+  { x: 7, size: 7.5, opacity: 0.60, dur: 9.0, delay: -1.2, variant: 1 as const, color: '#6ee7b7' },
+  { x: 18, size: 6.2, opacity: 0.50, dur: 10.4, delay: -4.6, variant: 2 as const, color: '#34d399' },
+  { x: 29, size: 8.0, opacity: 0.65, dur: 8.6, delay: -2.8, variant: 1 as const, color: '#a7f3d0' },
+  { x: 40, size: 6.6, opacity: 0.55, dur: 10.8, delay: -6.7, variant: 2 as const, color: '#6ee7b7' },
+  { x: 51, size: 7.8, opacity: 0.70, dur: 8.8, delay: -1.0, variant: 1 as const, color: '#34d399' },
+  { x: 62, size: 6.0, opacity: 0.52, dur: 10.0, delay: -5.2, variant: 2 as const, color: '#a7f3d0' },
+  { x: 73, size: 8.2, opacity: 0.68, dur: 9.2, delay: -3.5, variant: 1 as const, color: '#6ee7b7' },
+  { x: 84, size: 6.4, opacity: 0.54, dur: 10.6, delay: -7.4, variant: 2 as const, color: '#34d399' },
+  { x: 93, size: 7.4, opacity: 0.62, dur: 9.5, delay: -2.2, variant: 1 as const, color: '#a7f3d0' },
+  { x: 24, size: 7.0, opacity: 0.58, dur: 9.6, delay: -4.0, variant: 2 as const, color: '#6ee7b7' },
+  { x: 58, size: 7.6, opacity: 0.64, dur: 9.1, delay: -5.9, variant: 1 as const, color: '#34d399' },
+  { x: 80, size: 6.8, opacity: 0.56, dur: 10.2, delay: -2.7, variant: 2 as const, color: '#a7f3d0' },
+];
+
+// Stage 8: The Wound of Love - Celestial Amethyst Twilight Night Motes
+const TWILIGHT_MOTES = [
+  { x: 8, y: 35, size: 2.2, opacity: 0.65, dur: 8.2, delay: -1.5, variant: 1 as const, color: '#e9d5ff' },
+  { x: 20, y: 55, size: 3.2, opacity: 0.75, dur: 9.5, delay: -4.8, variant: 2 as const, color: '#c084fc' },
+  { x: 32, y: 25, size: 1.9, opacity: 0.50, dur: 7.4, delay: -2.7, variant: 1 as const, color: '#f3e8ff' },
+  { x: 44, y: 48, size: 2.8, opacity: 0.70, dur: 10.0, delay: -6.2, variant: 2 as const, color: '#e9d5ff' },
+  { x: 56, y: 30, size: 2.3, opacity: 0.55, dur: 7.8, delay: -1.1, variant: 1 as const, color: '#c084fc' },
+  { x: 68, y: 60, size: 3.4, opacity: 0.80, dur: 10.6, delay: -5.5, variant: 2 as const, color: '#f3e8ff' },
+  { x: 80, y: 38, size: 2.0, opacity: 0.50, dur: 7.6, delay: -3.3, variant: 1 as const, color: '#e9d5ff' },
+  { x: 91, y: 52, size: 3.0, opacity: 0.72, dur: 9.8, delay: -7.0, variant: 2 as const, color: '#c084fc' },
+  { x: 16, y: 68, size: 2.5, opacity: 0.60, dur: 8.6, delay: -3.8, variant: 1 as const, color: '#f3e8ff' },
+  { x: 50, y: 64, size: 3.1, opacity: 0.75, dur: 9.2, delay: -5.0, variant: 2 as const, color: '#e9d5ff' },
+  { x: 74, y: 66, size: 2.4, opacity: 0.58, dur: 8.4, delay: -2.1, variant: 1 as const, color: '#c084fc' },
+];
+
+// Stage 9: The Eternal Flow - Radiant Celestial Aurora Spirit Motes
+const SPIRIT_MOTES = [
+  { x: 9, y: 10, size: 2.4, opacity: 0.70, dur: 7.0, delay: -1.2, variant: 1 as const, color: '#5eead4' },
+  { x: 21, y: 16, size: 3.4, opacity: 0.82, dur: 8.4, delay: -3.9, variant: 2 as const, color: '#fef08a' },
+  { x: 33, y: 8, size: 2.2, opacity: 0.60, dur: 6.5, delay: -2.3, variant: 1 as const, color: '#99f6e4' },
+  { x: 45, y: 14, size: 3.8, opacity: 0.88, dur: 8.8, delay: -5.2, variant: 2 as const, color: '#5eead4' },
+  { x: 57, y: 7, size: 2.5, opacity: 0.65, dur: 6.8, delay: -0.8, variant: 1 as const, color: '#fef08a' },
+  { x: 69, y: 17, size: 3.5, opacity: 0.84, dur: 8.5, delay: -4.5, variant: 2 as const, color: '#99f6e4' },
+  { x: 81, y: 11, size: 2.1, opacity: 0.55, dur: 6.2, delay: -3.0, variant: 1 as const, color: '#5eead4' },
+  { x: 92, y: 15, size: 3.2, opacity: 0.78, dur: 8.0, delay: -6.1, variant: 2 as const, color: '#fef08a' },
+  { x: 15, y: 22, size: 2.8, opacity: 0.72, dur: 7.5, delay: -3.4, variant: 1 as const, color: '#99f6e4' },
+  { x: 41, y: 20, size: 3.6, opacity: 0.85, dur: 9.0, delay: -5.6, variant: 2 as const, color: '#5eead4' },
+  { x: 63, y: 24, size: 2.3, opacity: 0.62, dur: 6.9, delay: -1.9, variant: 1 as const, color: '#fef08a' },
+  { x: 85, y: 21, size: 3.3, opacity: 0.80, dur: 8.2, delay: -4.8, variant: 2 as const, color: '#99f6e4' },
+];
+
+function StageAtmosphericParticles({ stageId }: { stageId: number }) {
+  switch (stageId) {
+    case 1:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {MIST_MOTES.map((mote, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${mote.variant === 1 ? 'anim-mote-1' : 'anim-mote-2'}`}
+              style={{
+                left: `${mote.x}%`,
+                top: `${mote.y}%`,
+                width: `${mote.size}px`,
+                height: `${mote.size}px`,
+                backgroundColor: mote.color,
+                ['--particle-opacity' as any]: mote.opacity,
+                opacity: mote.opacity,
+                boxShadow: `0 0 3px ${mote.color}`,
+                animationDuration: `${mote.dur}s`,
+                animationDelay: `${mote.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 2:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {FALLING_SNOWFLAKES.map((flake, idx) => {
+            const animClass =
+              flake.variant === 1 ? 'anim-snow-1' : flake.variant === 2 ? 'anim-snow-2' : 'anim-snow-3';
+            return (
+              <div
+                key={idx}
+                className={`absolute rounded-full bg-white pointer-events-none ${animClass}`}
+                style={{
+                  left: `${flake.x}%`,
+                  top: 0,
+                  width: `${flake.size}px`,
+                  height: `${flake.size}px`,
+                  ['--particle-opacity' as any]: flake.opacity,
+                  opacity: flake.opacity,
+                  filter: flake.size > 2.8 ? 'blur(0.5px)' : undefined,
+                  boxShadow:
+                    flake.size > 2.2
+                      ? '0 0 4px rgba(255, 255, 255, 0.9)'
+                      : '0 0 2px rgba(255, 255, 255, 0.6)',
+                  animationDuration: `${flake.dur}s`,
+                  animationDelay: `${flake.delay}s`,
+                }}
+              />
+            );
+          })}
+        </div>
+      );
+    case 3:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {GOLDEN_SPARKS.map((spark, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${spark.variant === 1 ? 'anim-golden-1' : 'anim-golden-2'}`}
+              style={{
+                left: `${spark.x}%`,
+                bottom: `${spark.y}%`,
+                width: `${spark.size}px`,
+                height: `${spark.size}px`,
+                backgroundColor: spark.color,
+                ['--particle-opacity' as any]: spark.opacity,
+                opacity: spark.opacity,
+                boxShadow: `0 0 5px ${spark.color}`,
+                animationDuration: `${spark.dur}s`,
+                animationDelay: `${spark.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 4:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {BLOSSOM_PETALS.map((petal, idx) => (
+            <div
+              key={idx}
+              className={`absolute pointer-events-none ${petal.variant === 1 ? 'anim-petal-1' : 'anim-petal-2'}`}
+              style={{
+                left: `${petal.x}%`,
+                top: 0,
+                width: `${petal.size}px`,
+                height: `${petal.size * 0.65}px`,
+                borderRadius: '65% 15% 65% 15%',
+                backgroundColor: petal.color,
+                ['--particle-opacity' as any]: petal.opacity,
+                opacity: petal.opacity,
+                boxShadow: '0 0 4px rgba(244, 114, 182, 0.35)',
+                animationDuration: `${petal.dur}s`,
+                animationDelay: `${petal.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 5:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {LANTERN_EMBERS.map((ember, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${ember.variant === 1 ? 'anim-ember-1' : 'anim-ember-2'}`}
+              style={{
+                left: `${ember.x}%`,
+                bottom: `${ember.y}%`,
+                width: `${ember.size}px`,
+                height: `${ember.size}px`,
+                backgroundColor: ember.color,
+                ['--particle-opacity' as any]: ember.opacity,
+                opacity: ember.opacity,
+                boxShadow: `0 0 5px ${ember.color}`,
+                animationDuration: `${ember.dur}s`,
+                animationDelay: `${ember.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 6:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {RIVER_FIREFLIES.map((fly, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${fly.variant === 1 ? 'anim-firefly-1' : 'anim-firefly-2'}`}
+              style={{
+                left: `${fly.x}%`,
+                top: `${fly.y}%`,
+                width: `${fly.size}px`,
+                height: `${fly.size}px`,
+                backgroundColor: fly.color,
+                ['--particle-opacity' as any]: fly.opacity,
+                opacity: fly.opacity,
+                boxShadow: `0 0 6px ${fly.color}`,
+                animationDuration: `${fly.dur}s`,
+                animationDelay: `${fly.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 7:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {BAMBOO_LEAVES.map((leaf, idx) => (
+            <div
+              key={idx}
+              className={`absolute pointer-events-none ${leaf.variant === 1 ? 'anim-petal-1' : 'anim-petal-2'}`}
+              style={{
+                left: `${leaf.x}%`,
+                top: 0,
+                width: `${leaf.size}px`,
+                height: `${leaf.size * 0.42}px`,
+                borderRadius: '15% 85% 15% 85%',
+                backgroundColor: leaf.color,
+                ['--particle-opacity' as any]: leaf.opacity,
+                opacity: leaf.opacity,
+                boxShadow: '0 0 3px rgba(52, 211, 153, 0.4)',
+                animationDuration: `${leaf.dur}s`,
+                animationDelay: `${leaf.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 8:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {TWILIGHT_MOTES.map((mote, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${mote.variant === 1 ? 'anim-mote-1' : 'anim-mote-2'}`}
+              style={{
+                left: `${mote.x}%`,
+                top: `${mote.y}%`,
+                width: `${mote.size}px`,
+                height: `${mote.size}px`,
+                backgroundColor: mote.color,
+                ['--particle-opacity' as any]: mote.opacity,
+                opacity: mote.opacity,
+                boxShadow: `0 0 4px ${mote.color}`,
+                animationDuration: `${mote.dur}s`,
+                animationDelay: `${mote.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    case 9:
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {SPIRIT_MOTES.map((spirit, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${spirit.variant === 1 ? 'anim-golden-1' : 'anim-golden-2'}`}
+              style={{
+                left: `${spirit.x}%`,
+                bottom: `${spirit.y}%`,
+                width: `${spirit.size}px`,
+                height: `${spirit.size}px`,
+                backgroundColor: spirit.color,
+                ['--particle-opacity' as any]: spirit.opacity,
+                opacity: spirit.opacity,
+                boxShadow: `0 0 7px ${spirit.color}`,
+                animationDuration: `${spirit.dur}s`,
+                animationDelay: `${spirit.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
 
 const STAGE_THEMES: Record<number, StageTheme> = {
   // Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Green Bamboo Dawn
@@ -1213,28 +1589,8 @@ export default function Game() {
               </div>
             )}
 
-            {/* Gentle Winter Snowfall when isWinter is active */}
-            {currentTheme.isWinter && (
-              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-                {WINTER_SNOWFLAKES.map((flake, idx) => (
-                  <div
-                    key={idx}
-                    className="absolute rounded-full bg-white pointer-events-none animate-pulse"
-                    style={{
-                      left: `${flake.x}%`,
-                      top: `${flake.y}%`,
-                      width: `${flake.size}px`,
-                      height: `${flake.size}px`,
-                      opacity: flake.opacity,
-                      filter: flake.size > 2.6 ? 'blur(0.5px)' : undefined,
-                      boxShadow: '0 0 3px rgba(255,255,255,0.95)',
-                      animationDuration: `${flake.dur}s`,
-                      animationDelay: `${flake.delay}s`,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Stage-Specific Subtle Ambient Particle Effects (Falling Snow for Stage 2, petals, embers, fireflies, etc.) */}
+            <StageAtmosphericParticles stageId={currentStage.id} />
 
             {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
             <img
