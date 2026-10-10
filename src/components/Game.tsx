@@ -1895,11 +1895,32 @@ export default function Game() {
               }}
             />
 
-            {/* Stage-Specific Subtle Ambient Particle Effects (Falling Snow, clouds, petals, embers, fireflies, etc.) */}
-            <StageAtmosphericParticles stageId={currentStage.id} />
+            {/* Stage Atmospheric Dissolve Veil: Gentle fade in for each new stage */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`stage-veil-${currentStage.id}`}
+                initial={{ opacity: 0.7 }}
+                animate={{ opacity: 0 }}
+                exit={{ opacity: 0.7 }}
+                transition={{ duration: 1.4, ease: 'easeInOut' }}
+                className="absolute inset-0 pointer-events-none z-10 bg-[#12151c]/65 backdrop-blur-[2px]"
+              />
+            </AnimatePresence>
 
-            {/* Stage 7: The Ferryman’s Disciple - Dedicated Aqua Blue River Atmosphere Overlay */}
-            {currentStage.id === 7 && <StageSevenAquaRiverOverlay />}
+            {/* Stage-Specific Subtle Ambient Particle Effects with smooth cross-fade */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`particles-${currentStage.id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
+                className="absolute inset-0 pointer-events-none"
+              >
+                <StageAtmosphericParticles stageId={currentStage.id} />
+                {currentStage.id === 7 && <StageSevenAquaRiverOverlay />}
+              </motion.div>
+            </AnimatePresence>
           </div>
           
           {!isPlaying ? (
@@ -2070,28 +2091,39 @@ export default function Game() {
                     className="relative cursor-pointer group select-none mt-0.5 flex flex-col items-center"
                     onClick={() => setSelectedLoreStage(currentStage)}
                   >
-                    <span
-                      style={{ paddingTop: '100px' }}
-                      className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] block font-serif-zen whitespace-nowrap transition-colors duration-500 pt-[100px] ${
-                        currentTheme.isNight ? 'text-emerald-300 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-[#34705a]'
-                      }`}
-                    >
-                      {currentStage.realm} • STAGE {currentStage.id}
-                    </span>
-                    <h2 className={`text-2xl sm:text-[1.8rem] md:text-4xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
-                      currentTheme.isNight
-                        ? 'text-amber-100 group-hover:text-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]'
-                        : 'text-stone-900 group-hover:text-emerald-900'
-                    }`}>
-                      {currentStage.name}
-                    </h2>
-                    <div className="text-[11px] sm:text-[14.5px] font-serif-zen tracking-widest flex items-center justify-center space-x-2 whitespace-nowrap">
-                      <span className={`font-bold uppercase transition-colors duration-500 ${
-                        currentTheme.isNight ? 'text-amber-200/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-stone-700'
-                      }`}>
-                        ({currentStage.subtitle})
-                      </span>
-                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`stage-heading-${currentStage.id}`}
+                        initial={{ opacity: 0, y: 7 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -7 }}
+                        transition={{ duration: 0.75, ease: 'easeOut' }}
+                        className="flex flex-col items-center"
+                      >
+                        <span
+                          style={{ paddingTop: '100px' }}
+                          className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] block font-serif-zen whitespace-nowrap transition-colors duration-500 pt-[100px] ${
+                            currentTheme.isNight ? 'text-emerald-300 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-[#34705a]'
+                          }`}
+                        >
+                          {currentStage.realm} • STAGE {currentStage.id}
+                        </span>
+                        <h2 className={`text-2xl sm:text-[1.8rem] md:text-4xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
+                          currentTheme.isNight
+                            ? 'text-amber-100 group-hover:text-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]'
+                            : 'text-stone-900 group-hover:text-emerald-900'
+                        }`}>
+                          {currentStage.name}
+                        </h2>
+                        <div className="text-[11px] sm:text-[14.5px] font-serif-zen tracking-widest flex items-center justify-center space-x-2 whitespace-nowrap">
+                          <span className={`font-bold uppercase transition-colors duration-500 ${
+                            currentTheme.isNight ? 'text-amber-200/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-stone-700'
+                          }`}>
+                            ({currentStage.subtitle})
+                          </span>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
 
                     {/* Stage Advancement Fanfare Banner (Anchored immediately beneath Title & Subtitle) */}
                     <AnimatePresence>
@@ -2240,7 +2272,12 @@ export default function Game() {
 
                         {/* Node Disc Content */}
                         {isActive ? (
-                          <>
+                          <motion.g
+                            key={`node-active-${node.id}`}
+                            initial={{ opacity: 0, scale: 0.85 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.7, ease: 'easeOut' }}
+                          >
                             {/* Active Stage: Lotus Medallion with White Circular Frame */}
                             <image
                               href="/svg/lotus.svg"
@@ -2260,7 +2297,7 @@ export default function Game() {
                               opacity="0.9"
                               className="pointer-events-none"
                             />
-                          </>
+                          </motion.g>
                         ) : isPassed ? (
                           <>
                             {/* Completed Stage: Jade Disc with White Rim and Checkmark */}
@@ -2324,22 +2361,33 @@ export default function Game() {
 
               {/* Stage Progress Info & Tone Input Buttons (Below the Path) */}
               <div className="w-full flex flex-col items-center justify-center pt-2 pb-3 sm:pb-4 px-4 sm:px-8 select-none bg-gradient-to-t from-stone-950/80 via-stone-950/45 to-transparent">
-                <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-amber-200/90 font-bold font-serif-zen block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                  STAGE {currentStageIndex + 1} • PUZZLE {puzzleInStage}/3 ({currentPuzzleLength} {currentPuzzleLength === 1 ? 'TONE' : 'TONES'})
-                </span>
-                {currentStageIndex === 0 ? (
-                  <span className="text-[11px] sm:text-[12px] font-bold text-emerald-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                    {isShowingSequence
-                      ? 'Listen closely to the tone...'
-                      : sequence[playerSequence.length] === 'up'
-                        ? 'That tone was HIGHER - click "Higher Tone"'
-                        : 'That tone was LOWER - click "Lower Tone"'}
-                  </span>
-                ) : (
-                  <span className="text-[10.5px] sm:text-[11.5px] italic text-stone-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                    {isShowingSequence ? 'Listen to the bells...' : 'Repeat the tone'}
-                  </span>
-                )}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`stage-info-${currentStageIndex}`}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    className="flex flex-col items-center text-center"
+                  >
+                    <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-amber-200/90 font-bold font-serif-zen block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                      STAGE {currentStageIndex + 1} • PUZZLE {puzzleInStage}/3 ({currentPuzzleLength} {currentPuzzleLength === 1 ? 'TONE' : 'TONES'})
+                    </span>
+                    {currentStageIndex === 0 ? (
+                      <span className="text-[11px] sm:text-[12px] font-bold text-emerald-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                        {isShowingSequence
+                          ? 'Listen closely to the tone...'
+                          : sequence[playerSequence.length] === 'up'
+                            ? 'That tone was HIGHER - click "Higher Tone"'
+                            : 'That tone was LOWER - click "Lower Tone"'}
+                      </span>
+                    ) : (
+                      <span className="text-[10.5px] sm:text-[11.5px] italic text-stone-300 font-serif-zen mt-0.5 block whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                        {isShowingSequence ? 'Listen to the bells...' : 'Repeat the tone'}
+                      </span>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
 
                 {/* Tone Input Buttons: Polished Jade River Stones with Yin-Yang */}
                 <div className="flex space-x-6 items-center justify-center pt-5 pb-0.5">
