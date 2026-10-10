@@ -2037,8 +2037,11 @@ export default function Game() {
 
               </div>
 
-              {/* The Central Path: Left-to-Right Sumi-e Brush Stroke Line with Scenic Landscape Backdrop */}
-              <div className="relative w-full overflow-hidden select-none my-0.5 flex items-center justify-center">
+              {/* The Central Path: Left-to-Right Sumi-e Brush Stroke Line with Scenic Landscape Backdrop (Moved up 40px) */}
+              <div 
+                className="relative w-full select-none my-0.5 flex items-center justify-center -translate-y-[40px]"
+                style={{ transform: 'translateY(-40px)' }}
+              >
 
                 <svg className="w-full h-auto max-h-[260px] sm:max-h-[300px] overflow-visible" viewBox="0 0 6292 1821" preserveAspectRatio="xMidYMid meet">
                   <defs>
