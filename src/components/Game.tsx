@@ -491,8 +491,6 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
     case 1:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          {/* Ethereal Mountain Cloud Wisps */}
-          <StageOneCloudWisps />
           {/* Morning Mist Particles */}
           {MIST_MOTES.map((mote, idx) => (
             <div
@@ -1868,6 +1866,22 @@ export default function Game() {
             </div>
 
 
+
+            {/* Ethereal Sky Clouds (Rendered behind the village & sacred landscape) */}
+            <AnimatePresence>
+              {currentStage.id === 1 && (
+                <motion.div
+                  key="stage-1-clouds"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2, ease: 'easeOut' }}
+                  className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
+                >
+                  <StageOneCloudWisps />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
             <img
