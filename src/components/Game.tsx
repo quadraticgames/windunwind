@@ -157,68 +157,32 @@ type GlowingStarItem = {
   glow?: string;
 };
 
-// Stage 5: Rich Man (Greed) - Cinnabar Lantern Night Glowing Stars (2x Density: 60 stars)
-const NIGHT_STARS_STAGE_5: GlowingStarItem[] = [
-  { x: 3, y: 11, size: 1.5, opacity: 0.65, dur: 3.1, delay: -0.2, variant: 1 },
-  { x: 5, y: 14, size: 1.8, opacity: 0.75, dur: 3.4, delay: -0.5, variant: 1 },
-  { x: 8, y: 20, size: 2.1, opacity: 0.80, dur: 3.8, delay: -1.7, variant: 2 },
-  { x: 11, y: 22, size: 2.4, opacity: 0.85, dur: 4.2, delay: -2.1, variant: 2 },
-  { x: 14, y: 7, size: 1.6, opacity: 0.70, dur: 3.2, delay: -0.9, variant: 1 },
-  { x: 17, y: 8, size: 1.4, opacity: 0.60, dur: 3.1, delay: -1.3, variant: 1 },
-  { x: 19, y: 16, size: 2.3, opacity: 0.78, dur: 4.0, delay: -2.4, variant: 2 },
-  { x: 22, y: 14, size: 3.6, opacity: 0.95, dur: 4.8, delay: -3.0, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.9)' },
-  { x: 25, y: 29, size: 1.7, opacity: 0.62, dur: 3.5, delay: -1.5, variant: 1 },
-  { x: 28, y: 26, size: 2.0, opacity: 0.70, dur: 3.6, delay: -0.8, variant: 2 },
-  { x: 31, y: 9, size: 2.2, opacity: 0.76, dur: 3.9, delay: -3.1, variant: 2 },
-  { x: 34, y: 12, size: 1.5, opacity: 0.65, dur: 4.0, delay: -2.5, variant: 1 },
-  { x: 37, y: 22, size: 3.2, opacity: 0.90, dur: 4.6, delay: -1.8, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.85)' },
-  { x: 41, y: 19, size: 2.6, opacity: 0.85, dur: 3.8, delay: -1.7, variant: 2 },
-  { x: 44, y: 6, size: 1.5, opacity: 0.60, dur: 3.3, delay: -0.4, variant: 1 },
-  { x: 48, y: 9, size: 3.8, opacity: 0.95, dur: 5.2, delay: -4.1, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.9)' },
-  { x: 51, y: 17, size: 2.0, opacity: 0.72, dur: 3.7, delay: -2.2, variant: 2 },
-  { x: 54, y: 24, size: 1.6, opacity: 0.60, dur: 3.3, delay: -0.9, variant: 1 },
-  { x: 57, y: 10, size: 2.5, opacity: 0.82, dur: 4.1, delay: -3.4, variant: 2 },
-  { x: 60, y: 15, size: 2.2, opacity: 0.80, dur: 4.4, delay: -2.8, variant: 2 },
-  { x: 64, y: 22, size: 1.8, opacity: 0.68, dur: 3.6, delay: -1.2, variant: 1 },
-  { x: 67, y: 28, size: 1.3, opacity: 0.55, dur: 3.0, delay: -1.1, variant: 1 },
-  { x: 70, y: 8, size: 3.4, opacity: 0.92, dur: 4.9, delay: -2.7, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.85)' },
-  { x: 74, y: 16, size: 3.4, opacity: 0.92, dur: 4.6, delay: -3.5, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.85)' },
-  { x: 77, y: 23, size: 1.9, opacity: 0.70, dur: 3.7, delay: -0.6, variant: 2 },
-  { x: 81, y: 10, size: 2.1, opacity: 0.75, dur: 3.9, delay: -2.2, variant: 2 },
-  { x: 85, y: 18, size: 2.4, opacity: 0.82, dur: 4.3, delay: -3.8, variant: 1 },
-  { x: 88, y: 22, size: 3.5, opacity: 0.90, dur: 5.0, delay: -1.4, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.9)' },
-  { x: 91, y: 7, size: 1.4, opacity: 0.58, dur: 3.1, delay: -2.0, variant: 1 },
-  { x: 94, y: 13, size: 1.7, opacity: 0.65, dur: 3.5, delay: -3.2, variant: 1 },
-  { x: 97, y: 20, size: 2.2, opacity: 0.74, dur: 3.8, delay: -0.7, variant: 2 },
-  { x: 6, y: 38, size: 1.8, opacity: 0.65, dur: 3.9, delay: -2.6, variant: 1 },
-  { x: 8, y: 32, size: 1.5, opacity: 0.60, dur: 4.1, delay: -1.8, variant: 1 },
-  { x: 13, y: 41, size: 2.0, opacity: 0.70, dur: 3.6, delay: -1.0, variant: 2 },
-  { x: 19, y: 36, size: 2.2, opacity: 0.78, dur: 3.7, delay: -2.7, variant: 2 },
-  { x: 25, y: 42, size: 1.8, opacity: 0.65, dur: 3.9, delay: -0.4, variant: 1 },
-  { x: 28, y: 35, size: 2.1, opacity: 0.72, dur: 4.2, delay: -3.3, variant: 2 },
-  { x: 31, y: 34, size: 1.4, opacity: 0.55, dur: 3.2, delay: -0.6, variant: 1 },
-  { x: 36, y: 44, size: 1.9, opacity: 0.68, dur: 3.5, delay: -1.9, variant: 1 },
-  { x: 41, y: 39, size: 2.3, opacity: 0.76, dur: 4.0, delay: -2.8, variant: 2 },
-  { x: 45, y: 35, size: 2.5, opacity: 0.82, dur: 4.3, delay: -3.8, variant: 2 },
-  { x: 50, y: 43, size: 1.7, opacity: 0.60, dur: 3.4, delay: -0.5, variant: 1 },
-  { x: 52, y: 44, size: 2.2, opacity: 0.72, dur: 4.1, delay: -2.6, variant: 2 },
-  { x: 57, y: 33, size: 1.8, opacity: 0.65, dur: 3.4, delay: -1.5, variant: 1 },
-  { x: 62, y: 40, size: 2.0, opacity: 0.70, dur: 3.8, delay: -3.1, variant: 2 },
-  { x: 67, y: 37, size: 1.5, opacity: 0.58, dur: 3.2, delay: -1.4, variant: 1 },
-  { x: 71, y: 36, size: 2.3, opacity: 0.75, dur: 4.0, delay: -2.9, variant: 2 },
-  { x: 76, y: 43, size: 2.1, opacity: 0.72, dur: 3.9, delay: -0.8, variant: 1 },
-  { x: 79, y: 42, size: 1.7, opacity: 0.60, dur: 3.5, delay: -1.8, variant: 1 },
-  { x: 84, y: 32, size: 1.6, opacity: 0.60, dur: 3.6, delay: -0.7, variant: 1 },
-  { x: 88, y: 40, size: 2.2, opacity: 0.74, dur: 4.1, delay: -2.5, variant: 2 },
-  { x: 92, y: 35, size: 2.0, opacity: 0.70, dur: 4.2, delay: -2.3, variant: 2 },
-  { x: 95, y: 41, size: 1.6, opacity: 0.58, dur: 3.3, delay: -1.6, variant: 1 },
-  { x: 15, y: 18, size: 1.3, opacity: 0.50, dur: 3.0, delay: -1.9, variant: 1 },
-  { x: 37, y: 8, size: 2.3, opacity: 0.80, dur: 4.5, delay: -3.3, variant: 2 },
-  { x: 63, y: 8, size: 2.0, opacity: 0.72, dur: 3.8, delay: -1.2, variant: 1 },
-  { x: 77, y: 25, size: 1.5, opacity: 0.60, dur: 3.2, delay: -2.4, variant: 2 },
-  { x: 23, y: 6, size: 1.8, opacity: 0.68, dur: 3.6, delay: -0.3, variant: 1 },
-  { x: 53, y: 6, size: 3.1, opacity: 0.88, dur: 4.7, delay: -2.9, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.85)' },
-  { x: 83, y: 5, size: 1.9, opacity: 0.72, dur: 3.5, delay: -1.7, variant: 2 },
+// Stage 5: Rich Man (Greed) - Opulent Gilded Cinnabar Lantern Embers (2x Density: 24 embers)
+const LANTERN_EMBERS = [
+  { x: 6, y: 12, size: 2.0, opacity: 0.70, dur: 6.6, delay: -0.8, variant: 1 as const, color: '#fb923c' },
+  { x: 12, y: 15, size: 2.2, opacity: 0.75, dur: 6.8, delay: -1.2, variant: 1 as const, color: '#fb7185' },
+  { x: 18, y: 9, size: 2.4, opacity: 0.68, dur: 6.4, delay: -2.0, variant: 1 as const, color: '#fda4af' },
+  { x: 24, y: 10, size: 3.2, opacity: 0.85, dur: 7.8, delay: -3.9, variant: 2 as const, color: '#fb923c' },
+  { x: 30, y: 14, size: 2.8, opacity: 0.78, dur: 7.0, delay: -1.5, variant: 2 as const, color: '#f43f5e' },
+  { x: 36, y: 18, size: 2.0, opacity: 0.65, dur: 6.2, delay: -2.4, variant: 1 as const, color: '#fda4af' },
+  { x: 42, y: 24, size: 3.1, opacity: 0.82, dur: 8.0, delay: -5.2, variant: 2 as const, color: '#fb923c' },
+  { x: 48, y: 8, size: 3.4, opacity: 0.90, dur: 8.2, delay: -5.0, variant: 2 as const, color: '#f43f5e' },
+  { x: 54, y: 11, size: 2.2, opacity: 0.72, dur: 6.7, delay: -3.1, variant: 1 as const, color: '#fb7185' },
+  { x: 60, y: 16, size: 2.5, opacity: 0.70, dur: 6.5, delay: -0.9, variant: 1 as const, color: '#fb923c' },
+  { x: 66, y: 20, size: 2.3, opacity: 0.68, dur: 6.6, delay: -1.6, variant: 1 as const, color: '#fda4af' },
+  { x: 72, y: 12, size: 3.0, opacity: 0.80, dur: 7.5, delay: -4.4, variant: 2 as const, color: '#fb7185' },
+  { x: 78, y: 17, size: 2.6, opacity: 0.74, dur: 7.1, delay: -2.2, variant: 1 as const, color: '#fb923c' },
+  { x: 80, y: 25, size: 2.9, opacity: 0.78, dur: 7.6, delay: -4.8, variant: 2 as const, color: '#f43f5e' },
+  { x: 84, y: 19, size: 2.1, opacity: 0.65, dur: 6.0, delay: -2.8, variant: 1 as const, color: '#fda4af' },
+  { x: 88, y: 13, size: 2.7, opacity: 0.72, dur: 6.9, delay: -3.6, variant: 1 as const, color: '#fb7185' },
+  { x: 92, y: 9, size: 2.8, opacity: 0.75, dur: 7.2, delay: -5.8, variant: 2 as const, color: '#f43f5e' },
+  { x: 96, y: 15, size: 2.3, opacity: 0.66, dur: 6.3, delay: -1.8, variant: 1 as const, color: '#fb923c' },
+  { x: 15, y: 20, size: 2.5, opacity: 0.70, dur: 6.9, delay: -4.1, variant: 1 as const, color: '#fda4af' },
+  { x: 20, y: 22, size: 2.6, opacity: 0.72, dur: 7.0, delay: -3.5, variant: 1 as const, color: '#fb7185' },
+  { x: 38, y: 12, size: 3.3, opacity: 0.84, dur: 7.9, delay: -4.7, variant: 2 as const, color: '#fb923c' },
+  { x: 50, y: 21, size: 2.9, opacity: 0.76, dur: 7.4, delay: -2.6, variant: 2 as const, color: '#f43f5e' },
+  { x: 68, y: 8, size: 2.4, opacity: 0.68, dur: 6.5, delay: -3.8, variant: 1 as const, color: '#fb923c' },
+  { x: 86, y: 22, size: 3.0, opacity: 0.80, dur: 7.7, delay: -5.3, variant: 2 as const, color: '#fb7185' },
 ];
 
 // Stage 6: The River of Rebirth - Sapphire Abyss & Moonlit River Glowing Stars (2x Density: 68 stars)
@@ -909,7 +873,28 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
         </div>
       );
     case 5:
-      return <GlowingStarField stars={NIGHT_STARS_STAGE_5} defaultGlow="rgba(251, 113, 133, 0.75)" />;
+      return (
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {LANTERN_EMBERS.map((ember, idx) => (
+            <div
+              key={idx}
+              className={`absolute rounded-full pointer-events-none ${ember.variant === 1 ? 'anim-ember-1' : 'anim-ember-2'}`}
+              style={{
+                left: `${ember.x}%`,
+                bottom: `${ember.y}%`,
+                width: `${ember.size}px`,
+                height: `${ember.size}px`,
+                backgroundColor: ember.color,
+                '--particle-opacity': ember.opacity,
+                opacity: ember.opacity,
+                boxShadow: `0 0 5px ${ember.color}`,
+                animationDuration: `${ember.dur}s`,
+                animationDelay: `${ember.delay}s`,
+              } as CustomCSSProperties}
+            />
+          ))}
+        </div>
+      );
     case 6:
       return <GlowingStarField stars={NIGHT_STARS_STAGE_6} defaultGlow="rgba(165, 243, 252, 0.85)" />;
     case 7:
@@ -1021,20 +1006,20 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#fbcfe8',
     waterColor: '#ddb8ca',
   },
-  // Stage 5: Rich Man (Greed) - Opulent Cinnabar Lantern Night & Smoked Velvet Sky
+  // Stage 5: Rich Man (Greed) - Opulent Gilded Cinnabar Marketplace & Gilded Sunset
   5: {
-    isNight: true,
-    skyGradient: ['#1c1017', '#2e1522', '#451a30', '#201019'],
-    farMountain: '#3d1a2c',
-    midMountain: '#2e1220',
-    slopeMountain: '#1f0b15',
-    fogColor: '#fb7185',
-    fogOpacity: 0.22,
-    celestial: { cx: 780, cy: 85, r: 44, fill: '#fff1f2', glow: '#fb7185', opacity: 0.95 },
-    sparkleColor: '#fda4af',
-    waterColor: '#2e1220',
+    isNight: false,
+    skyGradient: ['#fff7ed', '#ffedd5', '#fed7aa', '#ea580c'],
+    farMountain: '#d49b78',
+    midMountain: '#b8724e',
+    slopeMountain: '#9c5a38',
+    fogColor: '#f97316',
+    fogOpacity: 0.16,
+    celestial: { cx: 780, cy: 85, r: 44, fill: '#fffbeb', glow: '#f59e0b', opacity: 0.85 },
+    sparkleColor: '#fde047',
+    waterColor: '#b8724e',
   },
-  // Stage 6: The River of Rebirth - Radiant Sapphire Abyss & Moonlit River Waters
+  // Stage 6: The River of Rebirth (The Dark Night of the Soul) - Radiant Sapphire Midnight & Moonlit Waters
   6: {
     isNight: true,
     skyGradient: ['#162544', '#203762', '#314e86', '#1a2e54'],
