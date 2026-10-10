@@ -413,6 +413,28 @@ function RealmBannerIcon({ realm }: { realm: string }) {
   }
 }
 
+function isBrowserFullscreen(): boolean {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+  const doc = document as any;
+  const hasHtmlFullscreen = Boolean(
+    doc.fullscreenElement ||
+    doc.webkitFullscreenElement ||
+    doc.mozFullScreenElement ||
+    doc.msFullscreenElement
+  );
+  let isDisplayModeFs = false;
+  try {
+    isDisplayModeFs = window.matchMedia('(display-mode: fullscreen)').matches;
+  } catch (e) {
+    // ignore
+  }
+  const isScreenFs =
+    Math.abs(window.screen.height - window.innerHeight) <= 4 &&
+    Math.abs(window.screen.width - window.innerWidth) <= 4;
+
+  return hasHtmlFullscreen || isDisplayModeFs || isScreenFs;
+}
+
 export default function Game() {
   const [puzzleCount, setPuzzleCount] = useState(0);
   const [sequence, setSequence] = useState<Direction[]>([]);
@@ -427,37 +449,128 @@ export default function Game() {
   const [selectedLoreStage, setSelectedLoreStage] = useState<StageInfo | null>(null);
   const [stageCelebration, setStageCelebration] = useState<{ stageId: number; name: string; realm: string } | null>(null);
   const [isMuted, setIsMuted] = useState(() => getIsMuted());
-  const [isFullscreen, setIsFullscreen] = useState(() => Boolean(typeof document !== 'undefined' && document.fullscreenElement));
+  const [isFullscreen, setIsFullscreen] = useState(() => isBrowserFullscreen());
 
   const handleToggleMute = useCallback(() => {
     const next = toggleMute();
     setIsMuted(next);
   }, []);
 
-  const handleToggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((err) => {
-        console.warn('Error attempting to enable fullscreen:', err);
-      });
+  const handleToggleFullscreen = useCallback((e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    const doc = document as any;
+    const docEl = document.documentElement as any;
+    const currentlyFs = isBrowserFullscreen();
+
+    if (!currentlyFs) {
+      const requestMethod =
+        docEl.requestFullscreen ||
+        docEl.webkitRequestFullscreen ||
+        docEl.webkitRequestFullScreen ||
+        docEl.mozRequestFullScreen ||
+        docEl.msRequestFullscreen;
+
+      if (requestMethod) {
+        try {
+          const promise = requestMethod.call(docEl, { navigationUI: 'hide' });
+          if (promise && typeof promise.then === 'function') {
+            promise
+              .then(() => setIsFullscreen(true))
+              .catch(() => {
+                try {
+                  const p2 = requestMethod.call(docEl);
+                  if (p2 && typeof p2.then === 'function') {
+                    p2.then(() => setIsFullscreen(true)).catch(() => setIsFullscreen(true));
+                  } else {
+                    setIsFullscreen(true);
+                  }
+                } catch {
+                  setIsFullscreen(true);
+                }
+              });
+          } else {
+            setIsFullscreen(true);
+          }
+        } catch (err) {
+          console.warn('Fullscreen call failed, falling back to CSS fullscreen:', err);
+          setIsFullscreen(true);
+        }
+      } else {
+        setIsFullscreen(true);
+      }
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch((err) => {
-          console.warn('Error attempting to exit fullscreen:', err);
-        });
+      const exitMethod =
+        doc.exitFullscreen ||
+        doc.webkitExitFullscreen ||
+        doc.webkitCancelFullScreen ||
+        doc.mozCancelFullScreen ||
+        doc.msExitFullscreen;
+
+      const hasHtmlFs = Boolean(
+        doc.fullscreenElement ||
+        doc.webkitFullscreenElement ||
+        doc.mozFullScreenElement ||
+        doc.msFullscreenElement
+      );
+
+      if (hasHtmlFs && exitMethod) {
+        try {
+          const promise = exitMethod.call(doc);
+          if (promise && typeof promise.then === 'function') {
+            promise
+              .then(() => setIsFullscreen(false))
+              .catch(() => setIsFullscreen(false));
+          } else {
+            setIsFullscreen(false);
+          }
+        } catch (err) {
+          setIsFullscreen(false);
+        }
+      } else {
+        setIsFullscreen(false);
       }
     }
   }, []);
 
-  // Listen for browser fullscreen changes (e.g. Esc or F11 pressed by user)
+  // Listen for browser fullscreen changes across all vendor prefixes and window resize (e.g. F11 pressed in Chrome)
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(Boolean(document.fullscreenElement));
+    const handleSyncFullscreen = () => {
+      setIsFullscreen(isBrowserFullscreen());
     };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+
+    document.addEventListener('fullscreenchange', handleSyncFullscreen);
+    document.addEventListener('webkitfullscreenchange', handleSyncFullscreen);
+    document.addEventListener('mozfullscreenchange', handleSyncFullscreen);
+    document.addEventListener('MSFullscreenChange', handleSyncFullscreen);
+    window.addEventListener('resize', handleSyncFullscreen);
+
+    let mql: MediaQueryList | null = null;
+    try {
+      mql = window.matchMedia('(display-mode: fullscreen)');
+      if (mql && mql.addEventListener) {
+        mql.addEventListener('change', handleSyncFullscreen);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleSyncFullscreen);
+      document.removeEventListener('webkitfullscreenchange', handleSyncFullscreen);
+      document.removeEventListener('mozfullscreenchange', handleSyncFullscreen);
+      document.removeEventListener('MSFullscreenChange', handleSyncFullscreen);
+      window.removeEventListener('resize', handleSyncFullscreen);
+      if (mql && mql.removeEventListener) {
+        mql.removeEventListener('change', handleSyncFullscreen);
+      }
+    };
   }, []);
 
-  // Keyboard shortcut: Press 'M' to toggle mute, 'F' to toggle fullscreen
+  // Keyboard shortcut: Press 'M' to toggle mute, 'F' or 'F11' to toggle fullscreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -466,6 +579,11 @@ export default function Game() {
       }
       if (e.key === 'f' || e.key === 'F') {
         handleToggleFullscreen();
+      }
+      if (e.key === 'F11') {
+        setTimeout(() => {
+          setIsFullscreen(isBrowserFullscreen());
+        }, 150);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -859,7 +977,11 @@ export default function Game() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-twilight-zen flex flex-col items-center justify-center p-0 sm:p-3 md:p-4 select-none overflow-hidden">
+    <div className={`select-none transition-all duration-300 ${
+      isFullscreen
+        ? 'fixed inset-0 z-50 w-screen h-screen bg-[#12151c] flex flex-col items-center justify-center p-0 m-0 overflow-hidden'
+        : 'relative min-h-screen bg-twilight-zen flex flex-col items-center justify-center p-0 sm:p-3 md:p-4 overflow-hidden'
+    }`}>
       
       {/* Serene Background Landscape: Misty Mountain Ridges and Bamboo Silhouettes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -905,14 +1027,18 @@ export default function Game() {
       </div>
 
       {/* Main Content Area */}
-      <div className="relative z-10 w-full max-w-[1240px] flex flex-col items-center px-0 sm:px-2 md:px-4">
+      <div className={`relative z-10 w-full flex flex-col items-center transition-all duration-300 ${
+        isFullscreen ? 'max-w-none h-full w-full justify-center p-0 m-0' : 'max-w-[1240px] px-0 sm:px-2 md:px-4'
+      }`}>
         
         {/* Game Area Card Container */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="rounded-none sm:rounded-[2rem] md:rounded-[2.5rem] w-full flex flex-col items-center justify-between min-h-0 relative overflow-hidden shadow-2xl border border-stone-800/30 p-0"
+          className={`w-full flex flex-col items-center justify-between min-h-0 relative overflow-hidden shadow-2xl p-0 transition-all duration-300 ${
+            isFullscreen ? 'rounded-none border-none h-full min-h-screen w-full' : 'rounded-none sm:rounded-[2rem] md:rounded-[2.5rem] border border-stone-800/30'
+          }`}
         >
           {/* Full-Bleed Game Area Backdrop: Dynamic Stage Lighting, Sun/Moon, and Tibet Artwork covering the entire game area with NO side padding */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -1090,12 +1216,18 @@ export default function Game() {
                 onClick={handleToggleFullscreen}
                 title={isFullscreen ? "Exit Fullscreen (F)" : "Enter Fullscreen (F)"}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-                className="absolute top-4 right-4 p-2 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm bg-stone-200/60 hover:bg-stone-300/60 text-stone-700 hover:text-stone-900 border-stone-300/70"
+                className="absolute top-4 right-4 py-1.5 px-2.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center space-x-1.5 shadow-sm bg-stone-200/70 hover:bg-stone-300/80 text-stone-700 hover:text-stone-900 border-stone-300/80 z-20"
               >
                 {isFullscreen ? (
-                  <Minimize size={16} className="text-stone-800" />
+                  <>
+                    <Minimize size={14} className="text-stone-800" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Window</span>
+                  </>
                 ) : (
-                  <Maximize size={16} className="text-stone-800" />
+                  <>
+                    <Maximize size={14} className="text-stone-800" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Full Screen</span>
+                  </>
                 )}
               </button>
               
@@ -1142,7 +1274,7 @@ export default function Game() {
                   Travel the 9 circles of <strong className="text-stone-900">Mind</strong>, <strong className="text-stone-900">Body</strong>, and <strong className="text-stone-900">Spirit</strong>. Solve 3 tone puzzles at each stage (27 in total) to reach Enlightenment and Oneness.
                 </p>
                 <div className="text-[11px] text-stone-500 italic mt-3 font-serif-zen">
-                  Stage 1 begins with a tutorial and single-tone repetitions. Each successive circle broadens the number of notes used.
+                  Stage 1 begins with a tutorial and single-tone repetitions. Each successive stage broadens the number of notes used.
                 </div>
               </div>
 
@@ -1257,8 +1389,23 @@ export default function Game() {
                   </div>
                 </div>
 
-                {/* Right: Mute Button, Lore Button & Three Incense Burners (Strikes) */}
+                {/* Right: Fullscreen, Mute Button, Lore Button & Three Incense Burners (Strikes) */}
                 <div className="flex items-center justify-end space-x-2 sm:space-x-2.5 justify-self-end shrink-0">
+                  {/* Fullscreen Toggle Button */}
+                  <button
+                    type="button"
+                    onClick={handleToggleFullscreen}
+                    title={isFullscreen ? "Exit Fullscreen (F)" : "Full Screen (F)"}
+                    aria-label={isFullscreen ? "Exit Fullscreen" : "Full Screen"}
+                    className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
+                      currentTheme.isNight
+                        ? 'bg-stone-900/70 hover:bg-stone-800/80 text-amber-100 border-stone-700/60'
+                        : 'bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 border-stone-300/60'
+                    }`}
+                  >
+                    {isFullscreen ? <Minimize size={13} /> : <Maximize size={13} />}
+                  </button>
+
                   {/* Mute Toggle Button */}
                   <button
                     type="button"

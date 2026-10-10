@@ -13,13 +13,22 @@
   --dharma-wood: #c8b9a3;
 }
 
-body {
+html, body, #root {
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
   font-family: 'Shippori Mincho', serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #14171f;
   color: #2c2824;
   overflow-x: hidden;
+}
+
+:fullscreen, ::backdrop {
+  background-color: #12151c;
 }
 
 .font-brush {
