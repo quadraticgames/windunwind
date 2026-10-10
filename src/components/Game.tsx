@@ -1849,10 +1849,10 @@ export default function Game() {
                 <button
                   type="button"
                   onClick={() => setShowAboutModal(true)}
-                  className="stone-btn-secondary w-full py-2.5 px-4 flex items-center justify-center space-x-1.5 bg-stone-200/90 hover:bg-stone-100 text-stone-700 hover:text-stone-900 font-bold transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer"
+                  className="stone-btn-secondary w-full py-3.5 px-6 flex items-center justify-center space-x-2 bg-stone-200/90 hover:bg-stone-100 text-stone-700 hover:text-stone-900 font-bold transition-all text-sm uppercase tracking-wider font-serif-zen cursor-pointer"
                 >
-                  <BookOpen size={14} />
-                  <span>About This Game</span>
+                  <BookOpen size={18} />
+                  <span className="font-serif-zen text-sm font-bold tracking-wider uppercase">About This Game</span>
                 </button>
               </div>
 
