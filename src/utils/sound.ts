@@ -37,6 +37,8 @@ const getDroneContext = (): AudioContext | null => {
   return droneAudioContext;
 };
 
+let hasDroneFadedIn = false;
+
 // Generates an equal-power seamless loop buffer from the raw recording,
 // eliminating MP3 boundary discontinuities and browser seek pops.
 function createSeamlessLoopBuffer(audioBuf: AudioBuffer, ctx: AudioContext, crossfadeDuration = 1.0): AudioBuffer {
@@ -218,13 +220,23 @@ export const startDrone = async () => {
         isDroneLoading = false;
       }
 
+      const shouldFadeIn = !hasDroneFadedIn && ctx.state === 'running';
+      if (shouldFadeIn) {
+        hasDroneFadedIn = true;
+      }
+      const targetGain = isDroneMuted ? 0 : 0.35;
+      const FADE_IN_DURATION = 2.2; // 2.2-second gentle ambient swell
+
       if (!droneGainNode) {
         droneGainNode = ctx.createGain();
-        droneGainNode.gain.setValueAtTime(isDroneMuted ? 0 : 0.35, ctx.currentTime);
         droneGainNode.connect(ctx.destination);
+      }
+
+      droneGainNode.gain.cancelScheduledValues(ctx.currentTime);
+      if (shouldFadeIn && !isDroneMuted) {
+        droneGainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
+        droneGainNode.gain.linearRampToValueAtTime(targetGain, ctx.currentTime + FADE_IN_DURATION);
       } else {
-        const targetGain = isDroneMuted ? 0 : 0.35;
-        droneGainNode.gain.cancelScheduledValues(ctx.currentTime);
         droneGainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
       }
 
@@ -246,8 +258,19 @@ export const startDrone = async () => {
       if (!fallbackAudio) {
         fallbackAudio = new Audio('/drone.mp3');
         fallbackAudio.loop = true;
-        fallbackAudio.volume = 0.35;
         fallbackAudio.muted = isDroneMuted;
+        if (!hasDroneFadedIn && !isDroneMuted) {
+          hasDroneFadedIn = true;
+          fallbackAudio.volume = 0;
+          let currentVol = 0;
+          const fadeTimer = setInterval(() => {
+            currentVol = Math.min(0.35, currentVol + 0.035);
+            if (fallbackAudio) fallbackAudio.volume = currentVol;
+            if (currentVol >= 0.35) clearInterval(fadeTimer);
+          }, 200);
+        } else {
+          fallbackAudio.volume = 0.35;
+        }
       }
       fallbackAudio.play().catch(() => {});
     }
