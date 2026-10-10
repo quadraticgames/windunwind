@@ -137,193 +137,503 @@ type StageTheme = {
   waterColor: string;
 };
 
-const NIGHT_STARS = [
-  { x: 6, y: 14, size: 1.5, opacity: 0.75, dur: 3.2, delay: 0.1 },
-  { x: 12, y: 24, size: 2.0, opacity: 0.9, dur: 2.5, delay: 0.8 },
-  { x: 18, y: 9, size: 1.2, opacity: 0.65, dur: 4.1, delay: 1.4 },
-  { x: 26, y: 19, size: 1.8, opacity: 0.8, dur: 3.7, delay: 0.3 },
-  { x: 33, y: 29, size: 1.0, opacity: 0.5, dur: 2.8, delay: 1.9 },
-  { x: 39, y: 11, size: 2.2, opacity: 0.95, dur: 4.5, delay: 0.5 },
-  { x: 44, y: 25, size: 1.4, opacity: 0.7, dur: 3.1, delay: 1.2 },
-  { x: 53, y: 15, size: 1.8, opacity: 0.85, dur: 2.9, delay: 2.1 },
-  { x: 59, y: 27, size: 1.0, opacity: 0.55, dur: 3.9, delay: 0.7 },
-  { x: 68, y: 12, size: 2.4, opacity: 0.9, dur: 4.2, delay: 1.6 },
-  { x: 73, y: 22, size: 1.2, opacity: 0.65, dur: 2.6, delay: 0.4 },
-  { x: 82, y: 16, size: 1.8, opacity: 0.8, dur: 3.5, delay: 2.3 },
-  { x: 88, y: 28, size: 1.2, opacity: 0.6, dur: 4.0, delay: 1.0 },
-  { x: 94, y: 14, size: 1.6, opacity: 0.75, dur: 3.3, delay: 1.7 },
-  { x: 15, y: 36, size: 1.0, opacity: 0.5, dur: 3.4, delay: 1.1 },
-  { x: 49, y: 38, size: 1.6, opacity: 0.7, dur: 2.7, delay: 0.9 },
-  { x: 64, y: 35, size: 1.3, opacity: 0.6, dur: 3.8, delay: 1.5 },
-  { x: 86, y: 33, size: 1.5, opacity: 0.75, dur: 4.3, delay: 0.2 },
+type GlowingStarItem = {
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  dur: number;
+  delay: number;
+  variant: 1 | 2 | 3; // 1: anim-star-1, 2: anim-star-2, 3: anim-star-glow
+  isMajor?: boolean;
+  color?: string;
+  glow?: string;
+};
+
+// Stage 5: Rich Man (Greed) - Cinnabar Lantern Night Glowing Stars (2x Density: 60 stars)
+const NIGHT_STARS_STAGE_5: GlowingStarItem[] = [
+  { x: 3, y: 11, size: 1.5, opacity: 0.65, dur: 3.1, delay: -0.2, variant: 1 },
+  { x: 5, y: 14, size: 1.8, opacity: 0.75, dur: 3.4, delay: -0.5, variant: 1 },
+  { x: 8, y: 20, size: 2.1, opacity: 0.80, dur: 3.8, delay: -1.7, variant: 2 },
+  { x: 11, y: 22, size: 2.4, opacity: 0.85, dur: 4.2, delay: -2.1, variant: 2 },
+  { x: 14, y: 7, size: 1.6, opacity: 0.70, dur: 3.2, delay: -0.9, variant: 1 },
+  { x: 17, y: 8, size: 1.4, opacity: 0.60, dur: 3.1, delay: -1.3, variant: 1 },
+  { x: 19, y: 16, size: 2.3, opacity: 0.78, dur: 4.0, delay: -2.4, variant: 2 },
+  { x: 22, y: 14, size: 3.6, opacity: 0.95, dur: 4.8, delay: -3.0, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.9)' },
+  { x: 25, y: 29, size: 1.7, opacity: 0.62, dur: 3.5, delay: -1.5, variant: 1 },
+  { x: 28, y: 26, size: 2.0, opacity: 0.70, dur: 3.6, delay: -0.8, variant: 2 },
+  { x: 31, y: 9, size: 2.2, opacity: 0.76, dur: 3.9, delay: -3.1, variant: 2 },
+  { x: 34, y: 12, size: 1.5, opacity: 0.65, dur: 4.0, delay: -2.5, variant: 1 },
+  { x: 37, y: 22, size: 3.2, opacity: 0.90, dur: 4.6, delay: -1.8, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.85)' },
+  { x: 41, y: 19, size: 2.6, opacity: 0.85, dur: 3.8, delay: -1.7, variant: 2 },
+  { x: 44, y: 6, size: 1.5, opacity: 0.60, dur: 3.3, delay: -0.4, variant: 1 },
+  { x: 48, y: 9, size: 3.8, opacity: 0.95, dur: 5.2, delay: -4.1, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.9)' },
+  { x: 51, y: 17, size: 2.0, opacity: 0.72, dur: 3.7, delay: -2.2, variant: 2 },
+  { x: 54, y: 24, size: 1.6, opacity: 0.60, dur: 3.3, delay: -0.9, variant: 1 },
+  { x: 57, y: 10, size: 2.5, opacity: 0.82, dur: 4.1, delay: -3.4, variant: 2 },
+  { x: 60, y: 15, size: 2.2, opacity: 0.80, dur: 4.4, delay: -2.8, variant: 2 },
+  { x: 64, y: 22, size: 1.8, opacity: 0.68, dur: 3.6, delay: -1.2, variant: 1 },
+  { x: 67, y: 28, size: 1.3, opacity: 0.55, dur: 3.0, delay: -1.1, variant: 1 },
+  { x: 70, y: 8, size: 3.4, opacity: 0.92, dur: 4.9, delay: -2.7, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.85)' },
+  { x: 74, y: 16, size: 3.4, opacity: 0.92, dur: 4.6, delay: -3.5, variant: 3, isMajor: true, color: '#fff1f2', glow: 'rgba(251, 113, 133, 0.85)' },
+  { x: 77, y: 23, size: 1.9, opacity: 0.70, dur: 3.7, delay: -0.6, variant: 2 },
+  { x: 81, y: 10, size: 2.1, opacity: 0.75, dur: 3.9, delay: -2.2, variant: 2 },
+  { x: 85, y: 18, size: 2.4, opacity: 0.82, dur: 4.3, delay: -3.8, variant: 1 },
+  { x: 88, y: 22, size: 3.5, opacity: 0.90, dur: 5.0, delay: -1.4, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.9)' },
+  { x: 91, y: 7, size: 1.4, opacity: 0.58, dur: 3.1, delay: -2.0, variant: 1 },
+  { x: 94, y: 13, size: 1.7, opacity: 0.65, dur: 3.5, delay: -3.2, variant: 1 },
+  { x: 97, y: 20, size: 2.2, opacity: 0.74, dur: 3.8, delay: -0.7, variant: 2 },
+  { x: 6, y: 38, size: 1.8, opacity: 0.65, dur: 3.9, delay: -2.6, variant: 1 },
+  { x: 8, y: 32, size: 1.5, opacity: 0.60, dur: 4.1, delay: -1.8, variant: 1 },
+  { x: 13, y: 41, size: 2.0, opacity: 0.70, dur: 3.6, delay: -1.0, variant: 2 },
+  { x: 19, y: 36, size: 2.2, opacity: 0.78, dur: 3.7, delay: -2.7, variant: 2 },
+  { x: 25, y: 42, size: 1.8, opacity: 0.65, dur: 3.9, delay: -0.4, variant: 1 },
+  { x: 28, y: 35, size: 2.1, opacity: 0.72, dur: 4.2, delay: -3.3, variant: 2 },
+  { x: 31, y: 34, size: 1.4, opacity: 0.55, dur: 3.2, delay: -0.6, variant: 1 },
+  { x: 36, y: 44, size: 1.9, opacity: 0.68, dur: 3.5, delay: -1.9, variant: 1 },
+  { x: 41, y: 39, size: 2.3, opacity: 0.76, dur: 4.0, delay: -2.8, variant: 2 },
+  { x: 45, y: 35, size: 2.5, opacity: 0.82, dur: 4.3, delay: -3.8, variant: 2 },
+  { x: 50, y: 43, size: 1.7, opacity: 0.60, dur: 3.4, delay: -0.5, variant: 1 },
+  { x: 52, y: 44, size: 2.2, opacity: 0.72, dur: 4.1, delay: -2.6, variant: 2 },
+  { x: 57, y: 33, size: 1.8, opacity: 0.65, dur: 3.4, delay: -1.5, variant: 1 },
+  { x: 62, y: 40, size: 2.0, opacity: 0.70, dur: 3.8, delay: -3.1, variant: 2 },
+  { x: 67, y: 37, size: 1.5, opacity: 0.58, dur: 3.2, delay: -1.4, variant: 1 },
+  { x: 71, y: 36, size: 2.3, opacity: 0.75, dur: 4.0, delay: -2.9, variant: 2 },
+  { x: 76, y: 43, size: 2.1, opacity: 0.72, dur: 3.9, delay: -0.8, variant: 1 },
+  { x: 79, y: 42, size: 1.7, opacity: 0.60, dur: 3.5, delay: -1.8, variant: 1 },
+  { x: 84, y: 32, size: 1.6, opacity: 0.60, dur: 3.6, delay: -0.7, variant: 1 },
+  { x: 88, y: 40, size: 2.2, opacity: 0.74, dur: 4.1, delay: -2.5, variant: 2 },
+  { x: 92, y: 35, size: 2.0, opacity: 0.70, dur: 4.2, delay: -2.3, variant: 2 },
+  { x: 95, y: 41, size: 1.6, opacity: 0.58, dur: 3.3, delay: -1.6, variant: 1 },
+  { x: 15, y: 18, size: 1.3, opacity: 0.50, dur: 3.0, delay: -1.9, variant: 1 },
+  { x: 37, y: 8, size: 2.3, opacity: 0.80, dur: 4.5, delay: -3.3, variant: 2 },
+  { x: 63, y: 8, size: 2.0, opacity: 0.72, dur: 3.8, delay: -1.2, variant: 1 },
+  { x: 77, y: 25, size: 1.5, opacity: 0.60, dur: 3.2, delay: -2.4, variant: 2 },
+  { x: 23, y: 6, size: 1.8, opacity: 0.68, dur: 3.6, delay: -0.3, variant: 1 },
+  { x: 53, y: 6, size: 3.1, opacity: 0.88, dur: 4.7, delay: -2.9, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(253, 164, 175, 0.85)' },
+  { x: 83, y: 5, size: 1.9, opacity: 0.72, dur: 3.5, delay: -1.7, variant: 2 },
 ];
+
+// Stage 6: The River of Rebirth - Sapphire Abyss & Moonlit River Glowing Stars (2x Density: 68 stars)
+const NIGHT_STARS_STAGE_6: GlowingStarItem[] = [
+  { x: 3, y: 8, size: 1.5, opacity: 0.65, dur: 3.0, delay: -0.4, variant: 1 },
+  { x: 6, y: 12, size: 1.8, opacity: 0.75, dur: 3.3, delay: -0.8, variant: 1 },
+  { x: 10, y: 6, size: 2.3, opacity: 0.80, dur: 4.1, delay: -1.9, variant: 2 },
+  { x: 14, y: 12, size: 3.8, opacity: 0.98, dur: 5.0, delay: -2.5, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(165, 243, 252, 0.95)' },
+  { x: 17, y: 20, size: 1.9, opacity: 0.72, dur: 3.6, delay: -0.6, variant: 1 },
+  { x: 20, y: 24, size: 2.2, opacity: 0.80, dur: 3.9, delay: -1.4, variant: 2 },
+  { x: 23, y: 15, size: 3.2, opacity: 0.90, dur: 4.7, delay: -3.3, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(199, 210, 254, 0.9)' },
+  { x: 26, y: 9, size: 1.5, opacity: 0.60, dur: 3.2, delay: -3.1, variant: 1 },
+  { x: 29, y: 6, size: 2.2, opacity: 0.75, dur: 4.1, delay: -3.5, variant: 2 },
+  { x: 32, y: 18, size: 2.5, opacity: 0.85, dur: 4.4, delay: -0.7, variant: 2 },
+  { x: 35, y: 10, size: 1.7, opacity: 0.68, dur: 3.3, delay: -1.5, variant: 1 },
+  { x: 38, y: 8, size: 4.0, opacity: 0.98, dur: 5.4, delay: -3.8, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(199, 210, 254, 0.95)' },
+  { x: 41, y: 25, size: 2.1, opacity: 0.76, dur: 3.8, delay: -2.1, variant: 2 },
+  { x: 44, y: 22, size: 1.6, opacity: 0.65, dur: 3.4, delay: -1.9, variant: 1 },
+  { x: 47, y: 11, size: 3.4, opacity: 0.92, dur: 4.9, delay: -0.9, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(165, 243, 252, 0.9)' },
+  { x: 50, y: 14, size: 2.8, opacity: 0.88, dur: 4.2, delay: -2.8, variant: 2 },
+  { x: 54, y: 6, size: 1.9, opacity: 0.70, dur: 3.7, delay: -1.1, variant: 1 },
+  { x: 56, y: 26, size: 1.4, opacity: 0.55, dur: 3.0, delay: -0.5, variant: 1 },
+  { x: 59, y: 18, size: 2.4, opacity: 0.82, dur: 4.3, delay: -3.6, variant: 2 },
+  { x: 62, y: 15, size: 3.6, opacity: 0.92, dur: 4.8, delay: -4.2, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(165, 243, 252, 0.9)' },
+  { x: 65, y: 6, size: 2.5, opacity: 0.80, dur: 4.5, delay: -2.6, variant: 2 },
+  { x: 68, y: 28, size: 2.0, opacity: 0.75, dur: 3.8, delay: -1.3, variant: 2 },
+  { x: 71, y: 19, size: 1.6, opacity: 0.62, dur: 3.4, delay: -0.7, variant: 1 },
+  { x: 73, y: 11, size: 1.5, opacity: 0.60, dur: 3.5, delay: -2.9, variant: 1 },
+  { x: 75, y: 24, size: 2.3, opacity: 0.78, dur: 4.0, delay: -2.0, variant: 2 },
+  { x: 78, y: 10, size: 4.2, opacity: 0.98, dur: 5.2, delay: -1.6, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(199, 210, 254, 0.95)' },
+  { x: 81, y: 17, size: 1.8, opacity: 0.70, dur: 3.6, delay: -3.7, variant: 1 },
+  { x: 84, y: 21, size: 2.4, opacity: 0.82, dur: 4.0, delay: -3.4, variant: 2 },
+  { x: 87, y: 7, size: 1.4, opacity: 0.55, dur: 3.1, delay: -0.4, variant: 1 },
+  { x: 89, y: 14, size: 3.3, opacity: 0.90, dur: 4.8, delay: -2.2, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(165, 243, 252, 0.9)' },
+  { x: 92, y: 18, size: 3.5, opacity: 0.90, dur: 4.6, delay: -0.9, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(165, 243, 252, 0.85)' },
+  { x: 94, y: 8, size: 2.0, opacity: 0.74, dur: 3.9, delay: -1.8, variant: 2 },
+  { x: 96, y: 10, size: 1.7, opacity: 0.65, dur: 3.1, delay: -2.3, variant: 1 },
+  { x: 98, y: 16, size: 1.4, opacity: 0.55, dur: 3.2, delay: -0.6, variant: 1 },
+  { x: 5, y: 32, size: 1.8, opacity: 0.68, dur: 3.7, delay: -2.1, variant: 2 },
+  { x: 10, y: 34, size: 1.6, opacity: 0.60, dur: 4.0, delay: -1.5, variant: 1 },
+  { x: 16, y: 39, size: 2.1, opacity: 0.74, dur: 3.8, delay: -3.3, variant: 2 },
+  { x: 22, y: 38, size: 2.3, opacity: 0.78, dur: 3.6, delay: -3.0, variant: 2 },
+  { x: 27, y: 44, size: 1.9, opacity: 0.68, dur: 3.8, delay: -2.0, variant: 1 },
+  { x: 31, y: 36, size: 2.4, opacity: 0.76, dur: 4.2, delay: -1.1, variant: 2 },
+  { x: 35, y: 32, size: 1.4, opacity: 0.55, dur: 3.3, delay: -0.6, variant: 1 },
+  { x: 39, y: 41, size: 1.8, opacity: 0.66, dur: 3.5, delay: -2.7, variant: 1 },
+  { x: 42, y: 45, size: 2.4, opacity: 0.75, dur: 4.2, delay: -3.3, variant: 2 },
+  { x: 46, y: 34, size: 2.0, opacity: 0.72, dur: 3.7, delay: -0.8, variant: 1 },
+  { x: 48, y: 36, size: 2.6, opacity: 0.82, dur: 4.3, delay: -2.7, variant: 2 },
+  { x: 53, y: 42, size: 1.6, opacity: 0.60, dur: 3.4, delay: -1.6, variant: 1 },
+  { x: 56, y: 37, size: 2.2, opacity: 0.74, dur: 4.0, delay: -3.0, variant: 2 },
+  { x: 59, y: 35, size: 1.8, opacity: 0.65, dur: 3.5, delay: -1.2, variant: 1 },
+  { x: 63, y: 43, size: 2.5, opacity: 0.80, dur: 4.4, delay: -2.4, variant: 2 },
+  { x: 67, y: 44, size: 1.6, opacity: 0.60, dur: 3.4, delay: -1.6, variant: 1 },
+  { x: 71, y: 38, size: 2.2, opacity: 0.75, dur: 3.9, delay: -3.7, variant: 2 },
+  { x: 74, y: 33, size: 1.7, opacity: 0.64, dur: 3.6, delay: -0.5, variant: 1 },
+  { x: 76, y: 46, size: 2.0, opacity: 0.70, dur: 3.9, delay: -2.8, variant: 2 },
+  { x: 80, y: 40, size: 2.3, opacity: 0.78, dur: 4.1, delay: -3.2, variant: 2 },
+  { x: 83, y: 33, size: 1.5, opacity: 0.58, dur: 3.2, delay: -0.8, variant: 1 },
+  { x: 86, y: 43, size: 2.1, opacity: 0.72, dur: 3.8, delay: -1.4, variant: 1 },
+  { x: 88, y: 45, size: 1.5, opacity: 0.55, dur: 3.2, delay: -0.9, variant: 1 },
+  { x: 90, y: 37, size: 2.1, opacity: 0.72, dur: 4.1, delay: -2.2, variant: 2 },
+  { x: 94, y: 42, size: 1.8, opacity: 0.64, dur: 3.5, delay: -0.7, variant: 1 },
+  { x: 97, y: 36, size: 2.2, opacity: 0.70, dur: 4.0, delay: -2.5, variant: 2 },
+  { x: 16, y: 20, size: 1.3, opacity: 0.52, dur: 2.9, delay: -1.8, variant: 1 },
+  { x: 8, y: 22, size: 1.7, opacity: 0.66, dur: 3.5, delay: -2.3, variant: 2 },
+  { x: 34, y: 27, size: 2.0, opacity: 0.74, dur: 3.9, delay: -1.7, variant: 1 },
+  { x: 52, y: 29, size: 2.3, opacity: 0.78, dur: 4.2, delay: -3.5, variant: 2 },
+  { x: 82, y: 27, size: 1.6, opacity: 0.62, dur: 3.4, delay: -0.8, variant: 1 },
+  { x: 21, y: 7, size: 1.8, opacity: 0.70, dur: 3.7, delay: -2.6, variant: 2 },
+  { x: 69, y: 6, size: 2.1, opacity: 0.74, dur: 4.0, delay: -1.3, variant: 1 },
+  { x: 85, y: 8, size: 3.1, opacity: 0.88, dur: 4.8, delay: -3.0, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(199, 210, 254, 0.9)' },
+];
+
+// Stage 8: The Wound of Love - Celestial Amethyst Twilight Glowing Stars (2x Density: 64 stars)
+const NIGHT_STARS_STAGE_8: GlowingStarItem[] = [
+  { x: 4, y: 9, size: 1.6, opacity: 0.68, dur: 3.2, delay: -0.3, variant: 1 },
+  { x: 7, y: 15, size: 1.9, opacity: 0.75, dur: 3.5, delay: -0.7, variant: 1 },
+  { x: 10, y: 8, size: 2.4, opacity: 0.82, dur: 4.2, delay: -2.0, variant: 2 },
+  { x: 13, y: 25, size: 2.3, opacity: 0.82, dur: 4.1, delay: -2.3, variant: 2 },
+  { x: 15, y: 8, size: 1.3, opacity: 0.50, dur: 2.8, delay: -1.5, variant: 1 },
+  { x: 18, y: 16, size: 3.8, opacity: 0.96, dur: 5.1, delay: -3.2, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(216, 180, 254, 0.95)' },
+  { x: 22, y: 22, size: 1.8, opacity: 0.68, dur: 3.6, delay: -0.8, variant: 1 },
+  { x: 25, y: 9, size: 1.4, opacity: 0.58, dur: 3.0, delay: -1.1, variant: 1 },
+  { x: 28, y: 17, size: 2.6, opacity: 0.85, dur: 4.3, delay: -3.4, variant: 2 },
+  { x: 31, y: 22, size: 2.2, opacity: 0.80, dur: 3.8, delay: -2.8, variant: 2 },
+  { x: 34, y: 8, size: 3.2, opacity: 0.90, dur: 4.8, delay: -1.9, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(233, 213, 255, 0.9)' },
+  { x: 37, y: 13, size: 1.6, opacity: 0.62, dur: 3.6, delay: -0.5, variant: 1 },
+  { x: 39, y: 27, size: 1.9, opacity: 0.70, dur: 3.8, delay: -2.4, variant: 2 },
+  { x: 42, y: 10, size: 4.0, opacity: 0.98, dur: 5.3, delay: -4.0, variant: 3, isMajor: true, color: '#f3e8ff', glow: 'rgba(233, 213, 255, 0.95)' },
+  { x: 45, y: 18, size: 2.0, opacity: 0.74, dur: 3.9, delay: -1.2, variant: 1 },
+  { x: 49, y: 21, size: 2.6, opacity: 0.85, dur: 4.2, delay: -1.7, variant: 2 },
+  { x: 51, y: 7, size: 2.1, opacity: 0.72, dur: 3.9, delay: -3.1, variant: 2 },
+  { x: 55, y: 14, size: 1.5, opacity: 0.60, dur: 3.2, delay: -2.6, variant: 1 },
+  { x: 58, y: 23, size: 2.4, opacity: 0.80, dur: 4.1, delay: -0.9, variant: 2 },
+  { x: 62, y: 27, size: 2.0, opacity: 0.75, dur: 3.9, delay: -0.9, variant: 2 },
+  { x: 65, y: 7, size: 1.8, opacity: 0.68, dur: 3.5, delay: -0.9, variant: 1 },
+  { x: 68, y: 12, size: 3.6, opacity: 0.94, dur: 4.9, delay: -3.6, variant: 3, isMajor: true, color: '#ffffff', glow: 'rgba(216, 180, 254, 0.9)' },
+  { x: 71, y: 20, size: 2.2, opacity: 0.78, dur: 4.0, delay: -2.5, variant: 2 },
+  { x: 75, y: 23, size: 1.7, opacity: 0.65, dur: 3.4, delay: -1.4, variant: 1 },
+  { x: 78, y: 9, size: 3.3, opacity: 0.90, dur: 4.7, delay: -3.8, variant: 3, isMajor: true, color: '#f3e8ff', glow: 'rgba(233, 213, 255, 0.9)' },
+  { x: 80, y: 11, size: 2.4, opacity: 0.82, dur: 4.0, delay: -2.9, variant: 2 },
+  { x: 83, y: 21, size: 1.8, opacity: 0.70, dur: 3.6, delay: -1.0, variant: 1 },
+  { x: 86, y: 19, size: 3.7, opacity: 0.92, dur: 4.8, delay: -1.8, variant: 3, isMajor: true, color: '#f3e8ff', glow: 'rgba(233, 213, 255, 0.95)' },
+  { x: 88, y: 8, size: 1.5, opacity: 0.58, dur: 3.2, delay: -2.2, variant: 2 },
+  { x: 91, y: 12, size: 2.1, opacity: 0.75, dur: 3.9, delay: -3.1, variant: 1 },
+  { x: 93, y: 15, size: 1.6, opacity: 0.60, dur: 3.3, delay: -3.4, variant: 1 },
+  { x: 96, y: 22, size: 2.2, opacity: 0.72, dur: 4.0, delay: -0.6, variant: 2 },
+  { x: 5, y: 31, size: 1.7, opacity: 0.62, dur: 3.6, delay: -2.3, variant: 1 },
+  { x: 9, y: 35, size: 1.5, opacity: 0.58, dur: 3.9, delay: -1.6, variant: 1 },
+  { x: 14, y: 40, size: 2.0, opacity: 0.72, dur: 3.8, delay: -3.2, variant: 2 },
+  { x: 18, y: 34, size: 1.6, opacity: 0.60, dur: 3.4, delay: -0.8, variant: 1 },
+  { x: 21, y: 37, size: 2.4, opacity: 0.78, dur: 4.2, delay: -2.8, variant: 2 },
+  { x: 26, y: 42, size: 1.9, opacity: 0.66, dur: 3.7, delay: -1.5, variant: 1 },
+  { x: 28, y: 43, size: 1.7, opacity: 0.62, dur: 3.7, delay: -1.7, variant: 1 },
+  { x: 33, y: 33, size: 1.4, opacity: 0.55, dur: 3.1, delay: -0.4, variant: 1 },
+  { x: 36, y: 41, size: 2.2, opacity: 0.74, dur: 4.0, delay: -2.6, variant: 2 },
+  { x: 41, y: 35, size: 1.8, opacity: 0.65, dur: 3.5, delay: -1.1, variant: 1 },
+  { x: 46, y: 36, size: 2.5, opacity: 0.80, dur: 4.4, delay: -3.5, variant: 2 },
+  { x: 50, y: 42, size: 1.6, opacity: 0.60, dur: 3.3, delay: -0.9, variant: 1 },
+  { x: 54, y: 44, size: 2.3, opacity: 0.76, dur: 4.1, delay: -3.0, variant: 2 },
+  { x: 58, y: 34, size: 1.8, opacity: 0.64, dur: 3.6, delay: -1.3, variant: 1 },
+  { x: 62, y: 42, size: 2.1, opacity: 0.72, dur: 3.9, delay: -2.2, variant: 2 },
+  { x: 66, y: 37, size: 1.5, opacity: 0.56, dur: 3.2, delay: -0.5, variant: 1 },
+  { x: 70, y: 38, size: 2.2, opacity: 0.74, dur: 4.0, delay: -2.7, variant: 2 },
+  { x: 74, y: 43, size: 2.0, opacity: 0.70, dur: 3.8, delay: -1.9, variant: 1 },
+  { x: 77, y: 44, size: 1.6, opacity: 0.58, dur: 3.3, delay: -1.2, variant: 1 },
+  { x: 82, y: 32, size: 1.6, opacity: 0.60, dur: 3.4, delay: -0.8, variant: 1 },
+  { x: 84, y: 26, size: 1.4, opacity: 0.54, dur: 3.0, delay: -0.6, variant: 1 },
+  { x: 87, y: 41, size: 2.1, opacity: 0.72, dur: 4.0, delay: -2.9, variant: 2 },
+  { x: 91, y: 36, size: 2.0, opacity: 0.70, dur: 3.8, delay: -2.1, variant: 2 },
+  { x: 94, y: 43, size: 1.5, opacity: 0.55, dur: 3.2, delay: -1.3, variant: 1 },
+  { x: 97, y: 35, size: 2.2, opacity: 0.74, dur: 4.1, delay: -2.4, variant: 2 },
+  { x: 12, y: 17, size: 1.7, opacity: 0.66, dur: 3.5, delay: -1.8, variant: 1 },
+  { x: 30, y: 28, size: 2.2, opacity: 0.76, dur: 4.1, delay: -3.3, variant: 2 },
+  { x: 48, y: 28, size: 1.8, opacity: 0.68, dur: 3.6, delay: -0.7, variant: 1 },
+  { x: 64, y: 20, size: 2.3, opacity: 0.79, dur: 4.2, delay: -2.8, variant: 2 },
+  { x: 81, y: 28, size: 1.5, opacity: 0.58, dur: 3.2, delay: -1.4, variant: 1 },
+  { x: 23, y: 12, size: 1.9, opacity: 0.72, dur: 3.7, delay: -0.9, variant: 2 },
+  { x: 72, y: 8, size: 2.5, opacity: 0.82, dur: 4.3, delay: -3.5, variant: 1 },
+];
+
+function GlowingStarField({ stars, defaultGlow }: { stars: GlowingStarItem[]; defaultGlow: string }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {stars.map((star, idx) => {
+        const animClass =
+          star.variant === 1 ? 'anim-star-1' : star.variant === 2 ? 'anim-star-2' : 'anim-star-glow';
+        const starColor = star.color || '#ffffff';
+        const glowColor = star.glow || defaultGlow;
+
+        return (
+          <React.Fragment key={idx}>
+            {/* 4-Point Diamond Sparkle Flare for Major Constellation Stars */}
+            {star.isMajor && (
+              <div
+                className={`absolute pointer-events-none ${animClass}`}
+                style={{
+                  left: `${star.x}%`,
+                  top: `${star.y}%`,
+                  width: `${star.size * 4.8}px`,
+                  height: `${star.size * 4.8}px`,
+                  transform: 'translate(-50%, -50%)',
+                  ['--star-opacity' as any]: star.opacity,
+                  ['--star-glow' as any]: glowColor,
+                  animationDuration: `${star.dur}s`,
+                  animationDelay: `${star.delay}s`,
+                }}
+              >
+                <svg viewBox="0 0 24 24" className="w-full h-full overflow-visible">
+                  <path
+                    d="M12 2 Q12 12 22 12 Q12 12 12 22 Q12 12 2 12 Q12 12 12 2 Z"
+                    fill={starColor}
+                    filter={`drop-shadow(0 0 3px ${glowColor})`}
+                  />
+                  <circle cx="12" cy="12" r="3.2" fill="#ffffff" />
+                </svg>
+              </div>
+            )}
+
+            {/* Glowing Star Core Point */}
+            <div
+              className={`absolute rounded-full pointer-events-none ${animClass}`}
+              style={{
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                backgroundColor: starColor,
+                transform: 'translate(-50%, -50%)',
+                ['--star-opacity' as any]: star.opacity,
+                ['--star-glow' as any]: glowColor,
+                opacity: star.opacity,
+                boxShadow:
+                  star.size > 2.2
+                    ? `0 0 5px ${starColor}, 0 0 10px ${glowColor}`
+                    : `0 0 3px ${starColor}, 0 0 6px ${glowColor}`,
+                animationDuration: `${star.dur}s`,
+                animationDelay: `${star.delay}s`,
+              }}
+            />
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
 
 // -------------------------------------------------------------------------
 // STAGE-SPECIFIC AMBIENT PARTICLES (Delicate Zen Atmosphere)
 // -------------------------------------------------------------------------
 
-// Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Bamboo Dust
+// Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Bamboo Dust (2x Density: 30 motes)
 const MIST_MOTES = [
+  { x: 4, y: 30, size: 2.0, opacity: 0.50, dur: 8.2, delay: -1.0, variant: 1 as const, color: '#bbf7d0' },
   { x: 8, y: 32, size: 2.2, opacity: 0.55, dur: 8.5, delay: -1.2, variant: 1 as const, color: '#bbf7d0' },
-  { x: 16, y: 55, size: 3.0, opacity: 0.65, dur: 9.8, delay: -4.5, variant: 2 as const, color: '#fef3c7' },
-  { x: 25, y: 22, size: 1.8, opacity: 0.45, dur: 7.2, delay: -2.8, variant: 1 as const, color: '#bbf7d0' },
-  { x: 33, y: 48, size: 2.6, opacity: 0.60, dur: 10.2, delay: -6.1, variant: 2 as const, color: '#e2f5ec' },
-  { x: 42, y: 28, size: 2.0, opacity: 0.50, dur: 8.0, delay: -0.9, variant: 1 as const, color: '#fef3c7' },
-  { x: 50, y: 62, size: 3.2, opacity: 0.70, dur: 11.0, delay: -5.3, variant: 2 as const, color: '#bbf7d0' },
-  { x: 58, y: 35, size: 1.9, opacity: 0.45, dur: 7.6, delay: -3.7, variant: 1 as const, color: '#e2f5ec' },
-  { x: 67, y: 52, size: 2.8, opacity: 0.65, dur: 9.2, delay: -7.0, variant: 2 as const, color: '#fef3c7' },
-  { x: 76, y: 25, size: 2.3, opacity: 0.55, dur: 8.8, delay: -1.8, variant: 1 as const, color: '#bbf7d0' },
-  { x: 84, y: 58, size: 3.0, opacity: 0.60, dur: 10.5, delay: -4.2, variant: 2 as const, color: '#e2f5ec' },
-  { x: 92, y: 38, size: 2.1, opacity: 0.50, dur: 7.9, delay: -6.4, variant: 1 as const, color: '#fef3c7' },
   { x: 12, y: 72, size: 2.5, opacity: 0.55, dur: 9.0, delay: -3.1, variant: 2 as const, color: '#bbf7d0' },
+  { x: 16, y: 55, size: 3.0, opacity: 0.65, dur: 9.8, delay: -4.5, variant: 2 as const, color: '#fef3c7' },
+  { x: 21, y: 40, size: 2.4, opacity: 0.52, dur: 7.8, delay: -2.0, variant: 1 as const, color: '#e2f5ec' },
+  { x: 25, y: 22, size: 1.8, opacity: 0.45, dur: 7.2, delay: -2.8, variant: 1 as const, color: '#bbf7d0' },
+  { x: 29, y: 64, size: 2.8, opacity: 0.62, dur: 9.5, delay: -5.4, variant: 2 as const, color: '#fef3c7' },
+  { x: 33, y: 48, size: 2.6, opacity: 0.60, dur: 10.2, delay: -6.1, variant: 2 as const, color: '#e2f5ec' },
   { x: 38, y: 75, size: 2.9, opacity: 0.60, dur: 8.4, delay: -5.8, variant: 1 as const, color: '#fef3c7' },
+  { x: 42, y: 28, size: 2.0, opacity: 0.50, dur: 8.0, delay: -0.9, variant: 1 as const, color: '#fef3c7' },
+  { x: 46, y: 50, size: 2.3, opacity: 0.58, dur: 8.6, delay: -3.5, variant: 2 as const, color: '#bbf7d0' },
+  { x: 50, y: 62, size: 3.2, opacity: 0.70, dur: 11.0, delay: -5.3, variant: 2 as const, color: '#bbf7d0' },
+  { x: 54, y: 24, size: 1.7, opacity: 0.48, dur: 7.4, delay: -1.6, variant: 1 as const, color: '#fef3c7' },
+  { x: 58, y: 35, size: 1.9, opacity: 0.45, dur: 7.6, delay: -3.7, variant: 1 as const, color: '#e2f5ec' },
   { x: 63, y: 68, size: 2.2, opacity: 0.50, dur: 9.6, delay: -2.4, variant: 2 as const, color: '#e2f5ec' },
+  { x: 67, y: 52, size: 2.8, opacity: 0.65, dur: 9.2, delay: -7.0, variant: 2 as const, color: '#fef3c7' },
+  { x: 72, y: 38, size: 2.1, opacity: 0.52, dur: 8.1, delay: -4.3, variant: 1 as const, color: '#bbf7d0' },
+  { x: 76, y: 25, size: 2.3, opacity: 0.55, dur: 8.8, delay: -1.8, variant: 1 as const, color: '#bbf7d0' },
+  { x: 80, y: 66, size: 3.1, opacity: 0.68, dur: 10.1, delay: -6.0, variant: 2 as const, color: '#fef3c7' },
+  { x: 84, y: 58, size: 3.0, opacity: 0.60, dur: 10.5, delay: -4.2, variant: 2 as const, color: '#e2f5ec' },
   { x: 88, y: 70, size: 2.7, opacity: 0.55, dur: 8.7, delay: -4.9, variant: 1 as const, color: '#bbf7d0' },
+  { x: 92, y: 38, size: 2.1, opacity: 0.50, dur: 7.9, delay: -6.4, variant: 1 as const, color: '#fef3c7' },
+  { x: 96, y: 56, size: 2.5, opacity: 0.54, dur: 9.3, delay: -2.7, variant: 2 as const, color: '#bbf7d0' },
+  { x: 10, y: 44, size: 2.0, opacity: 0.48, dur: 8.9, delay: -5.0, variant: 1 as const, color: '#e2f5ec' },
+  { x: 30, y: 36, size: 2.4, opacity: 0.58, dur: 7.7, delay: -1.5, variant: 2 as const, color: '#bbf7d0' },
+  { x: 48, y: 72, size: 2.8, opacity: 0.62, dur: 10.4, delay: -4.7, variant: 1 as const, color: '#fef3c7' },
+  { x: 65, y: 26, size: 1.8, opacity: 0.46, dur: 8.3, delay: -3.3, variant: 2 as const, color: '#bbf7d0' },
+  { x: 78, y: 46, size: 2.6, opacity: 0.60, dur: 9.7, delay: -5.6, variant: 1 as const, color: '#e2f5ec' },
+  { x: 86, y: 20, size: 2.2, opacity: 0.52, dur: 8.0, delay: -2.1, variant: 2 as const, color: '#fef3c7' },
+  { x: 94, y: 68, size: 2.9, opacity: 0.64, dur: 9.9, delay: -4.0, variant: 1 as const, color: '#bbf7d0' },
 ];
 
-// Stage 2: The Samana Trials - Frosty Himalayan Winter Falling Snow
+// Stage 2: The Samana Trials - Frosty Himalayan Winter Falling Snow (2x Density: 58 snowflakes)
 const FALLING_SNOWFLAKES = [
+  { x: 2, size: 2.0, opacity: 0.60, dur: 7.4, delay: -0.6, variant: 1 as const },
   { x: 3, size: 2.2, opacity: 0.65, dur: 7.2, delay: -1.2, variant: 1 as const },
+  { x: 5, size: 3.1, opacity: 0.80, dur: 6.1, delay: -3.2, variant: 2 as const },
   { x: 7, size: 3.4, opacity: 0.85, dur: 5.6, delay: -4.5, variant: 2 as const },
+  { x: 9, size: 1.6, opacity: 0.45, dur: 8.7, delay: -1.7, variant: 3 as const },
   { x: 11, size: 1.8, opacity: 0.50, dur: 8.4, delay: -2.1, variant: 3 as const },
-  { x: 15, size: 2.8, opacity: 0.75, dur: 6.2, delay: -0.8, variant: 1 as const },
-  { x: 19, size: 4.0, opacity: 0.90, dur: 5.1, delay: -3.4, variant: 2 as const },
-  { x: 23, size: 2.0, opacity: 0.55, dur: 7.8, delay: -5.7, variant: 3 as const },
-  { x: 27, size: 3.1, opacity: 0.80, dur: 6.0, delay: -1.9, variant: 1 as const },
-  { x: 31, size: 1.7, opacity: 0.45, dur: 8.8, delay: -4.0, variant: 2 as const },
-  { x: 35, size: 2.9, opacity: 0.75, dur: 6.4, delay: -2.7, variant: 3 as const },
-  { x: 39, size: 3.8, opacity: 0.88, dur: 5.3, delay: -0.5, variant: 1 as const },
-  { x: 43, size: 2.2, opacity: 0.60, dur: 7.5, delay: -4.8, variant: 2 as const },
-  { x: 47, size: 3.0, opacity: 0.80, dur: 5.9, delay: -3.1, variant: 3 as const },
-  { x: 51, size: 1.9, opacity: 0.50, dur: 8.2, delay: -1.4, variant: 1 as const },
-  { x: 55, size: 4.2, opacity: 0.92, dur: 5.0, delay: -4.3, variant: 2 as const },
-  { x: 59, size: 2.5, opacity: 0.70, dur: 6.8, delay: -2.2, variant: 3 as const },
-  { x: 63, size: 3.3, opacity: 0.85, dur: 5.7, delay: -0.9, variant: 1 as const },
-  { x: 67, size: 1.8, opacity: 0.50, dur: 8.6, delay: -5.2, variant: 2 as const },
-  { x: 71, size: 2.7, opacity: 0.75, dur: 6.3, delay: -3.6, variant: 3 as const },
-  { x: 75, size: 3.6, opacity: 0.88, dur: 5.4, delay: -1.6, variant: 1 as const },
-  { x: 79, size: 2.1, opacity: 0.60, dur: 7.6, delay: -4.1, variant: 2 as const },
-  { x: 83, size: 3.2, opacity: 0.82, dur: 5.8, delay: -2.5, variant: 3 as const },
-  { x: 87, size: 1.7, opacity: 0.45, dur: 9.0, delay: -0.3, variant: 1 as const },
-  { x: 91, size: 3.9, opacity: 0.90, dur: 5.2, delay: -3.9, variant: 2 as const },
-  { x: 95, size: 2.4, opacity: 0.70, dur: 7.0, delay: -1.7, variant: 3 as const },
-  { x: 98, size: 3.0, opacity: 0.80, dur: 6.1, delay: -4.6, variant: 1 as const },
+  { x: 13, size: 2.6, opacity: 0.70, dur: 6.6, delay: -5.4, variant: 1 as const },
   { x: 14, size: 2.3, opacity: 0.65, dur: 7.1, delay: -6.0, variant: 2 as const },
+  { x: 15, size: 2.8, opacity: 0.75, dur: 6.2, delay: -0.8, variant: 1 as const },
+  { x: 17, size: 3.6, opacity: 0.88, dur: 5.3, delay: -2.4, variant: 2 as const },
+  { x: 19, size: 4.0, opacity: 0.90, dur: 5.1, delay: -3.4, variant: 2 as const },
+  { x: 21, size: 1.9, opacity: 0.52, dur: 8.1, delay: -4.8, variant: 3 as const },
+  { x: 23, size: 2.0, opacity: 0.55, dur: 7.8, delay: -5.7, variant: 3 as const },
+  { x: 25, size: 3.3, opacity: 0.82, dur: 5.8, delay: -1.1, variant: 1 as const },
+  { x: 27, size: 3.1, opacity: 0.80, dur: 6.0, delay: -1.9, variant: 1 as const },
+  { x: 29, size: 2.2, opacity: 0.62, dur: 7.3, delay: -3.6, variant: 2 as const },
+  { x: 31, size: 1.7, opacity: 0.45, dur: 8.8, delay: -4.0, variant: 2 as const },
+  { x: 33, size: 3.7, opacity: 0.86, dur: 5.5, delay: -0.3, variant: 3 as const },
+  { x: 35, size: 2.9, opacity: 0.75, dur: 6.4, delay: -2.7, variant: 3 as const },
+  { x: 37, size: 2.1, opacity: 0.58, dur: 7.7, delay: -4.4, variant: 1 as const },
   { x: 38, size: 3.5, opacity: 0.85, dur: 5.5, delay: -5.1, variant: 3 as const },
+  { x: 39, size: 3.8, opacity: 0.88, dur: 5.3, delay: -0.5, variant: 1 as const },
+  { x: 41, size: 1.8, opacity: 0.48, dur: 8.5, delay: -2.0, variant: 2 as const },
+  { x: 43, size: 2.2, opacity: 0.60, dur: 7.5, delay: -4.8, variant: 2 as const },
+  { x: 45, size: 3.4, opacity: 0.84, dur: 5.7, delay: -1.5, variant: 3 as const },
+  { x: 47, size: 3.0, opacity: 0.80, dur: 5.9, delay: -3.1, variant: 3 as const },
+  { x: 49, size: 2.4, opacity: 0.68, dur: 6.9, delay: -5.9, variant: 1 as const },
+  { x: 51, size: 1.9, opacity: 0.50, dur: 8.2, delay: -1.4, variant: 1 as const },
+  { x: 53, size: 3.2, opacity: 0.82, dur: 6.0, delay: -2.8, variant: 2 as const },
+  { x: 55, size: 4.2, opacity: 0.92, dur: 5.0, delay: -4.3, variant: 2 as const },
+  { x: 57, size: 2.0, opacity: 0.54, dur: 7.9, delay: -0.7, variant: 3 as const },
+  { x: 59, size: 2.5, opacity: 0.70, dur: 6.8, delay: -2.2, variant: 3 as const },
+  { x: 61, size: 3.6, opacity: 0.86, dur: 5.4, delay: -3.8, variant: 1 as const },
   { x: 62, size: 2.0, opacity: 0.55, dur: 8.0, delay: -6.8, variant: 1 as const },
+  { x: 63, size: 3.3, opacity: 0.85, dur: 5.7, delay: -0.9, variant: 1 as const },
+  { x: 65, size: 2.2, opacity: 0.62, dur: 7.2, delay: -4.7, variant: 2 as const },
+  { x: 67, size: 1.8, opacity: 0.50, dur: 8.6, delay: -5.2, variant: 2 as const },
+  { x: 69, size: 3.9, opacity: 0.90, dur: 5.2, delay: -1.8, variant: 3 as const },
+  { x: 71, size: 2.7, opacity: 0.75, dur: 6.3, delay: -3.6, variant: 3 as const },
+  { x: 73, size: 2.1, opacity: 0.58, dur: 7.6, delay: -0.4, variant: 1 as const },
+  { x: 75, size: 3.6, opacity: 0.88, dur: 5.4, delay: -1.6, variant: 1 as const },
+  { x: 77, size: 1.7, opacity: 0.46, dur: 8.9, delay: -3.3, variant: 2 as const },
+  { x: 79, size: 2.1, opacity: 0.60, dur: 7.6, delay: -4.1, variant: 2 as const },
+  { x: 81, size: 3.4, opacity: 0.84, dur: 5.6, delay: -6.2, variant: 3 as const },
+  { x: 83, size: 3.2, opacity: 0.82, dur: 5.8, delay: -2.5, variant: 3 as const },
+  { x: 85, size: 2.3, opacity: 0.66, dur: 6.9, delay: -1.0, variant: 1 as const },
   { x: 86, size: 3.2, opacity: 0.80, dur: 5.8, delay: -6.3, variant: 2 as const },
+  { x: 87, size: 1.7, opacity: 0.45, dur: 9.0, delay: -0.3, variant: 1 as const },
+  { x: 89, size: 2.8, opacity: 0.76, dur: 6.4, delay: -2.6, variant: 2 as const },
+  { x: 91, size: 3.9, opacity: 0.90, dur: 5.2, delay: -3.9, variant: 2 as const },
+  { x: 93, size: 1.8, opacity: 0.48, dur: 8.3, delay: -5.5, variant: 3 as const },
+  { x: 95, size: 2.4, opacity: 0.70, dur: 7.0, delay: -1.7, variant: 3 as const },
+  { x: 97, size: 3.5, opacity: 0.86, dur: 5.5, delay: -3.0, variant: 1 as const },
+  { x: 98, size: 3.0, opacity: 0.80, dur: 6.1, delay: -4.6, variant: 1 as const },
+  { x: 6, size: 2.7, opacity: 0.74, dur: 6.5, delay: -5.8, variant: 2 as const },
+  { x: 28, size: 1.9, opacity: 0.52, dur: 8.0, delay: -2.4, variant: 3 as const },
+  { x: 52, size: 3.8, opacity: 0.88, dur: 5.3, delay: -4.9, variant: 1 as const },
+  { x: 74, size: 2.5, opacity: 0.70, dur: 6.7, delay: -1.3, variant: 2 as const },
 ];
 
-// Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Sparks
+// Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Sparks (2x Density: 24 sparks)
 const GOLDEN_SPARKS = [
+  { x: 6, y: 11, size: 2.0, opacity: 0.60, dur: 7.0, delay: -0.8, variant: 1 as const, color: '#fef08a' },
   { x: 10, y: 8, size: 2.2, opacity: 0.65, dur: 7.4, delay: -1.5, variant: 1 as const, color: '#fde047' },
-  { x: 22, y: 14, size: 3.2, opacity: 0.75, dur: 8.6, delay: -3.8, variant: 2 as const, color: '#f59e0b' },
-  { x: 34, y: 6, size: 2.6, opacity: 0.60, dur: 6.8, delay: -2.2, variant: 1 as const, color: '#fef08a' },
-  { x: 45, y: 12, size: 3.6, opacity: 0.85, dur: 9.0, delay: -5.1, variant: 2 as const, color: '#fde047' },
-  { x: 55, y: 5, size: 2.4, opacity: 0.70, dur: 7.2, delay: -0.7, variant: 1 as const, color: '#f59e0b' },
-  { x: 66, y: 15, size: 3.4, opacity: 0.80, dur: 8.8, delay: -4.3, variant: 2 as const, color: '#fef08a' },
-  { x: 77, y: 8, size: 2.0, opacity: 0.55, dur: 6.5, delay: -2.9, variant: 1 as const, color: '#fde047' },
-  { x: 88, y: 13, size: 3.0, opacity: 0.75, dur: 8.2, delay: -6.0, variant: 2 as const, color: '#f59e0b' },
+  { x: 16, y: 15, size: 3.0, opacity: 0.72, dur: 8.2, delay: -4.0, variant: 2 as const, color: '#f59e0b' },
   { x: 18, y: 18, size: 2.8, opacity: 0.70, dur: 7.8, delay: -3.2, variant: 1 as const, color: '#fef08a' },
+  { x: 22, y: 14, size: 3.2, opacity: 0.75, dur: 8.6, delay: -3.8, variant: 2 as const, color: '#f59e0b' },
+  { x: 28, y: 9, size: 2.4, opacity: 0.62, dur: 7.1, delay: -1.9, variant: 1 as const, color: '#fde047' },
+  { x: 34, y: 6, size: 2.6, opacity: 0.60, dur: 6.8, delay: -2.2, variant: 1 as const, color: '#fef08a' },
+  { x: 39, y: 13, size: 3.3, opacity: 0.80, dur: 8.9, delay: -4.7, variant: 2 as const, color: '#f59e0b' },
   { x: 40, y: 16, size: 3.5, opacity: 0.82, dur: 9.4, delay: -5.7, variant: 2 as const, color: '#fde047' },
+  { x: 45, y: 12, size: 3.6, opacity: 0.85, dur: 9.0, delay: -5.1, variant: 2 as const, color: '#fde047' },
+  { x: 50, y: 7, size: 2.1, opacity: 0.58, dur: 6.7, delay: -2.5, variant: 1 as const, color: '#fef08a' },
+  { x: 55, y: 5, size: 2.4, opacity: 0.70, dur: 7.2, delay: -0.7, variant: 1 as const, color: '#f59e0b' },
+  { x: 60, y: 12, size: 3.1, opacity: 0.76, dur: 8.4, delay: -3.6, variant: 2 as const, color: '#fde047' },
   { x: 62, y: 19, size: 2.2, opacity: 0.60, dur: 7.0, delay: -1.8, variant: 1 as const, color: '#f59e0b' },
+  { x: 66, y: 15, size: 3.4, opacity: 0.80, dur: 8.8, delay: -4.3, variant: 2 as const, color: '#fef08a' },
+  { x: 71, y: 10, size: 2.7, opacity: 0.68, dur: 7.6, delay: -1.2, variant: 1 as const, color: '#fde047' },
+  { x: 77, y: 8, size: 2.0, opacity: 0.55, dur: 6.5, delay: -2.9, variant: 1 as const, color: '#fde047' },
   { x: 82, y: 17, size: 3.2, opacity: 0.78, dur: 8.5, delay: -4.6, variant: 2 as const, color: '#fef08a' },
+  { x: 85, y: 6, size: 2.5, opacity: 0.65, dur: 7.3, delay: -2.0, variant: 1 as const, color: '#f59e0b' },
+  { x: 88, y: 13, size: 3.0, opacity: 0.75, dur: 8.2, delay: -6.0, variant: 2 as const, color: '#f59e0b' },
+  { x: 92, y: 18, size: 2.8, opacity: 0.70, dur: 8.0, delay: -3.4, variant: 1 as const, color: '#fef08a' },
+  { x: 95, y: 9, size: 2.3, opacity: 0.62, dur: 6.9, delay: -1.0, variant: 2 as const, color: '#fde047' },
+  { x: 30, y: 17, size: 2.9, opacity: 0.74, dur: 8.1, delay: -4.4, variant: 2 as const, color: '#fef08a' },
+  { x: 74, y: 18, size: 3.3, opacity: 0.82, dur: 9.1, delay: -5.3, variant: 1 as const, color: '#f59e0b' },
 ];
 
-// Stage 4: The Garden of Kamala - Awakening of Senses Drifting Peach Blossom Petals
+// Stage 4: The Garden of Kamala - Awakening of Senses Drifting Peach Blossom Petals (2x Density: 28 petals)
 const BLOSSOM_PETALS = [
+  { x: 3, size: 5.8, opacity: 0.58, dur: 9.0, delay: -0.5, variant: 2 as const, color: '#fbcfe8' },
   { x: 5, size: 6.5, opacity: 0.65, dur: 8.5, delay: -1.0, variant: 1 as const, color: '#fbcfe8' },
+  { x: 9, size: 5.0, opacity: 0.50, dur: 10.2, delay: -3.5, variant: 2 as const, color: '#f472b6' },
   { x: 14, size: 5.2, opacity: 0.55, dur: 9.8, delay: -4.2, variant: 2 as const, color: '#f472b6' },
+  { x: 19, size: 6.8, opacity: 0.68, dur: 8.3, delay: -1.8, variant: 1 as const, color: '#fce7f3' },
   { x: 23, size: 7.0, opacity: 0.70, dur: 8.0, delay: -2.6, variant: 1 as const, color: '#fce7f3' },
-  { x: 32, size: 5.8, opacity: 0.60, dur: 10.4, delay: -6.3, variant: 2 as const, color: '#fbcfe8' },
-  { x: 41, size: 6.8, opacity: 0.75, dur: 8.2, delay: -0.8, variant: 1 as const, color: '#f472b6' },
-  { x: 50, size: 5.4, opacity: 0.55, dur: 9.5, delay: -5.0, variant: 2 as const, color: '#fce7f3' },
-  { x: 59, size: 7.2, opacity: 0.72, dur: 8.6, delay: -3.4, variant: 1 as const, color: '#fbcfe8' },
-  { x: 68, size: 5.6, opacity: 0.58, dur: 10.0, delay: -7.1, variant: 2 as const, color: '#f472b6' },
-  { x: 77, size: 6.6, opacity: 0.68, dur: 8.4, delay: -1.9, variant: 1 as const, color: '#fce7f3' },
-  { x: 86, size: 5.5, opacity: 0.55, dur: 9.6, delay: -4.7, variant: 2 as const, color: '#fbcfe8' },
-  { x: 94, size: 6.9, opacity: 0.70, dur: 8.8, delay: -6.5, variant: 1 as const, color: '#f472b6' },
   { x: 28, size: 6.0, opacity: 0.62, dur: 9.2, delay: -3.8, variant: 2 as const, color: '#fce7f3' },
+  { x: 32, size: 5.8, opacity: 0.60, dur: 10.4, delay: -6.3, variant: 2 as const, color: '#fbcfe8' },
+  { x: 37, size: 7.1, opacity: 0.72, dur: 8.1, delay: -4.5, variant: 1 as const, color: '#f472b6' },
+  { x: 41, size: 6.8, opacity: 0.75, dur: 8.2, delay: -0.8, variant: 1 as const, color: '#f472b6' },
+  { x: 46, size: 5.6, opacity: 0.56, dur: 9.9, delay: -2.9, variant: 2 as const, color: '#fce7f3' },
+  { x: 50, size: 5.4, opacity: 0.55, dur: 9.5, delay: -5.0, variant: 2 as const, color: '#fce7f3' },
+  { x: 55, size: 6.6, opacity: 0.68, dur: 8.7, delay: -1.5, variant: 1 as const, color: '#fbcfe8' },
+  { x: 59, size: 7.2, opacity: 0.72, dur: 8.6, delay: -3.4, variant: 1 as const, color: '#fbcfe8' },
   { x: 63, size: 6.4, opacity: 0.65, dur: 8.9, delay: -5.5, variant: 1 as const, color: '#fbcfe8' },
+  { x: 68, size: 5.6, opacity: 0.58, dur: 10.0, delay: -7.1, variant: 2 as const, color: '#f472b6' },
+  { x: 73, size: 7.0, opacity: 0.70, dur: 8.2, delay: -4.0, variant: 1 as const, color: '#fce7f3' },
+  { x: 77, size: 6.6, opacity: 0.68, dur: 8.4, delay: -1.9, variant: 1 as const, color: '#fce7f3' },
   { x: 82, size: 5.7, opacity: 0.58, dur: 9.4, delay: -2.3, variant: 2 as const, color: '#f472b6' },
+  { x: 86, size: 5.5, opacity: 0.55, dur: 9.6, delay: -4.7, variant: 2 as const, color: '#fbcfe8' },
+  { x: 90, size: 6.7, opacity: 0.66, dur: 8.5, delay: -3.1, variant: 1 as const, color: '#fce7f3' },
+  { x: 94, size: 6.9, opacity: 0.70, dur: 8.8, delay: -6.5, variant: 1 as const, color: '#f472b6' },
+  { x: 97, size: 5.3, opacity: 0.52, dur: 10.1, delay: -1.2, variant: 2 as const, color: '#fbcfe8' },
+  { x: 12, size: 6.2, opacity: 0.62, dur: 9.1, delay: -5.7, variant: 1 as const, color: '#fce7f3' },
+  { x: 26, size: 5.5, opacity: 0.54, dur: 9.7, delay: -0.4, variant: 2 as const, color: '#f472b6' },
+  { x: 44, size: 6.9, opacity: 0.71, dur: 8.4, delay: -6.0, variant: 1 as const, color: '#fbcfe8' },
+  { x: 65, size: 5.9, opacity: 0.60, dur: 9.3, delay: -2.1, variant: 2 as const, color: '#fce7f3' },
+  { x: 84, size: 6.5, opacity: 0.67, dur: 8.6, delay: -5.2, variant: 1 as const, color: '#f472b6' },
 ];
 
-// Stage 5: Rich Man - Opulent Cinnabar Lantern Embers & Night Sparks
-const LANTERN_EMBERS = [
-  { x: 12, y: 15, size: 2.2, opacity: 0.75, dur: 6.8, delay: -1.2, variant: 1 as const, color: '#fb7185' },
-  { x: 24, y: 10, size: 3.2, opacity: 0.85, dur: 7.8, delay: -3.9, variant: 2 as const, color: '#fb923c' },
-  { x: 36, y: 18, size: 2.0, opacity: 0.65, dur: 6.2, delay: -2.4, variant: 1 as const, color: '#fda4af' },
-  { x: 48, y: 8, size: 3.4, opacity: 0.90, dur: 8.2, delay: -5.0, variant: 2 as const, color: '#f43f5e' },
-  { x: 60, y: 16, size: 2.5, opacity: 0.70, dur: 6.5, delay: -0.9, variant: 1 as const, color: '#fb923c' },
-  { x: 72, y: 12, size: 3.0, opacity: 0.80, dur: 7.5, delay: -4.4, variant: 2 as const, color: '#fb7185' },
-  { x: 84, y: 19, size: 2.1, opacity: 0.65, dur: 6.0, delay: -2.8, variant: 1 as const, color: '#fda4af' },
-  { x: 92, y: 9, size: 2.8, opacity: 0.75, dur: 7.2, delay: -5.8, variant: 2 as const, color: '#f43f5e' },
-  { x: 20, y: 22, size: 2.6, opacity: 0.72, dur: 7.0, delay: -3.5, variant: 1 as const, color: '#fb7185' },
-  { x: 42, y: 24, size: 3.1, opacity: 0.82, dur: 8.0, delay: -5.2, variant: 2 as const, color: '#fb923c' },
-  { x: 66, y: 20, size: 2.3, opacity: 0.68, dur: 6.6, delay: -1.6, variant: 1 as const, color: '#fda4af' },
-  { x: 80, y: 25, size: 2.9, opacity: 0.78, dur: 7.6, delay: -4.8, variant: 2 as const, color: '#f43f5e' },
-];
-
-// Stage 6: The River of Rebirth - Nocturnal River Fireflies & Luminous Mist
-const RIVER_FIREFLIES = [
-  { x: 10, y: 45, size: 2.4, opacity: 0.75, dur: 6.5, delay: -1.4, variant: 1 as const, color: '#c7d2fe' },
-  { x: 22, y: 62, size: 3.4, opacity: 0.85, dur: 7.8, delay: -4.2, variant: 2 as const, color: '#a5f3fc' },
-  { x: 34, y: 40, size: 2.2, opacity: 0.65, dur: 6.0, delay: -2.6, variant: 1 as const, color: '#e0e7ff' },
-  { x: 46, y: 58, size: 3.6, opacity: 0.90, dur: 8.0, delay: -5.5, variant: 2 as const, color: '#c7d2fe' },
-  { x: 58, y: 42, size: 2.6, opacity: 0.70, dur: 6.2, delay: -0.8, variant: 1 as const, color: '#a5f3fc' },
-  { x: 70, y: 65, size: 3.2, opacity: 0.80, dur: 7.4, delay: -4.0, variant: 2 as const, color: '#e0e7ff' },
-  { x: 82, y: 48, size: 2.0, opacity: 0.60, dur: 5.8, delay: -2.3, variant: 1 as const, color: '#c7d2fe' },
-  { x: 92, y: 55, size: 3.0, opacity: 0.75, dur: 7.2, delay: -5.8, variant: 2 as const, color: '#a5f3fc' },
-  { x: 18, y: 52, size: 2.8, opacity: 0.72, dur: 6.9, delay: -3.2, variant: 1 as const, color: '#e0e7ff' },
-  { x: 52, y: 50, size: 3.3, opacity: 0.82, dur: 7.6, delay: -4.8, variant: 2 as const, color: '#c7d2fe' },
-  { x: 76, y: 56, size: 2.5, opacity: 0.68, dur: 6.4, delay: -1.7, variant: 1 as const, color: '#a5f3fc' },
-];
-
-// Stage 7: The Ferryman’s Disciple - Whispering Bamboo Leaves & River Dew
+// Stage 7: The Ferryman’s Disciple - Whispering Bamboo Leaves & River Dew (2x Density: 24 leaves)
 const BAMBOO_LEAVES = [
+  { x: 4, size: 7.0, opacity: 0.55, dur: 9.4, delay: -0.8, variant: 2 as const, color: '#6ee7b7' },
   { x: 7, size: 7.5, opacity: 0.60, dur: 9.0, delay: -1.2, variant: 1 as const, color: '#6ee7b7' },
+  { x: 12, size: 6.8, opacity: 0.52, dur: 10.0, delay: -3.4, variant: 1 as const, color: '#a7f3d0' },
   { x: 18, size: 6.2, opacity: 0.50, dur: 10.4, delay: -4.6, variant: 2 as const, color: '#34d399' },
-  { x: 29, size: 8.0, opacity: 0.65, dur: 8.6, delay: -2.8, variant: 1 as const, color: '#a7f3d0' },
-  { x: 40, size: 6.6, opacity: 0.55, dur: 10.8, delay: -6.7, variant: 2 as const, color: '#6ee7b7' },
-  { x: 51, size: 7.8, opacity: 0.70, dur: 8.8, delay: -1.0, variant: 1 as const, color: '#34d399' },
-  { x: 62, size: 6.0, opacity: 0.52, dur: 10.0, delay: -5.2, variant: 2 as const, color: '#a7f3d0' },
-  { x: 73, size: 8.2, opacity: 0.68, dur: 9.2, delay: -3.5, variant: 1 as const, color: '#6ee7b7' },
-  { x: 84, size: 6.4, opacity: 0.54, dur: 10.6, delay: -7.4, variant: 2 as const, color: '#34d399' },
-  { x: 93, size: 7.4, opacity: 0.62, dur: 9.5, delay: -2.2, variant: 1 as const, color: '#a7f3d0' },
   { x: 24, size: 7.0, opacity: 0.58, dur: 9.6, delay: -4.0, variant: 2 as const, color: '#6ee7b7' },
+  { x: 29, size: 8.0, opacity: 0.65, dur: 8.6, delay: -2.8, variant: 1 as const, color: '#a7f3d0' },
+  { x: 35, size: 6.4, opacity: 0.53, dur: 10.2, delay: -1.7, variant: 2 as const, color: '#34d399' },
+  { x: 40, size: 6.6, opacity: 0.55, dur: 10.8, delay: -6.7, variant: 2 as const, color: '#6ee7b7' },
+  { x: 45, size: 7.4, opacity: 0.62, dur: 9.1, delay: -5.0, variant: 1 as const, color: '#a7f3d0' },
+  { x: 51, size: 7.8, opacity: 0.70, dur: 8.8, delay: -1.0, variant: 1 as const, color: '#34d399' },
+  { x: 55, size: 6.5, opacity: 0.56, dur: 9.9, delay: -3.8, variant: 2 as const, color: '#6ee7b7' },
   { x: 58, size: 7.6, opacity: 0.64, dur: 9.1, delay: -5.9, variant: 1 as const, color: '#34d399' },
+  { x: 62, size: 6.0, opacity: 0.52, dur: 10.0, delay: -5.2, variant: 2 as const, color: '#a7f3d0' },
+  { x: 68, size: 7.2, opacity: 0.63, dur: 8.9, delay: -2.3, variant: 1 as const, color: '#6ee7b7' },
+  { x: 73, size: 8.2, opacity: 0.68, dur: 9.2, delay: -3.5, variant: 1 as const, color: '#6ee7b7' },
+  { x: 77, size: 6.1, opacity: 0.51, dur: 10.3, delay: -6.0, variant: 2 as const, color: '#34d399' },
   { x: 80, size: 6.8, opacity: 0.56, dur: 10.2, delay: -2.7, variant: 2 as const, color: '#a7f3d0' },
+  { x: 84, size: 6.4, opacity: 0.54, dur: 10.6, delay: -7.4, variant: 2 as const, color: '#34d399' },
+  { x: 89, size: 7.7, opacity: 0.66, dur: 9.3, delay: -4.3, variant: 1 as const, color: '#6ee7b7' },
+  { x: 93, size: 7.4, opacity: 0.62, dur: 9.5, delay: -2.2, variant: 1 as const, color: '#a7f3d0' },
+  { x: 96, size: 6.0, opacity: 0.50, dur: 10.5, delay: -1.5, variant: 2 as const, color: '#34d399' },
+  { x: 15, size: 7.3, opacity: 0.60, dur: 9.2, delay: -6.2, variant: 1 as const, color: '#a7f3d0' },
+  { x: 38, size: 7.5, opacity: 0.64, dur: 9.0, delay: -3.0, variant: 1 as const, color: '#6ee7b7' },
+  { x: 70, size: 6.7, opacity: 0.57, dur: 9.8, delay: -5.5, variant: 2 as const, color: '#a7f3d0' },
 ];
 
-// Stage 8: The Wound of Love - Celestial Amethyst Twilight Night Motes
-const TWILIGHT_MOTES = [
-  { x: 8, y: 35, size: 2.2, opacity: 0.65, dur: 8.2, delay: -1.5, variant: 1 as const, color: '#e9d5ff' },
-  { x: 20, y: 55, size: 3.2, opacity: 0.75, dur: 9.5, delay: -4.8, variant: 2 as const, color: '#c084fc' },
-  { x: 32, y: 25, size: 1.9, opacity: 0.50, dur: 7.4, delay: -2.7, variant: 1 as const, color: '#f3e8ff' },
-  { x: 44, y: 48, size: 2.8, opacity: 0.70, dur: 10.0, delay: -6.2, variant: 2 as const, color: '#e9d5ff' },
-  { x: 56, y: 30, size: 2.3, opacity: 0.55, dur: 7.8, delay: -1.1, variant: 1 as const, color: '#c084fc' },
-  { x: 68, y: 60, size: 3.4, opacity: 0.80, dur: 10.6, delay: -5.5, variant: 2 as const, color: '#f3e8ff' },
-  { x: 80, y: 38, size: 2.0, opacity: 0.50, dur: 7.6, delay: -3.3, variant: 1 as const, color: '#e9d5ff' },
-  { x: 91, y: 52, size: 3.0, opacity: 0.72, dur: 9.8, delay: -7.0, variant: 2 as const, color: '#c084fc' },
-  { x: 16, y: 68, size: 2.5, opacity: 0.60, dur: 8.6, delay: -3.8, variant: 1 as const, color: '#f3e8ff' },
-  { x: 50, y: 64, size: 3.1, opacity: 0.75, dur: 9.2, delay: -5.0, variant: 2 as const, color: '#e9d5ff' },
-  { x: 74, y: 66, size: 2.4, opacity: 0.58, dur: 8.4, delay: -2.1, variant: 1 as const, color: '#c084fc' },
-];
-
-// Stage 9: The Eternal Flow - Radiant Celestial Aurora Spirit Motes
+// Stage 9: The Eternal Flow - Radiant Celestial Aurora Spirit Motes (2x Density: 24 spirit motes)
 const SPIRIT_MOTES = [
+  { x: 5, y: 12, size: 2.1, opacity: 0.65, dur: 6.8, delay: -0.6, variant: 1 as const, color: '#99f6e4' },
   { x: 9, y: 10, size: 2.4, opacity: 0.70, dur: 7.0, delay: -1.2, variant: 1 as const, color: '#5eead4' },
-  { x: 21, y: 16, size: 3.4, opacity: 0.82, dur: 8.4, delay: -3.9, variant: 2 as const, color: '#fef08a' },
-  { x: 33, y: 8, size: 2.2, opacity: 0.60, dur: 6.5, delay: -2.3, variant: 1 as const, color: '#99f6e4' },
-  { x: 45, y: 14, size: 3.8, opacity: 0.88, dur: 8.8, delay: -5.2, variant: 2 as const, color: '#5eead4' },
-  { x: 57, y: 7, size: 2.5, opacity: 0.65, dur: 6.8, delay: -0.8, variant: 1 as const, color: '#fef08a' },
-  { x: 69, y: 17, size: 3.5, opacity: 0.84, dur: 8.5, delay: -4.5, variant: 2 as const, color: '#99f6e4' },
-  { x: 81, y: 11, size: 2.1, opacity: 0.55, dur: 6.2, delay: -3.0, variant: 1 as const, color: '#5eead4' },
-  { x: 92, y: 15, size: 3.2, opacity: 0.78, dur: 8.0, delay: -6.1, variant: 2 as const, color: '#fef08a' },
   { x: 15, y: 22, size: 2.8, opacity: 0.72, dur: 7.5, delay: -3.4, variant: 1 as const, color: '#99f6e4' },
+  { x: 18, y: 14, size: 3.2, opacity: 0.78, dur: 8.0, delay: -1.8, variant: 2 as const, color: '#fef08a' },
+  { x: 21, y: 16, size: 3.4, opacity: 0.82, dur: 8.4, delay: -3.9, variant: 2 as const, color: '#fef08a' },
+  { x: 27, y: 9, size: 2.0, opacity: 0.58, dur: 6.6, delay: -2.8, variant: 1 as const, color: '#5eead4' },
+  { x: 33, y: 8, size: 2.2, opacity: 0.60, dur: 6.5, delay: -2.3, variant: 1 as const, color: '#99f6e4' },
+  { x: 38, y: 18, size: 3.5, opacity: 0.84, dur: 8.6, delay: -4.2, variant: 2 as const, color: '#fef08a' },
   { x: 41, y: 20, size: 3.6, opacity: 0.85, dur: 9.0, delay: -5.6, variant: 2 as const, color: '#5eead4' },
+  { x: 45, y: 14, size: 3.8, opacity: 0.88, dur: 8.8, delay: -5.2, variant: 2 as const, color: '#5eead4' },
+  { x: 51, y: 11, size: 2.3, opacity: 0.62, dur: 7.1, delay: -1.5, variant: 1 as const, color: '#99f6e4' },
+  { x: 57, y: 7, size: 2.5, opacity: 0.65, dur: 6.8, delay: -0.8, variant: 1 as const, color: '#fef08a' },
+  { x: 60, y: 15, size: 3.2, opacity: 0.79, dur: 8.2, delay: -3.6, variant: 2 as const, color: '#5eead4' },
   { x: 63, y: 24, size: 2.3, opacity: 0.62, dur: 6.9, delay: -1.9, variant: 1 as const, color: '#fef08a' },
+  { x: 69, y: 17, size: 3.5, opacity: 0.84, dur: 8.5, delay: -4.5, variant: 2 as const, color: '#99f6e4' },
+  { x: 75, y: 10, size: 2.7, opacity: 0.70, dur: 7.4, delay: -2.1, variant: 1 as const, color: '#5eead4' },
+  { x: 81, y: 11, size: 2.1, opacity: 0.55, dur: 6.2, delay: -3.0, variant: 1 as const, color: '#5eead4' },
   { x: 85, y: 21, size: 3.3, opacity: 0.80, dur: 8.2, delay: -4.8, variant: 2 as const, color: '#99f6e4' },
+  { x: 89, y: 8, size: 2.5, opacity: 0.66, dur: 7.2, delay: -1.6, variant: 1 as const, color: '#fef08a' },
+  { x: 92, y: 15, size: 3.2, opacity: 0.78, dur: 8.0, delay: -6.1, variant: 2 as const, color: '#fef08a' },
+  { x: 96, y: 19, size: 2.2, opacity: 0.60, dur: 6.7, delay: -3.3, variant: 1 as const, color: '#99f6e4' },
+  { x: 24, y: 21, size: 2.9, opacity: 0.74, dur: 7.8, delay: -4.7, variant: 2 as const, color: '#5eead4' },
+  { x: 48, y: 16, size: 3.4, opacity: 0.81, dur: 8.7, delay: -2.5, variant: 1 as const, color: '#fef08a' },
+  { x: 78, y: 16, size: 3.1, opacity: 0.76, dur: 7.9, delay: -5.0, variant: 2 as const, color: '#99f6e4' },
 ];
 
 function StageAtmosphericParticles({ stageId }: { stageId: number }) {
@@ -429,51 +739,9 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
         </div>
       );
     case 5:
-      return (
-        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          {LANTERN_EMBERS.map((ember, idx) => (
-            <div
-              key={idx}
-              className={`absolute rounded-full pointer-events-none ${ember.variant === 1 ? 'anim-ember-1' : 'anim-ember-2'}`}
-              style={{
-                left: `${ember.x}%`,
-                bottom: `${ember.y}%`,
-                width: `${ember.size}px`,
-                height: `${ember.size}px`,
-                backgroundColor: ember.color,
-                ['--particle-opacity' as any]: ember.opacity,
-                opacity: ember.opacity,
-                boxShadow: `0 0 5px ${ember.color}`,
-                animationDuration: `${ember.dur}s`,
-                animationDelay: `${ember.delay}s`,
-              }}
-            />
-          ))}
-        </div>
-      );
+      return <GlowingStarField stars={NIGHT_STARS_STAGE_5} defaultGlow="rgba(251, 113, 133, 0.75)" />;
     case 6:
-      return (
-        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          {RIVER_FIREFLIES.map((fly, idx) => (
-            <div
-              key={idx}
-              className={`absolute rounded-full pointer-events-none ${fly.variant === 1 ? 'anim-firefly-1' : 'anim-firefly-2'}`}
-              style={{
-                left: `${fly.x}%`,
-                top: `${fly.y}%`,
-                width: `${fly.size}px`,
-                height: `${fly.size}px`,
-                backgroundColor: fly.color,
-                ['--particle-opacity' as any]: fly.opacity,
-                opacity: fly.opacity,
-                boxShadow: `0 0 6px ${fly.color}`,
-                animationDuration: `${fly.dur}s`,
-                animationDelay: `${fly.delay}s`,
-              }}
-            />
-          ))}
-        </div>
-      );
+      return <GlowingStarField stars={NIGHT_STARS_STAGE_6} defaultGlow="rgba(165, 243, 252, 0.85)" />;
     case 7:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -499,28 +767,7 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
         </div>
       );
     case 8:
-      return (
-        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          {TWILIGHT_MOTES.map((mote, idx) => (
-            <div
-              key={idx}
-              className={`absolute rounded-full pointer-events-none ${mote.variant === 1 ? 'anim-mote-1' : 'anim-mote-2'}`}
-              style={{
-                left: `${mote.x}%`,
-                top: `${mote.y}%`,
-                width: `${mote.size}px`,
-                height: `${mote.size}px`,
-                backgroundColor: mote.color,
-                ['--particle-opacity' as any]: mote.opacity,
-                opacity: mote.opacity,
-                boxShadow: `0 0 4px ${mote.color}`,
-                animationDuration: `${mote.dur}s`,
-                animationDelay: `${mote.delay}s`,
-              }}
-            />
-          ))}
-        </div>
-      );
+      return <GlowingStarField stars={NIGHT_STARS_STAGE_8} defaultGlow="rgba(216, 180, 254, 0.85)" />;
     case 9:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -1567,27 +1814,7 @@ export default function Game() {
               />
             </div>
 
-            {/* Twinkling Night Stars when isNight is active */}
-            {currentTheme.isNight && (
-              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-                {NIGHT_STARS.map((star, idx) => (
-                  <div
-                    key={idx}
-                    className="absolute rounded-full bg-white animate-pulse pointer-events-none"
-                    style={{
-                      left: `${star.x}%`,
-                      top: `${star.y}%`,
-                      width: `${star.size}px`,
-                      height: `${star.size}px`,
-                      opacity: star.opacity,
-                      animationDuration: `${star.dur}s`,
-                      animationDelay: `${star.delay}s`,
-                      boxShadow: star.size > 1.8 ? '0 0 4px rgba(255,255,255,0.9)' : undefined,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+
 
             {/* Stage-Specific Subtle Ambient Particle Effects (Falling Snow for Stage 2, petals, embers, fireflies, etc.) */}
             <StageAtmosphericParticles stageId={currentStage.id} />

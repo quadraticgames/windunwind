@@ -447,3 +447,55 @@ body {
   will-change: transform, opacity;
 }
 
+/* Glowing Night Stars Keyframes */
+@keyframes starTwinkle-1 {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: var(--star-opacity, 0.95);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes starTwinkle-2 {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: var(--star-opacity, 0.9);
+    transform: scale(1.2);
+  }
+}
+
+@keyframes starGlow-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    opacity: var(--star-opacity, 1);
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px var(--star-glow, rgba(199, 210, 254, 0.8)));
+  }
+}
+
+.anim-star-1 {
+  animation: starTwinkle-1 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-star-2 {
+  animation: starTwinkle-2 ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-star-glow {
+  animation: starGlow-pulse ease-in-out infinite;
+  will-change: transform, opacity, filter;
+}
+
+
