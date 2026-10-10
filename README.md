@@ -1,6 +1,6 @@
-# Wind & Unwind
+# Attune: Siddhartha's Journey
 
-Wind & Unwind is an audiovisual memory game where players repeat sequences of higher and lower tones, moving along a winding left-to-right spiritual hero's journey inspired by Hermann Hesse's *Siddhartha*.
+Attune is an audiovisual memory game where players repeat sequences of higher and lower tones, moving along a winding left-to-right spiritual hero's journey inspired by Hermann Hesse's *Siddhartha*.
 
 ![Main Menu](https://github-production-user-asset-6210df.s3.amazonaws.com/6210df/placeholder-main-menu.png)
 

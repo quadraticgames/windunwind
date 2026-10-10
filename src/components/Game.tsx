@@ -963,10 +963,10 @@ export default function Game() {
 
               <div>
                 <span className="text-[11px] font-bold tracking-[0.25em] text-stone-500 uppercase font-serif-zen">
-                  Hermann Hesse • Siddhartha
+                  Siddhartha's Journey
                 </span>
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mt-1 mb-2 tracking-tight font-serif-zen">
-                  Wind & Unwind
+                  Attune
                 </h1>
                 <p className="text-stone-600 text-xs sm:text-sm leading-relaxed px-2 font-serif-zen">
                   Travel the 9 circles of <strong className="text-stone-900">Mind</strong>, <strong className="text-stone-900">Body</strong>, and <strong className="text-stone-900">Spirit</strong>. Solve 3 tone puzzles at each stage (27 in total) to reach Enlightenment and Oneness.
