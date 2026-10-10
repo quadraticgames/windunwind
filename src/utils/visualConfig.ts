@@ -46,6 +46,13 @@ export const GLOBAL_VISUAL_CONFIG = {
    * 0.75 = 25% smaller, subtler particles
    */
   sizeMultiplier: 1.0,
+
+  /**
+   * Delay in milliseconds between completing the final puzzle of a stage and
+   * the fanfare / next stage announcement banner appearing.
+   * Gives the player a graceful moment to hear the bell note settle.
+   */
+  stageAnnouncementDelayMs: 1200,
 };
 
 // ----------------------------------------------------------------------------

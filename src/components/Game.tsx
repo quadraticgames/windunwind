@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind, Maximize, Minimize } from 'lucide-react';
 import { playCorrectNote, playWrongNote, initializeAudio, startDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 import {
+  GLOBAL_VISUAL_CONFIG,
   GlowingStarItem,
   getStage1MistMotes,
   getStage1CloudWisps,
@@ -1319,22 +1320,27 @@ export default function Game() {
         const isAdvancingStage = Math.floor(nextCount / 3) > Math.floor(puzzleCount / 3);
         if (isAdvancingStage) {
           const nextStage = STAGES[Math.min(Math.floor(nextCount / 3), 8)];
-          playStageFanfare();
-          setStageCelebration({
-            stageId: nextStage.id,
-            name: nextStage.name,
-            realm: nextStage.realm,
-          });
           const nextSeq = generateSequenceForPuzzle(nextCount);
           pendingStageSequenceRef.current = nextSeq;
           isAwaitingLoreContinueRef.current = true;
           setIsShowingSequence(false);
 
+          // Graceful delay between puzzle completion and next stage announcement
+          const delayMs = GLOBAL_VISUAL_CONFIG.stageAnnouncementDelayMs ?? 1200;
           pendingTimeoutRef.current = window.setTimeout(() => {
-            pendingTimeoutRef.current = null;
-            setStageCelebration(null);
-            setSelectedLoreStage(nextStage);
-          }, 2500);
+            playStageFanfare();
+            setStageCelebration({
+              stageId: nextStage.id,
+              name: nextStage.name,
+              realm: nextStage.realm,
+            });
+
+            pendingTimeoutRef.current = window.setTimeout(() => {
+              pendingTimeoutRef.current = null;
+              setStageCelebration(null);
+              setSelectedLoreStage(nextStage);
+            }, 2600);
+          }, delayMs);
         } else {
           pendingTimeoutRef.current = window.setTimeout(() => {
             pendingTimeoutRef.current = null;
