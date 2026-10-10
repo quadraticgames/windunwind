@@ -64,12 +64,12 @@ export const STAGE_PARTICLE_CONFIG = {
       colors: ['#bbf7d0', '#fef3c7', '#e2f5ec'],
     },
     cloudWisps: {
-      count: 8, // Number of drifting horizontal cloud wisps
-      widthRange: [540, 880] as [number, number], // px width
-      heightRange: [52, 90] as [number, number], // px height
+      count: 9, // Number of drifting horizontal cloud wisps
+      widthRange: [260, 420] as [number, number], // px width (less width, more compact)
+      heightRange: [120, 185] as [number, number], // px height (much fatter, plump curved silhouettes)
       opacityRange: [0.55, 0.82] as [number, number], // clearly visible ethereal wisps
-      durationRange: [22, 34] as [number, number], // drift duration in seconds for noticeable, graceful transit
-      blurRange: [2, 5] as [number, number], // Gaussian blur in px
+      durationRange: [22, 34] as [number, number], // drift duration in seconds for graceful transit
+      blurRange: [1.5, 3.5] as [number, number], // gentle Gaussian blur preserving curved edges
       movementRandomness: 1.0,
     },
   },
@@ -328,7 +328,7 @@ export function getStage1CloudWisps(): CloudWispItem[] {
   const prng = createPRNG(202);
   const items: CloudWispItem[] = [];
 
-  const baseElevations = [12, 20, 30, 42, 54, 66, 76, 86];
+  const baseElevations = [8, 16, 26, 36, 48, 58, 68, 78];
 
   for (let i = 0; i < count; i++) {
     const y = baseElevations[i % baseElevations.length];

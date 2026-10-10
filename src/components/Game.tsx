@@ -264,24 +264,74 @@ function StageOneCloudWisps() {
             } as CustomCSSProperties}
           >
             <svg
-              viewBox="0 0 500 60"
+              viewBox="0 0 320 180"
               preserveAspectRatio="none"
               className="w-full h-full overflow-visible"
             >
               <defs>
-                <linearGradient id={`wispGrad-${idx}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-                  <stop offset="15%" stopColor="#ffffff" stopOpacity="0.85" />
-                  <stop offset="38%" stopColor="#f0fdf4" stopOpacity="0.95" />
-                  <stop offset="65%" stopColor="#ffffff" stopOpacity="0.90" />
-                  <stop offset="85%" stopColor="#f0fdf4" stopOpacity="0.80" />
-                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                <linearGradient id={`wispGrad-${idx}`} x1="0%" y1="20%" x2="100%" y2="80%">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity="0.08" />
+                  <stop offset="16%" stopColor="#ffffff" stopOpacity="0.86" />
+                  <stop offset="42%" stopColor="#f0fdf4" stopOpacity="0.95" />
+                  <stop offset="68%" stopColor="#ffffff" stopOpacity="0.90" />
+                  <stop offset="88%" stopColor="#f0fdf4" stopOpacity="0.82" />
+                  <stop offset="100%" stopColor="#ffffff" stopOpacity="0.12" />
                 </linearGradient>
               </defs>
-              <path
-                d="M 0 30 C 50 14, 110 10, 170 20 C 230 30, 290 12, 350 18 C 410 24, 460 12, 500 30 C 450 48, 380 54, 320 44 C 260 34, 200 50, 140 44 C 80 38, 40 46, 0 30 Z"
-                fill={`url(#wispGrad-${idx})`}
-              />
+
+              {/* Variant 1: Upward-Curving Crescent Cloud with billowing crests */}
+              {wisp.variant === 1 && (
+                <g>
+                  <path
+                    d="M 22 118 C 48 138, 88 152, 138 150 C 188 148, 238 132, 278 102 C 302 84, 314 68, 302 60 C 290 52, 268 54, 250 66 C 238 40, 208 26, 178 28 C 150 30, 128 44, 116 60 C 98 44, 68 46, 48 66 C 28 86, 20 104, 22 118 Z"
+                    fill={`url(#wispGrad-${idx})`}
+                  />
+                  <path
+                    d="M 58 78 C 78 62, 102 60, 116 72 M 132 54 C 158 38, 192 38, 218 54 M 98 132 C 148 138, 202 125, 248 98"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeOpacity="0.38"
+                  />
+                </g>
+              )}
+
+              {/* Variant 2: Undulating S-Curved Auspicious Cloud */}
+              {wisp.variant === 2 && (
+                <g>
+                  <path
+                    d="M 18 82 C 44 62, 80 58, 110 72 C 122 48, 152 30, 188 32 C 224 34, 250 52, 260 74 C 286 70, 310 86, 306 108 C 298 132, 268 146, 230 144 C 195 142, 170 130, 148 120 C 124 110, 94 118, 70 135 C 46 148, 26 140, 18 122 C 12 105, 12 92, 18 82 Z"
+                    fill={`url(#wispGrad-${idx})`}
+                  />
+                  <path
+                    d="M 78 122 C 102 108, 132 110, 152 118 M 128 64 C 154 46, 188 46, 216 60 M 232 70 C 258 62, 282 74, 286 92"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeOpacity="0.38"
+                  />
+                </g>
+              )}
+
+              {/* Variant 3: Plump Billowing Cumulus with Scooped Curved Base */}
+              {wisp.variant === 3 && (
+                <g>
+                  <path
+                    d="M 32 126 C 72 148, 140 156, 198 148 C 242 138, 276 124, 292 108 C 304 96, 294 84, 274 82 C 276 60, 252 44, 226 48 C 210 22, 158 18, 130 42 C 106 30, 72 42, 58 70 C 40 80, 24 104, 32 126 Z"
+                    fill={`url(#wispGrad-${idx})`}
+                  />
+                  <path
+                    d="M 68 78 C 88 56, 118 54, 136 68 M 144 40 C 170 30, 202 34, 218 56 M 72 132 C 128 142, 188 136, 242 122"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeOpacity="0.38"
+                  />
+                </g>
+              )}
             </svg>
           </div>
         );
