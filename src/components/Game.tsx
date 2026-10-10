@@ -17,6 +17,7 @@ import {
   getStage7AquaRiverConfig,
   getStage8NightStars,
   getStage9SpiritMotes,
+  getStage9Snowflakes,
 } from '../utils/visualConfig';
 
 type Direction = 'up' | 'down';
@@ -365,6 +366,7 @@ const GOLDEN_SPARKS = getStage3GoldenSparks();
 const BLOSSOM_PETALS = getStage4BlossomPetals();
 const BAMBOO_LEAVES = getStage7BambooLeaves();
 const SPIRIT_MOTES = getStage9SpiritMotes();
+const STAGE_9_SNOWFLAKES = getStage9Snowflakes();
 
 // Stage 7: The Ferryman’s Disciple - Dedicated Aqua Blue River Atmosphere Overlay
 function StageSevenAquaRiverOverlay() {
@@ -595,9 +597,33 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
     case 9:
       return (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {/* Celestial Falling Snowflakes for the Final Snow Stage */}
+          {STAGE_9_SNOWFLAKES.map((flake, idx) => {
+            const animClass =
+              flake.variant === 1 ? 'anim-snow-1' : flake.variant === 2 ? 'anim-snow-2' : 'anim-snow-3';
+            return (
+              <div
+                key={`snow-${idx}`}
+                className={`absolute rounded-full bg-white pointer-events-none ${animClass}`}
+                style={{
+                  left: `${flake.x}%`,
+                  top: 0,
+                  width: `${flake.size}px`,
+                  height: `${flake.size}px`,
+                  '--particle-opacity': flake.opacity,
+                  opacity: flake.opacity,
+                  filter: flake.size > 2.8 ? 'blur(0.5px)' : undefined,
+                  boxShadow: '0 0 4px rgba(255, 255, 255, 0.7)',
+                  animationDuration: `${flake.dur}s`,
+                  animationDelay: `${flake.delay}s`,
+                } as CustomCSSProperties}
+              />
+            );
+          })}
+          {/* Radiant Transcendental Spirit Motes */}
           {SPIRIT_MOTES.map((spirit, idx) => (
             <div
-              key={idx}
+              key={`spirit-${idx}`}
               className={`absolute rounded-full pointer-events-none ${spirit.variant === 1 ? 'anim-golden-1' : 'anim-golden-2'}`}
               style={{
                 left: `${spirit.x}%`,
@@ -727,18 +753,19 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#e9d5ff',
     waterColor: '#392756',
   },
-  // Stage 9: The Eternal Flow - Radiant Celestial Aurora, Ultimate Oneness
+  // Stage 9: The Eternal Flow (The Eternal Glow) - Radiant Celestial Winter Snow & Ultimate Oneness
   9: {
+    isWinter: true,
     isNight: false,
-    skyGradient: ['#f0fdfa', '#ccfbf1', '#99f6e4', '#5eead4'],
-    farMountain: '#7ecec1',
-    midMountain: '#62baa9',
-    slopeMountain: '#47a492',
-    fogColor: '#14b8a6',
-    fogOpacity: 0.24,
-    celestial: { cx: 885, cy: 80, r: 56, fill: '#ffffff', glow: '#2dd4bf', opacity: 0.95 },
-    sparkleColor: '#5eead4',
-    waterColor: '#75c8b9',
+    skyGradient: ['#f8fafc', '#edf2f7', '#dbeafe', '#b8cadc'],
+    farMountain: '#8094aa',
+    midMountain: '#586e85',
+    slopeMountain: '#3a4e63',
+    fogColor: '#f1f5f9',
+    fogOpacity: 0.35,
+    celestial: { cx: 885, cy: 80, r: 56, fill: '#ffffff', glow: '#dbeafe', opacity: 0.98 },
+    sparkleColor: '#ffffff',
+    waterColor: '#cfdce8',
   },
 };
 

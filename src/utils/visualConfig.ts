@@ -193,15 +193,23 @@ export const STAGE_PARTICLE_CONFIG = {
     },
   },
 
-  // Stage 9: The Eternal Flow - Radiant Celestial Aurora Spirit Motes
+  // Stage 9: The Eternal Flow (The Eternal Glow) - Celestial Winter Snow & Radiant Enlightenment
   stage9: {
+    snowflakes: {
+      baseCount: 60, // Total falling celestial snowflakes
+      sizeRange: [1.8, 4.4] as [number, number],
+      opacityRange: [0.55, 0.95] as [number, number],
+      durationRange: [4.8, 8.5] as [number, number], // fall duration in seconds
+      movementRandomness: 1.25,
+      swayWidthPx: 28,
+    },
     spiritMotes: {
-      baseCount: 24, // Ascending transcendental spirit particles
+      baseCount: 22, // Ascending transcendental spirit particles
       sizeRange: [2.0, 3.8] as [number, number],
       opacityRange: [0.55, 0.88] as [number, number],
       durationRange: [6.2, 9.0] as [number, number],
       movementRandomness: 1.2,
-      colors: ['#99f6e4', '#5eead4', '#fef08a'],
+      colors: ['#ffffff', '#e0f2fe', '#bae6fd', '#fef08a'],
     },
   },
 };
@@ -609,4 +617,30 @@ export function getStage9SpiritMotes(): ParticleItem[] {
 export function getStage7AquaRiverConfig() {
   return STAGE_PARTICLE_CONFIG.stage7.aquaRiverOverlay;
 }
+
+/**
+ * Generate Stage 9 Celestial Falling Snowflakes
+ */
+export function getStage9Snowflakes(): ParticleItem[] {
+  const cfg = STAGE_PARTICLE_CONFIG.stage9.snowflakes;
+  const count = Math.round(cfg.baseCount * GLOBAL_VISUAL_CONFIG.densityMultiplier);
+  const prng = createPRNG(1212);
+  const items: ParticleItem[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const x = Math.round(lerp(2, 98, (i + prng() * 0.85) / count));
+    const size = +(lerp(cfg.sizeRange[0], cfg.sizeRange[1], prng()) * GLOBAL_VISUAL_CONFIG.sizeMultiplier).toFixed(1);
+    const opacity = +(lerp(cfg.opacityRange[0], cfg.opacityRange[1], prng())).toFixed(2);
+    const speedJitter = lerp(0.8, 1.2, prng() * cfg.movementRandomness * GLOBAL_VISUAL_CONFIG.movementRandomness);
+    const dur = +(lerp(cfg.durationRange[0], cfg.durationRange[1], prng()) * speedJitter / GLOBAL_VISUAL_CONFIG.speedMultiplier).toFixed(1);
+    const delay = +(-lerp(0.3, dur * 0.95, prng())).toFixed(1);
+    const randVar = prng();
+    const variant = (randVar < 0.35 ? 1 : randVar < 0.7 ? 2 : 3) as 1 | 2 | 3;
+
+    items.push({ x, size, opacity, dur, delay, variant });
+  }
+
+  return items;
+}
+
 
