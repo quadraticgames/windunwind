@@ -118,6 +118,7 @@ const TOTAL_PUZZLES_TO_ENLIGHTENMENT = 27;
 
 type StageTheme = {
   isNight?: boolean;
+  isWinter?: boolean;
   skyGradient: [string, string, string, string];
   farMountain: string;
   midMountain: string;
@@ -157,6 +158,22 @@ const NIGHT_STARS = [
   { x: 86, y: 33, size: 1.5, opacity: 0.75, dur: 4.3, delay: 0.2 },
 ];
 
+const WINTER_SNOWFLAKES = [
+  { x: 5, y: 12, size: 2.2, opacity: 0.75, dur: 3.2, delay: 0.1 },
+  { x: 12, y: 28, size: 3.0, opacity: 0.85, dur: 4.1, delay: 0.8 },
+  { x: 19, y: 8, size: 1.8, opacity: 0.65, dur: 2.8, delay: 1.5 },
+  { x: 26, y: 22, size: 2.6, opacity: 0.80, dur: 3.6, delay: 0.3 },
+  { x: 34, y: 15, size: 3.2, opacity: 0.90, dur: 4.5, delay: 1.1 },
+  { x: 42, y: 32, size: 2.0, opacity: 0.70, dur: 3.0, delay: 0.5 },
+  { x: 49, y: 10, size: 2.8, opacity: 0.85, dur: 3.8, delay: 1.8 },
+  { x: 57, y: 25, size: 1.6, opacity: 0.60, dur: 2.6, delay: 0.2 },
+  { x: 65, y: 18, size: 3.4, opacity: 0.90, dur: 4.3, delay: 1.4 },
+  { x: 73, y: 30, size: 2.2, opacity: 0.75, dur: 3.4, delay: 0.7 },
+  { x: 81, y: 14, size: 2.9, opacity: 0.80, dur: 3.9, delay: 1.0 },
+  { x: 89, y: 26, size: 1.7, opacity: 0.65, dur: 2.9, delay: 0.4 },
+  { x: 95, y: 19, size: 2.5, opacity: 0.75, dur: 3.5, delay: 1.6 },
+];
+
 const STAGE_THEMES: Record<number, StageTheme> = {
   // Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Green Bamboo Dawn
   1: {
@@ -171,18 +188,19 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#a5f3fc',
     waterColor: '#ded4be',
   },
-  // Stage 2: The Samana Trials - Moonlit Desert Night of Asceticism & Silvery Radiance
+  // Stage 2: The Samana Trials - Frosty Himalayan Winter of Asceticism & Desaturated Snow
   2: {
-    isNight: true,
-    skyGradient: ['#1e293b', '#283853', '#3d5277', '#223049'],
-    farMountain: '#2b3a53',
-    midMountain: '#233045',
-    slopeMountain: '#1a2538',
-    fogColor: '#93c5fd',
-    fogOpacity: 0.22,
-    celestial: { cx: 340, cy: 75, r: 40, fill: '#ffffff', glow: '#bfdbfe', opacity: 0.98 },
-    sparkleColor: '#bae6fd',
-    waterColor: '#233045',
+    isWinter: true,
+    isNight: false,
+    skyGradient: ['#eef3f8', '#dfe8f1', '#cfdce8', '#b8cadc'],
+    farMountain: '#8b9cb0',
+    midMountain: '#5c6f84',
+    slopeMountain: '#3b4b5e',
+    fogColor: '#e2e8f0',
+    fogOpacity: 0.32,
+    celestial: { cx: 340, cy: 75, r: 38, fill: '#ffffff', glow: '#dbeafe', opacity: 0.90 },
+    sparkleColor: '#ffffff',
+    waterColor: '#cfdce8',
   },
   // Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Radiance
   3: {
@@ -210,18 +228,18 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#fbcfe8',
     waterColor: '#ddb8ca',
   },
-  // Stage 5: Rich Man (Greed) - Opulent Cinnabar Dusk & Smoked Burgundy Lanterns
+  // Stage 5: Rich Man (Greed) - Opulent Cinnabar Lantern Night & Smoked Velvet Sky
   5: {
-    isNight: false,
-    skyGradient: ['#fbf1f0', '#f6dcde', '#eec1c7', '#deb0b8'],
-    farMountain: '#cfabb4',
-    midMountain: '#bf94a0',
-    slopeMountain: '#af7e8c',
-    fogColor: '#e11d48',
-    fogOpacity: 0.17,
-    celestial: { cx: 780, cy: 85, r: 44, fill: '#ffe4e6', glow: '#fb7185', opacity: 0.75 },
+    isNight: true,
+    skyGradient: ['#1c1017', '#2e1522', '#451a30', '#201019'],
+    farMountain: '#3d1a2c',
+    midMountain: '#2e1220',
+    slopeMountain: '#1f0b15',
+    fogColor: '#fb7185',
+    fogOpacity: 0.22,
+    celestial: { cx: 780, cy: 85, r: 44, fill: '#fff1f2', glow: '#fb7185', opacity: 0.95 },
     sparkleColor: '#fda4af',
-    waterColor: '#caa2ab',
+    waterColor: '#2e1220',
   },
   // Stage 6: The River of Rebirth - Radiant Sapphire Abyss & Moonlit River Waters
   6: {
@@ -277,62 +295,87 @@ const STAGE_THEMES: Record<number, StageTheme> = {
   },
 };
 
-/* Incense Burner Component with smoking wisps */
+/* Incense Burner Component with smoking wisps and candle placed within the container */
 function IncenseBurner({ active }: { active: boolean }) {
   return (
-    <div className="relative w-8 h-9 flex flex-col items-center justify-end select-none">
-      {/* Animated Smoke Wisps when active */}
-      {active && (
-        <div className="absolute -top-3 w-4 h-6 pointer-events-none flex justify-center">
-          <svg className="w-4 h-6 overflow-visible" viewBox="0 0 20 30" fill="none">
-            {/* Wisp 1 */}
+    <div className="relative w-8 h-9 flex items-end justify-center select-none">
+      <svg className="w-8 h-9 overflow-visible" viewBox="0 0 32 30" fill="none">
+        {/* Animated Smoke Wisps when active */}
+        {active && (
+          <g className="pointer-events-none">
             <path
-              d="M10 28 C8 22, 13 18, 9 12 C6 7, 12 4, 10 0"
+              d="M16 6 C14 2, 18 -2, 15 -6 C13 -10, 17 -13, 15 -17"
               stroke="rgba(120, 113, 108, 0.55)"
-              strokeWidth="1.5"
+              strokeWidth="1.3"
               strokeLinecap="round"
               className="smoke-curl-1"
             />
-            {/* Wisp 2 */}
             <path
-              d="M11 27 C13 21, 8 16, 12 10 C14 6, 9 3, 11 0"
+              d="M17 5 C19 1, 15 -3, 17 -7 C19 -11, 16 -14, 18 -18"
               stroke="rgba(140, 130, 122, 0.45)"
-              strokeWidth="1.2"
+              strokeWidth="1.1"
               strokeLinecap="round"
               className="smoke-curl-2"
             />
-          </svg>
-        </div>
-      )}
+          </g>
+        )}
 
-      {/* Incense Stick & Ember */}
-      <div className="relative flex flex-col items-center z-10">
-        <div 
-          className={`w-[2.5px] h-3.5 rounded-t-sm transition-colors duration-500 ${
-            active ? 'bg-stone-600' : 'bg-stone-300'
-          }`}
-        >
-          {/* Glowing Ember tip */}
-          {active && (
-            <div className="w-1.5 h-1.5 -ml-[2px] -mt-0.5 rounded-full bg-amber-500 shadow-[0_0_4px_#f59e0b] animate-pulse" />
-          )}
-        </div>
-      </div>
+        {/* 1. Tripod Feet & Handles (Back Layer) */}
+        <path d="M8 21 L6.5 26" stroke={active ? "#574839" : "#78716c"} strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M24 21 L25.5 26" stroke={active ? "#574839" : "#78716c"} strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M16 22 L16 26.5" stroke={active ? "#4a3c2e" : "#57534e"} strokeWidth="2.2" strokeLinecap="round" />
+        {/* Handles */}
+        <path d="M4 15 C1.5 15, 1.5 18.5, 5 19.5" stroke={active ? "#695847" : "#8c857e"} strokeWidth="1.6" strokeLinecap="round" fill="none" />
+        <path d="M28 15 C30.5 15, 30.5 18.5, 27 19.5" stroke={active ? "#695847" : "#8c857e"} strokeWidth="1.6" strokeLinecap="round" fill="none" />
 
-      {/* Ornate Bronze Censer Tripod Vessel */}
-      <svg className="w-7 h-5 relative z-20" viewBox="0 0 32 22" fill="none">
-        {/* Vessel Body */}
-        <ellipse cx="16" cy="11" rx="11" ry="6.5" fill={active ? "#7c6a58" : "#a8a29e"} />
-        <ellipse cx="16" cy="10" rx="9.5" ry="5" fill={active ? "#5f4f40" : "#8c857e"} />
-        {/* Rim Highlight */}
-        <ellipse cx="16" cy="9.5" rx="9" ry="2.5" fill={active ? "#8f7c68" : "#b8b2a8"} />
-        {/* Side Handles */}
-        <path d="M4 10 C2 10, 2 13, 5 14" stroke={active ? "#695847" : "#999"} strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        <path d="M28 10 C30 10, 30 13, 27 14" stroke={active ? "#695847" : "#999"} strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        {/* Tripod Feet */}
-        <path d="M8 15 L7 20" stroke={active ? "#574839" : "#888"} strokeWidth="2" strokeLinecap="round" />
-        <path d="M24 15 L25 20" stroke={active ? "#574839" : "#888"} strokeWidth="2" strokeLinecap="round" />
-        <path d="M16 16 L16 20.5" stroke={active ? "#4a3c2e" : "#777"} strokeWidth="2" strokeLinecap="round" />
+        {/* 2. Vessel Interior & Ash / Sand Bed */}
+        <ellipse cx="16" cy="15" rx="10.5" ry="5.5" fill={active ? "#423427" : "#57534e"} />
+        <ellipse cx="16" cy="15.2" rx="9" ry="4" fill={active ? "#594838" : "#6b6560"} />
+
+        {/* 3. Incense Stick / Candle (Planted deep inside the container) */}
+        <rect
+          x="15"
+          y="8"
+          width="2"
+          height="9"
+          rx="1"
+          fill={active ? "#7c2d12" : "#a8a29e"}
+          className="transition-colors duration-500"
+        />
+
+        {/* 4. Vessel Front Belly & Rim (Covers the lower base of the candle/stick) */}
+        <path
+          d="M5.5 15 C5.5 22.5, 26.5 22.5, 26.5 15 Z"
+          fill={active ? "#6d5b4a" : "#8a837c"}
+          stroke={active ? "#544537" : "#716b64"}
+          strokeWidth="0.8"
+        />
+        {/* Front Rim Curved Highlight */}
+        <path
+          d="M5.5 15 C8.5 19, 23.5 19, 26.5 15"
+          stroke={active ? "#8f7c68" : "#aba59e"}
+          strokeWidth="1.4"
+          fill="none"
+        />
+
+        {/* 5. Glowing Candle Flame / Ember (At the top of the stick) */}
+        {active ? (
+          <g className="transition-opacity duration-300">
+            {/* Ambient Flame Halo */}
+            <circle cx="16" cy="7.5" r="4.5" fill="#f59e0b" opacity="0.4" filter="blur(1px)" className="animate-pulse" />
+            {/* Teardrop Flame */}
+            <path
+              d="M16 3.5 C14.6 6, 14.5 7.5, 15 8.5 C15.5 9.2, 16.5 9.2, 17 8.5 C17.5 7.5, 17.4 6, 16 3.5 Z"
+              fill="#fbbf24"
+              className="animate-pulse"
+            />
+            {/* Intense Flame Core */}
+            <ellipse cx="16" cy="7.8" rx="0.9" ry="1.4" fill="#fffbeb" />
+          </g>
+        ) : (
+          /* Burnt Out Cold Wick */
+          <line x1="16" y1="7" x2="16" y2="8" stroke="#44403c" strokeWidth="1.2" strokeLinecap="round" />
+        )}
       </svg>
     </div>
   );
@@ -953,6 +996,29 @@ export default function Game() {
               </div>
             )}
 
+            {/* Gentle Winter Snowfall when isWinter is active */}
+            {currentTheme.isWinter && (
+              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                {WINTER_SNOWFLAKES.map((flake, idx) => (
+                  <div
+                    key={idx}
+                    className="absolute rounded-full bg-white pointer-events-none animate-pulse"
+                    style={{
+                      left: `${flake.x}%`,
+                      top: `${flake.y}%`,
+                      width: `${flake.size}px`,
+                      height: `${flake.size}px`,
+                      opacity: flake.opacity,
+                      filter: flake.size > 2.6 ? 'blur(0.5px)' : undefined,
+                      boxShadow: '0 0 3px rgba(255,255,255,0.95)',
+                      animationDuration: `${flake.dur}s`,
+                      animationDelay: `${flake.delay}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
             <img
               src="/svg/tibet.svg"
@@ -960,7 +1026,10 @@ export default function Game() {
               className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0 transition-all duration-1000"
               style={{
                 mixBlendMode: 'multiply',
-                opacity: currentTheme.isNight ? 0.62 : 0.94,
+                opacity: currentTheme.isNight ? 0.62 : currentTheme.isWinter ? 0.92 : 0.94,
+                filter: currentTheme.isWinter
+                  ? 'grayscale(96%) contrast(1.08) brightness(1.03)'
+                  : undefined,
               }}
             />
 
@@ -969,7 +1038,7 @@ export default function Game() {
               className="absolute inset-0 pointer-events-none transition-all duration-1000 z-0"
               style={{
                 background: `linear-gradient(135deg, ${currentTheme.skyGradient[0]} 0%, ${currentTheme.skyGradient[1]} 35%, ${currentTheme.skyGradient[2]} 70%, ${currentTheme.skyGradient[3]} 100%)`,
-                opacity: currentTheme.isNight ? 0.18 : 0.22,
+                opacity: currentTheme.isWinter ? 0.08 : currentTheme.isNight ? 0.18 : 0.22,
                 mixBlendMode: 'color',
               }}
             />
