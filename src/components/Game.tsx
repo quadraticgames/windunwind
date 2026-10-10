@@ -171,18 +171,18 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#a5f3fc',
     waterColor: '#ded4be',
   },
-  // Stage 2: The Samana Trials - Cold Desert Night of Asceticism & Silvery Moon
+  // Stage 2: The Samana Trials - Moonlit Desert Night of Asceticism & Silvery Radiance
   2: {
     isNight: true,
-    skyGradient: ['#050814', '#0c1527', '#172554', '#090d16'],
-    farMountain: '#1e293b',
-    midMountain: '#162032',
-    slopeMountain: '#0f172a',
-    fogColor: '#38bdf8',
-    fogOpacity: 0.14,
-    celestial: { cx: 340, cy: 75, r: 36, fill: '#f8fafc', glow: '#93c5fd', opacity: 0.95 },
+    skyGradient: ['#1e293b', '#283853', '#3d5277', '#223049'],
+    farMountain: '#2b3a53',
+    midMountain: '#233045',
+    slopeMountain: '#1a2538',
+    fogColor: '#93c5fd',
+    fogOpacity: 0.22,
+    celestial: { cx: 340, cy: 75, r: 40, fill: '#ffffff', glow: '#bfdbfe', opacity: 0.98 },
     sparkleColor: '#bae6fd',
-    waterColor: '#0f172a',
+    waterColor: '#233045',
   },
   // Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Radiance
   3: {
@@ -223,18 +223,18 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#fda4af',
     waterColor: '#caa2ab',
   },
-  // Stage 6: The River of Rebirth - Dark Night of the Soul, Sapphire Abyss & Silver Full Moon
+  // Stage 6: The River of Rebirth - Radiant Sapphire Abyss & Moonlit River Waters
   6: {
     isNight: true,
-    skyGradient: ['#020617', '#0f172a', '#1e1b4b', '#030712'],
-    farMountain: '#1e1b4b',
-    midMountain: '#172554',
-    slopeMountain: '#0f172a',
-    fogColor: '#818cf8',
-    fogOpacity: 0.20,
-    celestial: { cx: 480, cy: 70, r: 42, fill: '#f1f5f9', glow: '#818cf8', opacity: 0.98 },
+    skyGradient: ['#162544', '#203762', '#314e86', '#1a2e54'],
+    farMountain: '#253b66',
+    midMountain: '#1d3055',
+    slopeMountain: '#152544',
+    fogColor: '#a5b4fc',
+    fogOpacity: 0.24,
+    celestial: { cx: 480, cy: 70, r: 44, fill: '#ffffff', glow: '#c7d2fe', opacity: 0.98 },
     sparkleColor: '#c7d2fe',
-    waterColor: '#1e1b4b',
+    waterColor: '#253b66',
   },
   // Stage 7: The Ferryman’s Disciple - Deep Emerald River Waters & Sacred Flow
   7: {
@@ -249,18 +249,18 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#6ee7b7',
     waterColor: '#93cca8',
   },
-  // Stage 8: The Wound of Love - Amethyst Starlit Night of Grief & Solitary Moon
+  // Stage 8: The Wound of Love - Celestial Amethyst Twilight Night & Solitary Moon
   8: {
     isNight: true,
-    skyGradient: ['#090514', '#1a0b2e', '#2e1065', '#090514'],
-    farMountain: '#3b0764',
-    midMountain: '#2e1065',
-    slopeMountain: '#1e0a3d',
-    fogColor: '#c084fc',
-    fogOpacity: 0.18,
-    celestial: { cx: 640, cy: 75, r: 38, fill: '#faf5ff', glow: '#c084fc', opacity: 0.92 },
+    skyGradient: ['#2b1f42', '#3c2b5c', '#533c7c', '#2f2149'],
+    farMountain: '#463268',
+    midMountain: '#392756',
+    slopeMountain: '#2c1c44',
+    fogColor: '#d8b4fe',
+    fogOpacity: 0.22,
+    celestial: { cx: 640, cy: 75, r: 42, fill: '#ffffff', glow: '#e9d5ff', opacity: 0.96 },
     sparkleColor: '#e9d5ff',
-    waterColor: '#1a0b2e',
+    waterColor: '#392756',
   },
   // Stage 9: The Eternal Flow - Radiant Celestial Aurora, Ultimate Oneness
   9: {
@@ -650,6 +650,13 @@ export default function Game() {
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
+    if (e.key === 'Escape') {
+      if (selectedLoreStage) {
+        handleCloseLore();
+        return;
+      }
+    }
+
     if (e.shiftKey && (e.key === 'A' || e.key === 'a' || e.code === 'KeyA')) {
       e.preventDefault();
       advanceToNextStage();
@@ -658,7 +665,7 @@ export default function Game() {
 
     if (e.key === 'ArrowUp') handleInput('up');
     if (e.key === 'ArrowDown') handleInput('down');
-  }, [advanceToNextStage, handleInput]);
+  }, [advanceToNextStage, handleInput, selectedLoreStage, handleCloseLore]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
@@ -856,6 +863,24 @@ export default function Game() {
                 transition: 'left 1.2s ease-in-out, top 1.2s ease-in-out',
               }}
             >
+              {/* Wide Ambient Moonlight Wash (Exclusive to Night stages for gentle landscape illumination) */}
+              {currentTheme.isNight && (
+                <div
+                  className="rounded-full blur-3xl pointer-events-none"
+                  style={{
+                    width: `${currentTheme.celestial.r * 9.5}px`,
+                    height: `${currentTheme.celestial.r * 9.5}px`,
+                    backgroundColor: currentTheme.celestial.glow,
+                    opacity: 0.32,
+                    transform: 'translate(-50%, -50%)',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transition: 'width 1.2s ease-in-out, height 1.2s ease-in-out, background-color 1.2s ease-in-out, opacity 1.2s ease-in-out',
+                  }}
+                />
+              )}
+
               {/* Outer Radiant Flare */}
               <div
                 className="rounded-full blur-2xl pointer-events-none"
@@ -935,7 +960,7 @@ export default function Game() {
               className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0 transition-all duration-1000"
               style={{
                 mixBlendMode: 'multiply',
-                opacity: currentTheme.isNight ? 0.45 : 0.94,
+                opacity: currentTheme.isNight ? 0.62 : 0.94,
               }}
             />
 
@@ -944,14 +969,14 @@ export default function Game() {
               className="absolute inset-0 pointer-events-none transition-all duration-1000 z-0"
               style={{
                 background: `linear-gradient(135deg, ${currentTheme.skyGradient[0]} 0%, ${currentTheme.skyGradient[1]} 35%, ${currentTheme.skyGradient[2]} 70%, ${currentTheme.skyGradient[3]} 100%)`,
-                opacity: currentTheme.isNight ? 0.35 : 0.22,
+                opacity: currentTheme.isNight ? 0.18 : 0.22,
                 mixBlendMode: 'color',
               }}
             />
 
             {/* Subtle Horizon Mist / Fog Ribbon */}
             <div
-              className="absolute bottom-12 left-0 right-0 h-12 pointer-events-none blur-lg transition-all duration-1000 z-0"
+              className="absolute bottom-12 left-0 right-0 h-16 pointer-events-none blur-lg transition-all duration-1000 z-0"
               style={{
                 backgroundColor: currentTheme.fogColor,
                 opacity: currentTheme.fogOpacity,
