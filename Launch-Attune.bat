@@ -1,3 +1,3 @@
 @echo off
 echo Launching Attune in Chrome Application Mode (no URL bar, no tabs)...
-start chrome --app=http://localhost:5173
+start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --app=http://localhost:5173
