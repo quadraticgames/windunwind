@@ -1286,12 +1286,12 @@ export default function Game() {
                 {isFullscreen ? (
                   <>
                     <Minimize size={14} className="text-stone-800" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Window</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Window (F11)</span>
                   </>
                 ) : (
                   <>
                     <Maximize size={14} className="text-stone-800" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Full Screen</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider font-serif-zen">Full Screen (F11)</span>
                   </>
                 )}
               </button>

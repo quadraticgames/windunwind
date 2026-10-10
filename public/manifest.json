@@ -1,0 +1,17 @@
+{
+  "name": "Attune | Siddhartha's Journey",
+  "short_name": "Attune",
+  "description": "A mindful zen tone-matching journey inspired by Siddhartha",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "theme_color": "#12151c",
+  "background_color": "#12151c",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
