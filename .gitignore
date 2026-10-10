@@ -29,3 +29,9 @@ scratch
 *.lnk
 pic1415071.jpg
 /*.mp3
+
+# Skills & agent docs
+SKILL.md
+skill.md
+*.skill.md
+.agents/
