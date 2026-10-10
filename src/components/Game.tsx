@@ -1991,7 +1991,7 @@ export default function Game() {
                 <span className="text-[11px] font-bold tracking-[0.25em] text-stone-500 uppercase font-serif-zen">
                   Siddhartha's Journey
                 </span>
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 mt-1 mb-2 tracking-tight font-serif-zen">
+                <h1 className="text-3xl sm:text-4xl font-extrabold italic text-stone-900 mt-1 mb-2 tracking-tight font-serif-zen">
                   Attune
                 </h1>
                 <p className="text-stone-600 text-xs sm:text-sm leading-relaxed px-2 font-serif-zen">
@@ -2640,7 +2640,7 @@ export default function Game() {
                   </button>
 
                   <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#34705a] mb-1 font-serif-zen">
-                    Attune • Siddhartha's Journey
+                    <span className="font-extrabold italic">Attune</span> • Siddhartha's Journey
                   </div>
                   <h3 className="text-xl font-bold text-stone-900 font-serif-zen mb-3">
                     About This Game
@@ -2652,7 +2652,7 @@ export default function Game() {
                         The Inspiration
                       </strong>
                       <p>
-                        Adapted from Hermann Hesse's 1922 spiritual classic <em>Siddhartha</em>, Attune is a meditative audio-visual pitch attunement journey exploring the seeker's quest across three realms of existence.
+                        Adapted from Hermann Hesse's 1922 spiritual classic <em>Siddhartha</em>, <strong className="font-extrabold italic">Attune</strong> is a meditative audio-visual pitch attunement journey exploring the seeker's quest across three realms of existence.
                       </p>
                       <p className="mt-1.5 text-stone-600">
                         You can read <em>Siddhartha</em> for free online{' '}
