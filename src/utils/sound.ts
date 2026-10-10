@@ -17,19 +17,63 @@ try {
   // Ignore localStorage access errors
 }
 
-let droneAudio: HTMLAudioElement | null = null;
+// Web Audio engine for seamless pop-free ambient drone
+let droneAudioContext: AudioContext | null = null;
+let droneGainNode: GainNode | null = null;
+let droneSourceNode: AudioBufferSourceNode | null = null;
+let seamlessDroneBuffer: AudioBuffer | null = null;
+let isDroneLoading = false;
+let isDronePlaying = false;
+let fallbackAudio: HTMLAudioElement | null = null;
 
-const getDroneAudio = () => {
+const getDroneContext = (): AudioContext | null => {
   if (typeof window === 'undefined') return null;
-  if (!droneAudio) {
-    droneAudio = new Audio('/drone.mp3');
-    droneAudio.loop = true;
-    droneAudio.volume = 0.35;
-    droneAudio.muted = isDroneMuted;
-    droneAudio.preload = 'auto';
+  if (!droneAudioContext) {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (AudioCtx) {
+      droneAudioContext = new AudioCtx();
+    }
   }
-  return droneAudio;
+  return droneAudioContext;
 };
+
+// Generates an equal-power seamless loop buffer from the raw recording,
+// eliminating MP3 boundary discontinuities and browser seek pops.
+function createSeamlessLoopBuffer(audioBuf: AudioBuffer, ctx: AudioContext, crossfadeDuration = 1.0): AudioBuffer {
+  const sampleRate = audioBuf.sampleRate;
+  const crossfadeSamples = Math.floor(crossfadeDuration * sampleRate);
+  const safeCrossfadeSamples = Math.min(crossfadeSamples, Math.floor(audioBuf.length / 2));
+  const loopLength = audioBuf.length - safeCrossfadeSamples;
+
+  const seamlessBuffer = ctx.createBuffer(
+    audioBuf.numberOfChannels,
+    loopLength,
+    sampleRate
+  );
+
+  for (let ch = 0; ch < audioBuf.numberOfChannels; ch++) {
+    const src = audioBuf.getChannelData(ch);
+    const dest = seamlessBuffer.getChannelData(ch);
+
+    // Copy core body
+    for (let i = 0; i < loopLength; i++) {
+      dest[i] = src[i];
+    }
+
+    // Blend the tail into the head with an equal-power crossfade
+    for (let i = 0; i < safeCrossfadeSamples; i++) {
+      const progress = i / safeCrossfadeSamples;
+      const gainOut = Math.cos(progress * 0.5 * Math.PI);
+      const gainIn = Math.sin(progress * 0.5 * Math.PI);
+
+      const tailSample = src[loopLength + i];
+      const headSample = dest[i];
+      dest[i] = headSample * gainIn + tailSample * gainOut;
+    }
+  }
+
+  return seamlessBuffer;
+}
 
 export const setDroneMuted = (muted: boolean) => {
   isDroneMuted = muted;
@@ -40,9 +84,17 @@ export const setDroneMuted = (muted: boolean) => {
   } catch (e) {
     // Ignore localStorage errors
   }
-  const audio = getDroneAudio();
-  if (audio) {
-    audio.muted = muted;
+
+  if (droneGainNode && droneAudioContext) {
+    const now = droneAudioContext.currentTime;
+    const targetGain = muted ? 0 : 0.35;
+    droneGainNode.gain.cancelScheduledValues(now);
+    droneGainNode.gain.setValueAtTime(droneGainNode.gain.value, now);
+    droneGainNode.gain.linearRampToValueAtTime(targetGain, now + 0.05);
+  }
+
+  if (fallbackAudio) {
+    fallbackAudio.muted = muted;
   }
 };
 
@@ -106,21 +158,25 @@ export const initializeAudio = async () => {
     volume: -8,
   }).connect(reverb);
 
-  // Player for lowtone.mp3
+  // Player for lowtone.mp3 with anti-click crossfades
   try {
     lowTonePlayer = new Tone.Player({
       url: '/lowtone.mp3',
       volume: -4,
+      fadeIn: 0.005,
+      fadeOut: 0.04,
     }).connect(reverb);
   } catch (e) {
     console.warn('Failed to load low tone player', e);
   }
 
-  // Player for hightone.mp3
+  // Player for hightone.mp3 with anti-click crossfades
   try {
     highTonePlayer = new Tone.Player({
       url: '/hightone.mp3',
       volume: -4,
+      fadeIn: 0.005,
+      fadeOut: 0.04,
     }).connect(reverb);
   } catch (e) {
     console.warn('Failed to load high tone player', e);
@@ -130,13 +186,70 @@ export const initializeAudio = async () => {
 };
 
 export const startDrone = async () => {
-  const audio = getDroneAudio();
-  if (audio) {
-    audio.muted = isDroneMuted;
-    if (audio.paused) {
-      audio.play().catch(() => {
-        // Autoplay policy prevented immediate playback; unlocks on user gesture
-      });
+  if (typeof window === 'undefined') return;
+
+  const ctx = getDroneContext();
+  if (ctx) {
+    // If context is suspended by autoplay policy, resume it
+    if (ctx.state === 'suspended') {
+      try {
+        await ctx.resume();
+      } catch (e) {
+        // Will resume on first user interaction
+      }
+    }
+
+    if (isDronePlaying && droneSourceNode) {
+      // Already running cleanly
+      return;
+    }
+
+    if (isDroneLoading) {
+      return;
+    }
+
+    try {
+      if (!seamlessDroneBuffer) {
+        isDroneLoading = true;
+        const resp = await fetch('/drone.mp3');
+        const arrayBuf = await resp.arrayBuffer();
+        const rawBuf = await ctx.decodeAudioData(arrayBuf);
+        seamlessDroneBuffer = createSeamlessLoopBuffer(rawBuf, ctx, 1.0);
+        isDroneLoading = false;
+      }
+
+      if (!droneGainNode) {
+        droneGainNode = ctx.createGain();
+        droneGainNode.gain.setValueAtTime(isDroneMuted ? 0 : 0.35, ctx.currentTime);
+        droneGainNode.connect(ctx.destination);
+      } else {
+        const targetGain = isDroneMuted ? 0 : 0.35;
+        droneGainNode.gain.cancelScheduledValues(ctx.currentTime);
+        droneGainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
+      }
+
+      if (droneSourceNode) {
+        try {
+          droneSourceNode.stop();
+          droneSourceNode.disconnect();
+        } catch (e) {}
+      }
+
+      droneSourceNode = ctx.createBufferSource();
+      droneSourceNode.buffer = seamlessDroneBuffer;
+      droneSourceNode.loop = true;
+      droneSourceNode.connect(droneGainNode);
+      droneSourceNode.start(0);
+      isDronePlaying = true;
+    } catch (e) {
+      console.warn('Web Audio drone error, falling back to HTMLAudioElement', e);
+      if (!fallbackAudio) {
+        fallbackAudio = new Audio('/drone.mp3');
+        fallbackAudio.loop = true;
+        fallbackAudio.volume = 0.35;
+        fallbackAudio.muted = isDroneMuted;
+      }
+      fallbackAudio.play().catch(() => {});
     }
   }
 
@@ -147,9 +260,23 @@ export const startDrone = async () => {
 };
 
 export const stopDrone = () => {
-  const audio = getDroneAudio();
-  if (audio && !audio.paused) {
-    audio.pause();
+  if (droneGainNode && droneAudioContext) {
+    const now = droneAudioContext.currentTime;
+    droneGainNode.gain.cancelScheduledValues(now);
+    droneGainNode.gain.setValueAtTime(droneGainNode.gain.value, now);
+    droneGainNode.gain.linearRampToValueAtTime(0, now + 0.04);
+    setTimeout(() => {
+      if (droneSourceNode) {
+        try {
+          droneSourceNode.stop();
+          droneSourceNode.disconnect();
+        } catch (e) {}
+        droneSourceNode = null;
+      }
+      isDronePlaying = false;
+    }, 50);
+  } else if (fallbackAudio && !fallbackAudio.paused) {
+    fallbackAudio.pause();
   }
 };
 

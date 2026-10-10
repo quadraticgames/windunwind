@@ -377,8 +377,16 @@ export default function Game() {
     startDrone();
 
     // Browser autoplay policy fallback: unlock and start drone on user gesture
+    const removeListeners = () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
     const handleFirstInteraction = () => {
       startDrone();
+      removeListeners();
     };
 
     window.addEventListener('click', handleFirstInteraction, { passive: true });
@@ -386,12 +394,7 @@ export default function Game() {
     window.addEventListener('keydown', handleFirstInteraction, { passive: true });
     window.addEventListener('touchstart', handleFirstInteraction, { passive: true });
 
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('pointerdown', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-    };
+    return removeListeners;
   }, []);
 
   // Each stage has 3 puzzles (total 27 puzzles)
