@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind, Maximize, Minimize } from 'lucide-react';
+import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind, Maximize, Minimize, ExternalLink } from 'lucide-react';
 import { playCorrectNote, playWrongNote, initializeAudio, startDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 import {
   GLOBAL_VISUAL_CONFIG,
@@ -2653,6 +2653,18 @@ export default function Game() {
                       </strong>
                       <p>
                         Adapted from Hermann Hesse's 1922 spiritual classic <em>Siddhartha</em>, Attune is a meditative audio-visual pitch attunement journey exploring the seeker's quest across three realms of existence.
+                      </p>
+                      <p className="mt-1.5 text-stone-600">
+                        You can read <em>Siddhartha</em> for free online{' '}
+                        <a
+                          href="https://www.gutenberg.org/cache/epub/2500/pg2500-images.html"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#275d49] hover:text-[#183d30] underline font-bold inline-flex items-center gap-0.5"
+                        >
+                          <span>right here</span>
+                          <ExternalLink size={10} className="inline shrink-0" />
+                        </a>.
                       </p>
                     </div>
 

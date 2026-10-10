@@ -1,6 +1,6 @@
 # Attune: Siddhartha's Journey
 
-**Attune** is a meditative, audiovisual tone-memory game inspired by Hermann Hesse's classic spiritual novel *Siddhartha*. Players journey through 9 stages across the three spiritual realms of **Body**, **Mind**, and **Spirit**, repeating harmonic sequences of temple chimes and singing bowls along a winding ink-wash path to reach Enlightenment and Oneness (27 puzzles in total).
+**Attune** is a meditative, audiovisual tone-memory game inspired by Hermann Hesse's classic spiritual novel *Siddhartha* (which you can [read for free on Project Gutenberg](https://www.gutenberg.org/cache/epub/2500/pg2500-images.html)). Players journey through 9 stages across the three spiritual realms of **Body**, **Mind**, and **Spirit**, repeating harmonic sequences of temple chimes and singing bowls along a winding ink-wash path to reach Enlightenment and Oneness (27 puzzles in total).
 
 ---
 
