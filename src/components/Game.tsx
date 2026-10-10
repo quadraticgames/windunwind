@@ -997,7 +997,8 @@ export default function Game() {
   const [playerSequence, setPlayerSequence] = useState<Direction[]>([]);
   const [isShowingSequence, setIsShowingSequence] = useState(false);
   const [strikes, setStrikes] = useState(0);
-  const [streak, setStreak] = useState(4); // Default aesthetic streak or game streak
+  const [streak, setStreak] = useState(0);
+  const [peakStreak, setPeakStreak] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
@@ -1419,6 +1420,7 @@ export default function Game() {
         }
         return newStrikes;
       });
+      setStreak(0);
       setPlayerSequence([]); 
       pendingTimeoutRef.current = window.setTimeout(() => {
         pendingTimeoutRef.current = null;
@@ -1438,7 +1440,11 @@ export default function Game() {
         const nextCount = puzzleCount + 1;
         puzzleCountRef.current = nextCount;
         setPuzzleCount(nextCount);
-        setStreak(s => s + 1);
+        setStreak(s => {
+          const nextStreak = s + 1;
+          setPeakStreak(p => Math.max(p, nextStreak));
+          return nextStreak;
+        });
 
         if (nextCount >= TOTAL_PUZZLES_TO_ENLIGHTENMENT) {
           setIsTranscendence(true);
@@ -1629,6 +1635,7 @@ export default function Game() {
     setIsTranscendence(false);
     setStrikes(0);
     setStreak(0);
+    setPeakStreak(0);
     puzzleCountRef.current = 0;
     setPuzzleCount(0);
     setSelectedLoreStage(null);
@@ -2022,18 +2029,18 @@ export default function Game() {
               {/* Header HUD */}
               <div className="w-full grid grid-cols-[1fr_auto_1fr] items-start pt-3 sm:pt-4 px-4 sm:px-8 select-none gap-2">
                 
-                {/* Left: CURRENT STREAK with Calligraphy Script '道' */}
+                {/* Left: CURRENT SCORE with Calligraphy Script '道' & STREAK */}
                 <div className="flex flex-col text-left justify-self-start">
                   <span className={`text-[10px] sm:text-[11px] tracking-widest uppercase font-bold font-serif-zen whitespace-nowrap transition-colors duration-500 ${
                     currentTheme.isNight ? 'text-amber-200/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]' : 'text-stone-500'
                   }`}>
-                    Current Streak
+                    Current Score
                   </span>
                   <div className="flex items-baseline space-x-1.5 mt-0.5 whitespace-nowrap">
                     <span className={`font-brush text-3xl sm:text-4xl font-bold leading-none transition-colors duration-500 ${
                       currentTheme.isNight ? 'text-amber-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]' : 'text-stone-900'
                     }`}>
-                      {streak}
+                      {puzzleCount}
                     </span>
                     <span className={`font-brush text-2xl sm:text-3xl leading-none transition-colors duration-500 ${
                       currentTheme.isNight ? 'text-amber-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]' : 'text-stone-800'
@@ -2044,6 +2051,11 @@ export default function Game() {
                       currentTheme.isNight ? 'text-amber-200/70' : 'text-stone-400'
                     }`}>
                       ({puzzleCount}/27)
+                    </span>
+                    <span className={`text-[11px] font-serif-zen font-semibold ml-1.5 transition-colors duration-500 ${
+                      currentTheme.isNight ? 'text-amber-200/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]' : 'text-stone-500'
+                    }`}>
+                      • Streak: {streak}
                     </span>
                   </div>
                 </div>
@@ -2540,7 +2552,7 @@ export default function Game() {
                     "{currentStage.conflict}"
                   </p>
                   <p className="text-stone-600 text-xs mb-5 font-serif-zen">
-                    Puzzles solved: <strong className="text-stone-900">{puzzleCount} / 27</strong> • Peak streak: <strong className="text-stone-900">{streak}</strong>
+                    Puzzles solved: <strong className="text-stone-900">{puzzleCount} / 27</strong> • Peak streak: <strong className="text-stone-900">{peakStreak}</strong>
                   </p>
                   <button
                     onClick={startGame}
