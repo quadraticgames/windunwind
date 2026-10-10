@@ -1215,31 +1215,111 @@ export default function Game() {
   const isAwaitingLoreContinueRef = useRef<boolean>(false);
   const pendingStageSequenceRef = useRef<Direction[] | null>(null);
 
+  // Puzzle uniqueness tracking refs: guarantee no duplicate puzzle in current stage, consecutively, or across recent session plays
+  const lastSingleToneRef = useRef<Direction | null>(null);
+  const lastGeneratedSequenceKeyRef = useRef<string | null>(null);
+  const currentStageSequencesRef = useRef<Map<number, string[]>>(new Map());
+  const sessionUsedSequencesRef = useRef<Map<number, Set<string>>>(new Map());
+
   const generateTutorialTones = useCallback((): Direction[] => {
     // Stage 1 (tutorial) has 3 single-tone puzzles.
-    // Guarantee that both 'up' and 'down' tones are played at least once during this stage:
-    // First two puzzles contain both tones ('up' and 'down') in random order,
-    // and the third puzzle is randomly either 'up' or 'down'.
-    const firstTwo: Direction[] = Math.random() > 0.5 ? ['up', 'down'] : ['down', 'up'];
-    const third: Direction = Math.random() > 0.5 ? 'up' : 'down';
-    return [...firstTwo, third];
+    // Guarantee that both 'up' and 'down' tones are played at least once during this stage,
+    // and guarantee that NO TWO CONSECUTIVE PUZZLES EVER REPEAT THE SAME TONE (A -> B -> A).
+    let first: Direction;
+    if (lastSingleToneRef.current) {
+      first = lastSingleToneRef.current === 'up' ? 'down' : 'up';
+    } else {
+      first = Math.random() > 0.5 ? 'up' : 'down';
+    }
+    const second: Direction = first === 'up' ? 'down' : 'up';
+    const third: Direction = first;
+    lastSingleToneRef.current = third;
+    return [first, second, third];
+  }, []);
+
+  const getAllCombinations = useCallback((length: number): Direction[][] => {
+    const total = 1 << length;
+    const result: Direction[][] = [];
+    for (let i = 0; i < total; i++) {
+      const combo: Direction[] = [];
+      for (let bit = 0; bit < length; bit++) {
+        combo.push((i & (1 << bit)) !== 0 ? 'up' : 'down');
+      }
+      result.push(combo);
+    }
+    return result;
   }, []);
 
   const generateSequenceForPuzzle = useCallback((count: number): Direction[] => {
-    // Tutorial stage (Stage 1 = puzzles 0, 1, 2): guarantee each tone is played at least once
+    // Tutorial stage (Stage 1 = puzzles 0, 1, 2): guarantee each tone is played and no consecutive repetition
     if (count < 3) {
       if (!tutorialTonesRef.current || tutorialTonesRef.current.length < 3) {
         tutorialTonesRef.current = generateTutorialTones();
       }
-      return [tutorialTonesRef.current[count]];
+      const seq: Direction[] = [tutorialTonesRef.current[count]];
+      lastGeneratedSequenceKeyRef.current = seq.join(',');
+      return seq;
     }
 
     const stageIdx = Math.min(Math.floor(count / 3), 8);
     const len = stageIdx + 1;
-    return Array(len)
-      .fill(null)
-      .map(() => (Math.random() > 0.5 ? 'up' : 'down'));
-  }, [generateTutorialTones]);
+
+    // Reset current stage history at the start of a stage (puzzle 0 of stage)
+    if (count % 3 === 0) {
+      currentStageSequencesRef.current.set(stageIdx, []);
+    }
+
+    const currentStageList = currentStageSequencesRef.current.get(stageIdx) || [];
+    const currentStageSet = new Set(currentStageList);
+
+    if (!sessionUsedSequencesRef.current.has(stageIdx)) {
+      sessionUsedSequencesRef.current.set(stageIdx, new Set());
+    }
+    const sessionSet = sessionUsedSequencesRef.current.get(stageIdx)!;
+
+    const allCombos = getAllCombinations(len);
+
+    // Filter combinations that:
+    // 1. Have NOT been played in the current stage (NEVER repeat within the same stage)
+    // 2. Are NOT identical to the immediately preceding puzzle sequence
+    const eligibleCombos = allCombos.filter(combo => {
+      const key = combo.join(',');
+      if (currentStageSet.has(key)) return false;
+      if (lastGeneratedSequenceKeyRef.current && key === lastGeneratedSequenceKeyRef.current) return false;
+      return true;
+    });
+
+    // From eligible combos, prioritize ones not yet seen in this session
+    let freshCombos = eligibleCombos.filter(combo => !sessionSet.has(combo.join(',')));
+
+    // If all eligible combos were already seen in this session, reset session history for this stage
+    if (freshCombos.length === 0 && eligibleCombos.length > 0) {
+      sessionSet.clear();
+      freshCombos = eligibleCombos;
+    }
+
+    // Pick from fresh combos if available; otherwise pick from eligible combos
+    let pool = freshCombos.length > 0 ? freshCombos : eligibleCombos;
+
+    // Safety fallback: if somehow pool is empty, fallback to any combo not in current stage
+    if (pool.length === 0) {
+      pool = allCombos.filter(combo => !currentStageSet.has(combo.join(',')));
+    }
+    if (pool.length === 0) {
+      pool = allCombos;
+    }
+
+    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    const chosenKey = chosen.join(',');
+
+    // Record chosen sequence
+    currentStageList.push(chosenKey);
+    currentStageSequencesRef.current.set(stageIdx, currentStageList);
+    sessionSet.add(chosenKey);
+    lastGeneratedSequenceKeyRef.current = chosenKey;
+
+    return chosen;
+  }, [generateTutorialTones, getAllCombinations]);
 
   const showSequence = useCallback(async (seq: Direction[]) => {
     const seqId = ++sequenceIdRef.current;
@@ -1378,6 +1458,8 @@ export default function Game() {
       setPuzzleCount(0);
       setStrikes(0);
       setPlayerSequence([]);
+      currentStageSequencesRef.current.clear();
+      tutorialTonesRef.current = generateTutorialTones();
       const initialSeq = generateSequenceForPuzzle(0);
       setSequence(initialSeq);
       showSequence(initialSeq);
@@ -1498,6 +1580,7 @@ export default function Game() {
     puzzleCountRef.current = 0;
     setPuzzleCount(0);
     setSelectedLoreStage(null);
+    currentStageSequencesRef.current.clear();
     tutorialTonesRef.current = generateTutorialTones();
     const initialSeq = generateSequenceForPuzzle(0);
 
@@ -1529,8 +1612,9 @@ export default function Game() {
     const curSeqId = ++sequenceIdRef.current;
     setIsTranscendence(false);
     startDrone();
-    const nextSeq = generateSequenceForPuzzle(puzzleCountRef.current);
     const stageIdx = Math.min(Math.floor(puzzleCountRef.current / 3), 8);
+    currentStageSequencesRef.current.set(stageIdx, []);
+    const nextSeq = generateSequenceForPuzzle(puzzleCountRef.current);
     const stage = STAGES[stageIdx];
     playStageFanfare();
     setStageCelebration({
