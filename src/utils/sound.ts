@@ -225,7 +225,7 @@ export const startDrone = async () => {
         hasDroneFadedIn = true;
       }
       const targetGain = isDroneMuted ? 0 : 0.35;
-      const FADE_IN_DURATION = 2.2; // 2.2-second gentle ambient swell
+      const FADE_IN_DURATION = 4.4; // 4.4-second gentle ambient swell
 
       if (!droneGainNode) {
         droneGainNode = ctx.createGain();
@@ -264,10 +264,10 @@ export const startDrone = async () => {
           fallbackAudio.volume = 0;
           let currentVol = 0;
           const fadeTimer = setInterval(() => {
-            currentVol = Math.min(0.35, currentVol + 0.035);
+            currentVol = Math.min(0.35, currentVol + 0.0175);
             if (fallbackAudio) fallbackAudio.volume = currentVol;
             if (currentVol >= 0.35) clearInterval(fadeTimer);
-          }, 200);
+          }, 220);
         } else {
           fallbackAudio.volume = 0.35;
         }
