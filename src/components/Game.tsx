@@ -117,6 +117,7 @@ const STAGES: StageInfo[] = [
 const TOTAL_PUZZLES_TO_ENLIGHTENMENT = 27;
 
 type StageTheme = {
+  isNight?: boolean;
   skyGradient: [string, string, string, string];
   farMountain: string;
   midMountain: string;
@@ -135,9 +136,31 @@ type StageTheme = {
   waterColor: string;
 };
 
+const NIGHT_STARS = [
+  { x: 6, y: 14, size: 1.5, opacity: 0.75, dur: 3.2, delay: 0.1 },
+  { x: 12, y: 24, size: 2.0, opacity: 0.9, dur: 2.5, delay: 0.8 },
+  { x: 18, y: 9, size: 1.2, opacity: 0.65, dur: 4.1, delay: 1.4 },
+  { x: 26, y: 19, size: 1.8, opacity: 0.8, dur: 3.7, delay: 0.3 },
+  { x: 33, y: 29, size: 1.0, opacity: 0.5, dur: 2.8, delay: 1.9 },
+  { x: 39, y: 11, size: 2.2, opacity: 0.95, dur: 4.5, delay: 0.5 },
+  { x: 44, y: 25, size: 1.4, opacity: 0.7, dur: 3.1, delay: 1.2 },
+  { x: 53, y: 15, size: 1.8, opacity: 0.85, dur: 2.9, delay: 2.1 },
+  { x: 59, y: 27, size: 1.0, opacity: 0.55, dur: 3.9, delay: 0.7 },
+  { x: 68, y: 12, size: 2.4, opacity: 0.9, dur: 4.2, delay: 1.6 },
+  { x: 73, y: 22, size: 1.2, opacity: 0.65, dur: 2.6, delay: 0.4 },
+  { x: 82, y: 16, size: 1.8, opacity: 0.8, dur: 3.5, delay: 2.3 },
+  { x: 88, y: 28, size: 1.2, opacity: 0.6, dur: 4.0, delay: 1.0 },
+  { x: 94, y: 14, size: 1.6, opacity: 0.75, dur: 3.3, delay: 1.7 },
+  { x: 15, y: 36, size: 1.0, opacity: 0.5, dur: 3.4, delay: 1.1 },
+  { x: 49, y: 38, size: 1.6, opacity: 0.7, dur: 2.7, delay: 0.9 },
+  { x: 64, y: 35, size: 1.3, opacity: 0.6, dur: 3.8, delay: 1.5 },
+  { x: 86, y: 33, size: 1.5, opacity: 0.75, dur: 4.3, delay: 0.2 },
+];
+
 const STAGE_THEMES: Record<number, StageTheme> = {
   // Stage 1: The Brahmin’s Cage - Crisp Pale Morning Mist & Green Bamboo Dawn
   1: {
+    isNight: false,
     skyGradient: ['#fbf7ed', '#f4ece1', '#f7eae4', '#eeddd6'],
     farMountain: '#e3dbcc',
     midMountain: '#dbd1bd',
@@ -148,20 +171,22 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#a5f3fc',
     waterColor: '#ded4be',
   },
-  // Stage 2: The Samana Trials - Arid Desert Winds, Sunbaked Ochre, Dusty Sand
+  // Stage 2: The Samana Trials - Cold Desert Night of Asceticism & Silvery Moon
   2: {
-    skyGradient: ['#fcf6ea', '#f5e8d3', '#edd6ba', '#dfc4a2'],
-    farMountain: '#ded0b8',
-    midMountain: '#d2c0a4',
-    slopeMountain: '#c4ad8e',
-    fogColor: '#d97706',
-    fogOpacity: 0.16,
-    celestial: { cx: 340, cy: 80, r: 42, fill: '#fff7e6', glow: '#f59e0b', opacity: 0.75 },
-    sparkleColor: '#fde68a',
-    waterColor: '#d6c4a8',
+    isNight: true,
+    skyGradient: ['#050814', '#0c1527', '#172554', '#090d16'],
+    farMountain: '#1e293b',
+    midMountain: '#162032',
+    slopeMountain: '#0f172a',
+    fogColor: '#38bdf8',
+    fogOpacity: 0.14,
+    celestial: { cx: 340, cy: 75, r: 36, fill: '#f8fafc', glow: '#93c5fd', opacity: 0.95 },
+    sparkleColor: '#bae6fd',
+    waterColor: '#0f172a',
   },
   // Stage 3: Confronting the Buddha - Sacred Golden Enlightenment Radiance
   3: {
+    isNight: false,
     skyGradient: ['#fefce8', '#fef3c7', '#fde68a', '#fcd34d'],
     farMountain: '#e5d19a',
     midMountain: '#d9c283',
@@ -174,6 +199,7 @@ const STAGE_THEMES: Record<number, StageTheme> = {
   },
   // Stage 4: The Garden of Kamala - Senses Awakening, Blooming Peach & Rose Dusk
   4: {
+    isNight: false,
     skyGradient: ['#fdf2f4', '#fce7ed', '#fbcfe8', '#f5d0fe'],
     farMountain: '#e2bccd',
     midMountain: '#d4a9bc',
@@ -186,6 +212,7 @@ const STAGE_THEMES: Record<number, StageTheme> = {
   },
   // Stage 5: Rich Man (Greed) - Opulent Cinnabar Dusk & Smoked Burgundy Lanterns
   5: {
+    isNight: false,
     skyGradient: ['#fbf1f0', '#f6dcde', '#eec1c7', '#deb0b8'],
     farMountain: '#cfabb4',
     midMountain: '#bf94a0',
@@ -196,20 +223,22 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#fda4af',
     waterColor: '#caa2ab',
   },
-  // Stage 6: The River of Rebirth - Dark Night of the Soul, Indigo Mist & Silvery Full Moon
+  // Stage 6: The River of Rebirth - Dark Night of the Soul, Sapphire Abyss & Silver Full Moon
   6: {
-    skyGradient: ['#eff6ff', '#dbeafe', '#bfdbfe', '#93c5fd'],
-    farMountain: '#a5c4e8',
-    midMountain: '#8fb1d9',
-    slopeMountain: '#769ac5',
-    fogColor: '#3b82f6',
+    isNight: true,
+    skyGradient: ['#020617', '#0f172a', '#1e1b4b', '#030712'],
+    farMountain: '#1e1b4b',
+    midMountain: '#172554',
+    slopeMountain: '#0f172a',
+    fogColor: '#818cf8',
     fogOpacity: 0.20,
-    celestial: { cx: 480, cy: 80, r: 36, fill: '#ffffff', glow: '#93c5fd', opacity: 0.95 },
-    sparkleColor: '#bfdbfe',
-    waterColor: '#9bbde3',
+    celestial: { cx: 480, cy: 70, r: 42, fill: '#f1f5f9', glow: '#818cf8', opacity: 0.98 },
+    sparkleColor: '#c7d2fe',
+    waterColor: '#1e1b4b',
   },
   // Stage 7: The Ferryman’s Disciple - Deep Emerald River Waters & Sacred Flow
   7: {
+    isNight: false,
     skyGradient: ['#f0fdf4', '#dcfce7', '#bbf7d0', '#86efac'],
     farMountain: '#9fd4b6',
     midMountain: '#86c2a1',
@@ -220,20 +249,22 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#6ee7b7',
     waterColor: '#93cca8',
   },
-  // Stage 8: The Wound of Love - Amethyst Sunset, Grief & Transcendence
+  // Stage 8: The Wound of Love - Amethyst Starlit Night of Grief & Solitary Moon
   8: {
-    skyGradient: ['#faf5ff', '#f3e8ff', '#e9d5ff', '#d8b4fe'],
-    farMountain: '#c6a8dc',
-    midMountain: '#b28ecb',
-    slopeMountain: '#9e73ba',
-    fogColor: '#8b5cf6',
+    isNight: true,
+    skyGradient: ['#090514', '#1a0b2e', '#2e1065', '#090514'],
+    farMountain: '#3b0764',
+    midMountain: '#2e1065',
+    slopeMountain: '#1e0a3d',
+    fogColor: '#c084fc',
     fogOpacity: 0.18,
-    celestial: { cx: 640, cy: 90, r: 45, fill: '#faf5ff', glow: '#c084fc', opacity: 0.8 },
+    celestial: { cx: 640, cy: 75, r: 38, fill: '#faf5ff', glow: '#c084fc', opacity: 0.92 },
     sparkleColor: '#e9d5ff',
-    waterColor: '#baa0d2',
+    waterColor: '#1a0b2e',
   },
   // Stage 9: The Eternal Flow - Radiant Celestial Aurora, Ultimate Oneness
   9: {
+    isNight: false,
     skyGradient: ['#f0fdfa', '#ccfbf1', '#99f6e4', '#5eead4'],
     farMountain: '#7ecec1',
     midMountain: '#62baa9',
@@ -875,14 +906,36 @@ export default function Game() {
               />
             </div>
 
+            {/* Twinkling Night Stars when isNight is active */}
+            {currentTheme.isNight && (
+              <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                {NIGHT_STARS.map((star, idx) => (
+                  <div
+                    key={idx}
+                    className="absolute rounded-full bg-white animate-pulse pointer-events-none"
+                    style={{
+                      left: `${star.x}%`,
+                      top: `${star.y}%`,
+                      width: `${star.size}px`,
+                      height: `${star.size}px`,
+                      opacity: star.opacity,
+                      animationDuration: `${star.dur}s`,
+                      animationDelay: `${star.delay}s`,
+                      boxShadow: star.size > 1.8 ? '0 0 4px rgba(255,255,255,0.9)' : undefined,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
             {/* Tibet Sacred Landscape (tibet.svg) covering 100% of the game area with authentic, non-stretched proportions */}
             <img
               src="/svg/tibet.svg"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0"
+              className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none z-0 transition-all duration-1000"
               style={{
                 mixBlendMode: 'multiply',
-                opacity: 0.94,
+                opacity: currentTheme.isNight ? 0.45 : 0.94,
               }}
             />
 
@@ -891,7 +944,7 @@ export default function Game() {
               className="absolute inset-0 pointer-events-none transition-all duration-1000 z-0"
               style={{
                 background: `linear-gradient(135deg, ${currentTheme.skyGradient[0]} 0%, ${currentTheme.skyGradient[1]} 35%, ${currentTheme.skyGradient[2]} 70%, ${currentTheme.skyGradient[3]} 100%)`,
-                opacity: 0.22,
+                opacity: currentTheme.isNight ? 0.35 : 0.22,
                 mixBlendMode: 'color',
               }}
             />
@@ -997,17 +1050,25 @@ export default function Game() {
                 
                 {/* Left: CURRENT STREAK with Calligraphy Script '道' */}
                 <div className="flex flex-col text-left justify-self-start">
-                  <span className="text-[10px] sm:text-[11px] tracking-widest text-stone-500 uppercase font-bold font-serif-zen whitespace-nowrap">
+                  <span className={`text-[10px] sm:text-[11px] tracking-widest uppercase font-bold font-serif-zen whitespace-nowrap transition-colors duration-500 ${
+                    currentTheme.isNight ? 'text-amber-200/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]' : 'text-stone-500'
+                  }`}>
                     Current Streak
                   </span>
                   <div className="flex items-baseline space-x-1.5 mt-0.5 whitespace-nowrap">
-                    <span className="font-brush text-3xl sm:text-4xl text-stone-900 font-bold leading-none">
+                    <span className={`font-brush text-3xl sm:text-4xl font-bold leading-none transition-colors duration-500 ${
+                      currentTheme.isNight ? 'text-amber-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]' : 'text-stone-900'
+                    }`}>
                       {streak}
                     </span>
-                    <span className="font-brush text-2xl sm:text-3xl text-stone-800 leading-none">
+                    <span className={`font-brush text-2xl sm:text-3xl leading-none transition-colors duration-500 ${
+                      currentTheme.isNight ? 'text-amber-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]' : 'text-stone-800'
+                    }`}>
                       道
                     </span>
-                    <span className="text-[11px] text-stone-400 font-serif-zen font-semibold ml-1">
+                    <span className={`text-[11px] font-serif-zen font-semibold ml-1 transition-colors duration-500 ${
+                      currentTheme.isNight ? 'text-amber-200/70' : 'text-stone-400'
+                    }`}>
                       ({puzzleCount}/27)
                     </span>
                   </div>
@@ -1016,33 +1077,35 @@ export default function Game() {
                 {/* Center: Stage Progression Breadcrumb & Title */}
                 <div className="flex flex-col items-center text-center justify-self-center px-2">
                   {/* Stages Breadcrumb: BODY ➔ MIND ➔ SPIRIT */}
-                  <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-[11.5px] font-serif-zen font-bold tracking-widest text-stone-700 uppercase mb-0.5 whitespace-nowrap">
+                  <div className={`flex items-center justify-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-[11.5px] font-serif-zen font-bold tracking-widest uppercase mb-0.5 whitespace-nowrap transition-colors duration-500 ${
+                    currentTheme.isNight ? 'text-stone-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]' : 'text-stone-700'
+                  }`}>
                     <span className="opacity-60 text-[9.5px]">STAGES:</span>
                     <span
                       className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
                         currentStage.realm === 'BODY'
                           ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
-                          : 'opacity-70'
+                          : currentTheme.isNight ? 'text-stone-300 opacity-80' : 'opacity-70'
                       }`}
                     >
                       BODY
                     </span>
-                    <span className="text-stone-400 font-black text-[9px]">➔</span>
+                    <span className={`font-black text-[9px] ${currentTheme.isNight ? 'text-amber-300/70' : 'text-stone-400'}`}>➔</span>
                     <span
                       className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
                         currentStage.realm === 'MIND'
                           ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
-                          : 'opacity-70'
+                          : currentTheme.isNight ? 'text-stone-300 opacity-80' : 'opacity-70'
                       }`}
                     >
                       MIND
                     </span>
-                    <span className="text-stone-400 font-black text-[9px]">➔</span>
+                    <span className={`font-black text-[9px] ${currentTheme.isNight ? 'text-amber-300/70' : 'text-stone-400'}`}>➔</span>
                     <span
                       className={`px-2 py-0.5 rounded-full transition-all duration-300 ${
                         currentStage.realm === 'SPIRIT'
                           ? 'bg-[#aed7c4] text-emerald-950 font-black shadow-sm ring-1 ring-emerald-600/30'
-                          : 'opacity-70'
+                          : currentTheme.isNight ? 'text-stone-300 opacity-80' : 'opacity-70'
                       }`}
                     >
                       SPIRIT
@@ -1055,14 +1118,24 @@ export default function Game() {
                     onClick={() => setSelectedLoreStage(currentStage)}
                     title="Click to view stage details"
                   >
-                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] text-[#34705a] block font-serif-zen whitespace-nowrap">
+                    <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] block font-serif-zen whitespace-nowrap transition-colors duration-500 ${
+                      currentTheme.isNight ? 'text-emerald-300 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-[#34705a]'
+                    }`}>
                       {currentStage.realm} • STAGE {currentStage.id}
                     </span>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-stone-900 tracking-tight leading-tight font-serif-zen group-hover:text-emerald-900 transition-colors whitespace-nowrap">
+                    <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
+                      currentTheme.isNight
+                        ? 'text-amber-100 group-hover:text-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]'
+                        : 'text-stone-900 group-hover:text-emerald-900'
+                    }`}>
                       {currentStage.name}
                     </h2>
-                    <div className="text-[11px] sm:text-[14.5px] text-stone-500 font-serif-zen tracking-widest flex items-center justify-center space-x-2 whitespace-nowrap">
-                      <span className="font-bold uppercase text-stone-700">({currentStage.subtitle})</span>
+                    <div className="text-[11px] sm:text-[14.5px] font-serif-zen tracking-widest flex items-center justify-center space-x-2 whitespace-nowrap">
+                      <span className={`font-bold uppercase transition-colors duration-500 ${
+                        currentTheme.isNight ? 'text-amber-200/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-stone-700'
+                      }`}>
+                        ({currentStage.subtitle})
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1078,7 +1151,9 @@ export default function Game() {
                     className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
                       isMuted
                         ? 'bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border-amber-300/80 ring-1 ring-amber-400/40'
-                        : 'bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 border-stone-300/60'
+                        : currentTheme.isNight
+                          ? 'bg-stone-900/70 hover:bg-stone-800/80 text-amber-100 border-stone-700/60'
+                          : 'bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 border-stone-300/60'
                     }`}
                   >
                     {isMuted ? (
@@ -1092,7 +1167,11 @@ export default function Game() {
                     type="button"
                     onClick={() => setSelectedLoreStage(currentStage)}
                     title="View Stage Lore & Conflict"
-                    className="p-1.5 rounded-xl bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 transition-all border border-stone-300/60 cursor-pointer active:scale-95 flex items-center space-x-1 shadow-sm whitespace-nowrap"
+                    className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center space-x-1 shadow-sm whitespace-nowrap ${
+                      currentTheme.isNight
+                        ? 'bg-stone-900/70 hover:bg-stone-800/80 text-amber-100 border-stone-700/60'
+                        : 'bg-stone-200/50 hover:bg-stone-300/50 text-stone-600 hover:text-stone-800 border-stone-300/60'
+                    }`}
                   >
                     <BookOpen size={13} />
                     <span className="text-[9px] font-bold uppercase tracking-wider pr-0.5 font-serif-zen">Lore</span>
