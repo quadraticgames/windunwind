@@ -476,31 +476,27 @@ export default function Game() {
 
       if (requestMethod) {
         try {
-          const promise = requestMethod.call(docEl, { navigationUI: 'hide' });
+          const promise = requestMethod.call(docEl);
           if (promise && typeof promise.then === 'function') {
             promise
-              .then(() => setIsFullscreen(true))
-              .catch(() => {
-                try {
-                  const p2 = requestMethod.call(docEl);
-                  if (p2 && typeof p2.then === 'function') {
-                    p2.then(() => setIsFullscreen(true)).catch(() => setIsFullscreen(true));
-                  } else {
-                    setIsFullscreen(true);
-                  }
-                } catch {
-                  setIsFullscreen(true);
-                }
+              .then(() => {
+                setIsFullscreen(true);
+              })
+              .catch((err: any) => {
+                console.error('Browser requestFullscreen rejected:', err);
+                setIsFullscreen(false);
+                alert('Chrome could not enter fullscreen mode (' + (err?.message || err) + ').\n\nPlease press F11 directly on your keyboard to toggle fullscreen.');
               });
           } else {
             setIsFullscreen(true);
           }
-        } catch (err) {
-          console.warn('Fullscreen call failed, falling back to CSS fullscreen:', err);
-          setIsFullscreen(true);
+        } catch (err: any) {
+          console.error('Browser requestFullscreen threw:', err);
+          setIsFullscreen(false);
+          alert('Chrome could not enter fullscreen mode (' + (err?.message || err) + ').\n\nPlease press F11 directly on your keyboard to toggle fullscreen.');
         }
       } else {
-        setIsFullscreen(true);
+        alert('Fullscreen API not supported in this browser. Please press F11 on your keyboard.');
       }
     } else {
       const exitMethod =
@@ -603,7 +599,11 @@ export default function Game() {
       window.removeEventListener('touchstart', handleFirstInteraction);
     };
 
-    const handleFirstInteraction = () => {
+    const handleFirstInteraction = (e: Event) => {
+      const target = e.target as Element | null;
+      if (target && (target.closest('[data-fullscreen-btn]') || target.closest('button')?.getAttribute('aria-label')?.toLowerCase().includes('fullscreen'))) {
+        return;
+      }
       startDrone();
       removeListeners();
     };
@@ -869,7 +869,13 @@ export default function Game() {
       // Check if clicked element or its parent is a button
       const button = target.closest('button');
       if (button) {
-        if (button.disabled || button.getAttribute('data-tone-button') === 'true' || button.getAttribute('aria-disabled') === 'true') {
+        if (
+          button.disabled ||
+          button.getAttribute('data-tone-button') === 'true' ||
+          button.getAttribute('data-fullscreen-btn') === 'true' ||
+          button.getAttribute('aria-label')?.toLowerCase().includes('fullscreen') ||
+          button.getAttribute('aria-disabled') === 'true'
+        ) {
           return;
         }
         playClickSound();
@@ -1213,8 +1219,9 @@ export default function Game() {
               {/* Fullscreen Toggle Button on Intro Screen */}
               <button
                 type="button"
+                data-fullscreen-btn="true"
                 onClick={handleToggleFullscreen}
-                title={isFullscreen ? "Exit Fullscreen (F)" : "Enter Fullscreen (F)"}
+                title={isFullscreen ? "Exit Fullscreen (F / F11)" : "Enter Fullscreen (F / F11)"}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                 className="absolute top-4 right-4 py-1.5 px-2.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center space-x-1.5 shadow-sm bg-stone-200/70 hover:bg-stone-300/80 text-stone-700 hover:text-stone-900 border-stone-300/80 z-20"
               >
@@ -1394,8 +1401,9 @@ export default function Game() {
                   {/* Fullscreen Toggle Button */}
                   <button
                     type="button"
+                    data-fullscreen-btn="true"
                     onClick={handleToggleFullscreen}
-                    title={isFullscreen ? "Exit Fullscreen (F)" : "Full Screen (F)"}
+                    title={isFullscreen ? "Exit Fullscreen (F / F11)" : "Full Screen (F / F11)"}
                     aria-label={isFullscreen ? "Exit Fullscreen" : "Full Screen"}
                     className={`p-1.5 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
                       currentTheme.isNight
