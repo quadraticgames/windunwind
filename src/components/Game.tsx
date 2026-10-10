@@ -2399,7 +2399,8 @@ export default function Game() {
                     </button>
                     <button
                       onClick={() => setShowAboutModal(true)}
-                      className="w-full py-2.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-xl transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen"
+                      style={{ borderRadius: '2.2rem 2rem 2.1rem 2.2rem' }}
+                      className="w-full py-2.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-[2.2rem_2rem_2.1rem_2.2rem] transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen shadow-sm border border-stone-300/60"
                     >
                       About This Game
                     </button>
