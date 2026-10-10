@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind } from 'lucide-react';
+import { Play, RotateCcw, Sparkles, Check, X, BookOpen, Volume2, VolumeX, Brain, Wind, Maximize, Minimize } from 'lucide-react';
 import { playCorrectNote, playWrongNote, initializeAudio, startDrone, stopDrone, playStageFanfare, toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 
 type Direction = 'up' | 'down';
@@ -427,23 +427,50 @@ export default function Game() {
   const [selectedLoreStage, setSelectedLoreStage] = useState<StageInfo | null>(null);
   const [stageCelebration, setStageCelebration] = useState<{ stageId: number; name: string; realm: string } | null>(null);
   const [isMuted, setIsMuted] = useState(() => getIsMuted());
+  const [isFullscreen, setIsFullscreen] = useState(() => Boolean(typeof document !== 'undefined' && document.fullscreenElement));
 
   const handleToggleMute = useCallback(() => {
     const next = toggleMute();
     setIsMuted(next);
   }, []);
 
-  // Keyboard shortcut: Press 'M' to toggle mute
+  const handleToggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.warn('Error attempting to enable fullscreen:', err);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch((err) => {
+          console.warn('Error attempting to exit fullscreen:', err);
+        });
+      }
+    }
+  }, []);
+
+  // Listen for browser fullscreen changes (e.g. Esc or F11 pressed by user)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Keyboard shortcut: Press 'M' to toggle mute, 'F' to toggle fullscreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === 'm' || e.key === 'M') {
         handleToggleMute();
       }
+      if (e.key === 'f' || e.key === 'F') {
+        handleToggleFullscreen();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleToggleMute]);
+  }, [handleToggleMute, handleToggleFullscreen]);
 
   // Start ambient drone at the start screen / main menu
   useEffect(() => {
@@ -1057,22 +1084,18 @@ export default function Game() {
             /* Intro / Start Journey Screen in Zen Aesthetic */
             <div className="relative z-10 flex flex-col items-center justify-center my-auto py-8 sm:py-10 px-6 sm:px-8 text-center max-w-md space-y-6 bg-[#fbf9f4]/90 backdrop-blur-md rounded-3xl m-4 sm:m-8 border border-[#e4decb] shadow-2xl">
               
-              {/* Mute Toggle Button on Intro Screen */}
+              {/* Fullscreen Toggle Button on Intro Screen */}
               <button
                 type="button"
-                onClick={handleToggleMute}
-                title={isMuted ? "Unmute drone (M)" : "Mute drone (M)"}
-                aria-label={isMuted ? "Unmute ambient drone" : "Mute ambient drone"}
-                className={`absolute top-4 right-4 p-2 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm ${
-                  isMuted
-                    ? 'bg-amber-100/80 hover:bg-amber-200/80 text-amber-900 border-amber-300/80 ring-1 ring-amber-400/40'
-                    : 'bg-stone-200/60 hover:bg-stone-300/60 text-stone-700 hover:text-stone-900 border-stone-300/70'
-                }`}
+                onClick={handleToggleFullscreen}
+                title={isFullscreen ? "Exit Fullscreen (F)" : "Enter Fullscreen (F)"}
+                aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                className="absolute top-4 right-4 p-2 rounded-xl transition-all border cursor-pointer active:scale-95 flex items-center justify-center shadow-sm bg-stone-200/60 hover:bg-stone-300/60 text-stone-700 hover:text-stone-900 border-stone-300/70"
               >
-                {isMuted ? (
-                  <VolumeX size={16} className="text-amber-800" />
+                {isFullscreen ? (
+                  <Minimize size={16} className="text-stone-800" />
                 ) : (
-                  <Volume2 size={16} className="text-emerald-800" />
+                  <Maximize size={16} className="text-stone-800" />
                 )}
               </button>
               
