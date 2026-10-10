@@ -11,12 +11,14 @@
 - **Stage Nodes & Active Indicator:** Balanced circular stage stations with Roman numerals, featuring a custom vector Lotus medallion (`lotus.svg`) enclosed in an animated white pulsing dotted halo to mark the player's active stage.
 
 ### 🔊 Seamless Web Audio Ambient Engine
+- **Sound Design with Arturia:** The atmospheric drones were created with Arturia Augmented Mallets and Augmented Yangtze, delivering warm, evocative acoustic and synthetic soundbeds.
 - **Pop-Free Looping:** Built a dedicated Web Audio API engine using sample-accurate buffer memory playback and a 1.0-second equal-power crossfade between loop boundaries, eliminating MP3 seek dropouts and audio clicks.
 - **4.4-Second Ambient Fade-In:** The drone gently swells into the soundscape over 4.4 seconds upon the first player interaction.
 - **Balanced Background Level:** Tuned ambient drone volume down by 60% (`0.14`) to provide a soothing bed that never overpowers the chimes.
 - **Micro-Ramped Gain Transitions:** Smooth 40–50ms linear ramps on mute, unmute, and stop prevent abrupt digital audio cuts.
 
 ### 🔔 Calibrated Chime Acoustics & Sound Effects
+- **Arturia Augmented Chimes:** All temple chimes, bells, and harmonic tones were created with Arturia Augmented Mallets and Augmented Yangtze, blending physical struck mallet vibrations with traditional Chinese and Himalayan resonant instruments.
 - **Equal-Loudness Balancing:** Boosted the lower tone volume by +4.5 dB (`+0.5 dB` vs `-4 dB` on high tone), compensating for raw file master differences and acoustic hearing contours so both notes ring with equal perceived loudness.
 - **Anti-Click Note Fades:** Applied gentle envelope micro-fades (`fadeIn: 0.005`, `fadeOut: 0.04`) on `Tone.Player` to ensure clean audio cuts when notes retrigger.
 - **Tactile UI Clicks:** Responsive audio pool utilizing `click.mp3` for all interface buttons and navigation (excluding tone buttons).
@@ -111,6 +113,7 @@
 - **Styling:** Tailwind CSS + Vanilla CSS (Zen parchment tokens)
 - **Animations:** Framer Motion
 - **Audio Engine:** Web Audio API (custom seamless loop engine) + Tone.js (FMSynth, Reverb, Tone.Player)
+- **Virtual Instruments & Sound Design:** Arturia Augmented Mallets and Augmented Yangtze (temple chimes and atmospheric drones)
 - **Vector Assets:** Affinity Designer (SVG path & mandala components)
 - **Icons:** Lucide React
 

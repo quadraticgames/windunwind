@@ -2481,8 +2481,9 @@ export default function Game() {
                       </p>
                     </div>
 
-                    <div className="pt-1 text-[10px] text-stone-500 border-t border-stone-200">
-                      Created with reverence by Joe Stallings | Quadratic Games.
+                    <div className="pt-1 text-[10px] text-stone-500 border-t border-stone-200 space-y-0.5">
+                      <div>Created with reverence by Joe Stallings | Quadratic Games.</div>
+                      <div className="italic text-stone-400">Chimes and drones created with Arturia Augmented Mallets &amp; Augmented Yangtze.</div>
                     </div>
                   </div>
 
