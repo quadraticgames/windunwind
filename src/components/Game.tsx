@@ -566,6 +566,64 @@ export default function Game() {
     };
   }, []);
 
+  // Native capture-phase click listener for fullscreen buttons to ensure pristine user activation
+  useEffect(() => {
+    const handleNativeFullscreenClick = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      if (!target) return;
+      const btn = target.closest('[data-fullscreen-btn="true"]');
+      if (!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const doc = document as any;
+      const docEl = document.documentElement as any;
+      const isFs = isBrowserFullscreen();
+
+      if (!isFs) {
+        const req =
+          docEl.requestFullscreen ||
+          docEl.webkitRequestFullscreen ||
+          docEl.mozRequestFullScreen ||
+          docEl.msRequestFullscreen;
+
+        if (req) {
+          try {
+            req.call(docEl).then(() => {
+              setIsFullscreen(true);
+            }).catch((err: any) => {
+              console.warn('Native requestFullscreen error:', err);
+              setIsFullscreen(false);
+            });
+          } catch (err) {
+            console.warn('Native requestFullscreen sync error:', err);
+          }
+        }
+      } else {
+        const exit =
+          doc.exitFullscreen ||
+          doc.webkitExitFullscreen ||
+          doc.mozCancelFullScreen ||
+          doc.msExitFullscreen;
+
+        if (exit) {
+          try {
+            exit.call(doc).then(() => {
+              setIsFullscreen(false);
+            }).catch(() => {});
+          } catch {}
+        }
+        setIsFullscreen(false);
+      }
+    };
+
+    document.addEventListener('click', handleNativeFullscreenClick, true);
+    return () => {
+      document.removeEventListener('click', handleNativeFullscreenClick, true);
+    };
+  }, []);
+
   // Keyboard shortcut: Press 'M' to toggle mute, 'F' or 'F11' to toggle fullscreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
