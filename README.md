@@ -138,6 +138,14 @@ npm run dev
 
 Visit `http://localhost:5173` in your browser.
 
+### 🎮 Running Without URL Bar & Tabs (App Mode)
+
+To run the game like a native desktop app with **zero tabs and zero URL bar**:
+
+* **Option A (One-Click Launcher):** Double-click `Launch-Attune.bat` in the project root, or run `npm run game`.
+* **Option B (Chrome Install):** Open `http://localhost:5173` in Chrome, click the three-dot menu `⋮` $\rightarrow$ **Save and share** $\rightarrow$ **Install page as app**.
+* **Option C (Keyboard Fullscreen):** Press **F11** on your keyboard while in Chrome.
+
 ---
 
 ## 📄 License

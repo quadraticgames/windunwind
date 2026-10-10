@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "game": "start chrome --app=http://localhost:5173",
     "lint": "eslint .",
     "preview": "vite preview"
   },
