@@ -14,6 +14,7 @@ import {
   getStage5LanternEmbers,
   getStage6NightStars,
   getStage7BambooLeaves,
+  getStage7AquaRiverConfig,
   getStage8NightStars,
   getStage9SpiritMotes,
 } from '../utils/visualConfig';
@@ -363,6 +364,73 @@ const BLOSSOM_PETALS = getStage4BlossomPetals();
 const BAMBOO_LEAVES = getStage7BambooLeaves();
 const SPIRIT_MOTES = getStage9SpiritMotes();
 
+// Stage 7: The Ferryman’s Disciple - Dedicated Aqua Blue River Atmosphere Overlay
+function StageSevenAquaRiverOverlay() {
+  const cfg = getStage7AquaRiverConfig();
+  if (!cfg.enabled) return null;
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* 1. Deep Aqua Blue Primary Atmosphere Color Wash */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-all duration-1000"
+        style={{
+          background: `linear-gradient(180deg, ${cfg.skyWash} 0%, ${cfg.midRiverWash} 32%, ${cfg.deepRiverWash} 65%, ${cfg.riverbedWash} 100%)`,
+          opacity: cfg.opacity,
+          mixBlendMode: 'color',
+        }}
+      />
+
+      {/* 2. Soft-Light Aqua Luminosity Gradient Wash for Rich Depth */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-all duration-1000"
+        style={{
+          background: `radial-gradient(ellipse 110% 85% at 50% 75%, ${cfg.deepRiverWash} 0%, ${cfg.skyWash} 55%, transparent 90%)`,
+          opacity: cfg.opacity * 0.75,
+          mixBlendMode: 'soft-light',
+        }}
+      />
+
+      {/* 3. Sacred River Currents & Luminous Water Shimmer Waves */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-3/5 pointer-events-none overflow-hidden"
+        style={{ opacity: cfg.shimmerOpacity }}
+      >
+        {/* River Horizon Ambient Water Pulse Glow */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-full anim-river-pulse pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 95% 55% at 50% 85%, rgba(6, 182, 212, 0.45) 0%, rgba(14, 165, 233, 0.28) 50%, transparent 80%)',
+          }}
+        />
+
+        {/* Animated Sacred Flowing River Wave Ribbon 1 */}
+        <div
+          className="absolute bottom-8 -left-[10%] -right-[10%] h-36 anim-river-wave-1 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(103, 232, 249, 0.30) 25%, rgba(6, 182, 212, 0.42) 50%, rgba(14, 165, 233, 0.25) 75%, transparent 100%)',
+            filter: 'blur(3px)',
+            transform: 'skewY(-1.2deg)',
+          }}
+        />
+
+        {/* Animated Sacred Flowing River Wave Ribbon 2 */}
+        <div
+          className="absolute bottom-0 -left-[10%] -right-[10%] h-48 anim-river-wave-2 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.26) 30%, rgba(6, 182, 212, 0.45) 60%, rgba(2, 132, 199, 0.32) 85%, transparent 100%)',
+            filter: 'blur(4px)',
+            transform: 'skewY(1deg)',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function StageAtmosphericParticles({ stageId }: { stageId: number }) {
   switch (stageId) {
     case 1:
@@ -512,7 +580,7 @@ function StageAtmosphericParticles({ stageId }: { stageId: number }) {
                 backgroundColor: leaf.color,
                 '--particle-opacity': leaf.opacity,
                 opacity: leaf.opacity,
-                boxShadow: '0 0 3px rgba(52, 211, 153, 0.4)',
+                boxShadow: '0 0 4px rgba(34, 211, 238, 0.45)',
                 animationDuration: `${leaf.dur}s`,
                 animationDelay: `${leaf.delay}s`,
               } as CustomCSSProperties}
@@ -631,18 +699,18 @@ const STAGE_THEMES: Record<number, StageTheme> = {
     sparkleColor: '#c7d2fe',
     waterColor: '#253b66',
   },
-  // Stage 7: The Ferryman’s Disciple - Deep Emerald River Waters & Sacred Flow
+  // Stage 7: The Ferryman’s Disciple - Sacred Flowing Aqua River & Eternal Current
   7: {
     isNight: false,
-    skyGradient: ['#f0fdf4', '#dcfce7', '#bbf7d0', '#86efac'],
-    farMountain: '#9fd4b6',
-    midMountain: '#86c2a1',
-    slopeMountain: '#6eac8b',
-    fogColor: '#10b981',
-    fogOpacity: 0.18,
-    celestial: { cx: 280, cy: 95, r: 48, fill: '#f0fdf4', glow: '#34d399', opacity: 0.7 },
-    sparkleColor: '#6ee7b7',
-    waterColor: '#93cca8',
+    skyGradient: ['#e0f7fa', '#b2ebf2', '#67e8f9', '#06b6d4'],
+    farMountain: '#0284c7',
+    midMountain: '#0369a1',
+    slopeMountain: '#075985',
+    fogColor: '#00e5ff',
+    fogOpacity: 0.32,
+    celestial: { cx: 280, cy: 95, r: 48, fill: '#ecfeff', glow: '#22d3ee', opacity: 0.90 },
+    sparkleColor: '#38bdf8',
+    waterColor: '#0284c7',
   },
   // Stage 8: The Wound of Love - Celestial Amethyst Twilight Night & Solitary Moon
   8: {
@@ -1605,6 +1673,9 @@ export default function Game() {
                 opacity: currentTheme.fogOpacity,
               }}
             />
+
+            {/* Stage 7: The Ferryman’s Disciple - Dedicated Aqua Blue River Atmosphere Overlay */}
+            {currentStage.id === 7 && <StageSevenAquaRiverOverlay />}
           </div>
           
           {!isPlaying ? (
@@ -2226,7 +2297,7 @@ export default function Game() {
                     Enlightenment Achieved
                   </h2>
                   <p className="text-stone-700 mb-2 text-xs leading-relaxed font-serif-zen">
-                    You solved all 27 puzzles across Mind, Body, and Spirit, attaining ultimate oneness.
+                    You solved all 27 puzzles across Body, Mind, and Spirit, attaining ultimate oneness.
                   </p>
                   <p className="text-stone-500 mb-5 text-[11px] italic font-serif-zen">
                     "Everything is sacred, time is a construct, and love is the most important force."

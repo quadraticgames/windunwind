@@ -651,5 +651,64 @@ body {
   will-change: filter, opacity;
 }
 
+/* =========================================================================
+   STAGE 7: SACRED RIVER WATER SHIMMER & FLOW
+   ========================================================================= */
+@keyframes riverWaveFlow-1 {
+  0% {
+    transform: translate3d(-3%, 0, 0) scaleY(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(3%, 4px, 0) scaleY(1.06);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-3%, 0, 0) scaleY(1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes riverWaveFlow-2 {
+  0% {
+    transform: translate3d(3%, 0, 0) scaleY(1.05);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(-3%, -3px, 0) scaleY(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(3%, 0, 0) scaleY(1.05);
+    opacity: 0.45;
+  }
+}
+
+@keyframes riverCurrentPulse {
+  0%, 100% {
+    opacity: 0.50;
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.80;
+    filter: blur(14px);
+  }
+}
+
+.anim-river-wave-1 {
+  animation: riverWaveFlow-1 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-river-wave-2 {
+  animation: riverWaveFlow-2 13s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.anim-river-pulse {
+  animation: riverCurrentPulse 6.5s ease-in-out infinite;
+  will-change: filter, opacity;
+}
+
 
 

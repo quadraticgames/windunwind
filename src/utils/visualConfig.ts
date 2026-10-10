@@ -20,7 +20,7 @@ export const GLOBAL_VISUAL_CONFIG = {
    * 0.5 = Half density
    * 0.0 = Disable particles
    */
-  densityMultiplier: 1.0,
+  densityMultiplier: 2.0,
 
   /**
    * Movement Randomness Intensity:
@@ -29,7 +29,7 @@ export const GLOBAL_VISUAL_CONFIG = {
    * 1.0 = Balanced organic movement
    * 2.0 = Highly turbulent, unpredictable drift
    */
-  movementRandomness: 1.0,
+  movementRandomness: 2.0,
 
   /**
    * Global Animation Speed Multiplier:
@@ -145,7 +145,7 @@ export const STAGE_PARTICLE_CONFIG = {
     },
   },
 
-  // Stage 7: The Ferryman’s Disciple - Whispering Bamboo Leaves & River Dew
+  // Stage 7: The Ferryman’s Disciple - Sacred Flowing Aqua River & Bamboo Dew
   stage7: {
     bambooLeaves: {
       baseCount: 24, // Drifting bamboo leaves
@@ -153,7 +153,30 @@ export const STAGE_PARTICLE_CONFIG = {
       opacityRange: [0.50, 0.70] as [number, number],
       durationRange: [8.6, 10.8] as [number, number],
       movementRandomness: 1.25,
-      colors: ['#6ee7b7', '#a7f3d0', '#34d399'],
+      colors: ['#38bdf8', '#67e8f9', '#22d3ee', '#a7f3d0', '#34d399'], // Aqua river & fresh bamboo jade
+    },
+    aquaRiverOverlay: {
+      enabled: true,
+      /**
+       * Overall opacity of the aqua river overlay (0.0 to 1.0).
+       * Set high for prominent, immersive aqua blue atmosphere.
+       */
+      opacity: 0.68,
+      /**
+       * Secondary river current shimmer wave opacity (0.0 to 1.0).
+       */
+      shimmerOpacity: 0.45,
+      /**
+       * Aqua gradient wash stops from morning sky down into the deep river current
+       */
+      skyWash: 'rgba(6, 182, 212, 0.45)',      // Vibrant luminous aqua
+      midRiverWash: 'rgba(14, 165, 233, 0.58)', // Rich river cerulean
+      deepRiverWash: 'rgba(2, 132, 199, 0.72)', // Flowing river water
+      riverbedWash: 'rgba(3, 105, 161, 0.82)',  // Deep meditative river current
+      /**
+       * Flowing water ripple wave highlight color
+       */
+      waterRippleColor: 'rgba(103, 232, 249, 0.65)',
     },
   },
 
@@ -579,3 +602,11 @@ export function getStage9SpiritMotes(): ParticleItem[] {
 
   return items;
 }
+
+/**
+ * Stage 7 Aqua Blue River Overlay Configuration Getter
+ */
+export function getStage7AquaRiverConfig() {
+  return STAGE_PARTICLE_CONFIG.stage7.aquaRiverOverlay;
+}
+
