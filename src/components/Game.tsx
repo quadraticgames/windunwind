@@ -1843,7 +1843,8 @@ export default function Game() {
                 <button
                   type="button"
                   onClick={() => setShowAboutModal(true)}
-                  className="w-full py-2 px-4 flex items-center justify-center space-x-1.5 text-stone-600 hover:text-stone-900 font-bold transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer"
+                  style={{ borderRadius: '2.2rem 2rem 2.1rem 2.2rem' }}
+                  className="w-full py-2.5 px-4 flex items-center justify-center space-x-1.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-[2.2rem_2rem_2.1rem_2.2rem] transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer shadow-sm border border-stone-300/60"
                 >
                   <BookOpen size={14} />
                   <span>About This Game</span>
