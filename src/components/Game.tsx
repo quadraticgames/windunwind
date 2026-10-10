@@ -1936,7 +1936,7 @@ export default function Game() {
                     >
                       {currentStage.realm} • STAGE {currentStage.id}
                     </span>
-                    <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
+                    <h2 className={`text-2xl sm:text-[1.8rem] md:text-4xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
                       currentTheme.isNight
                         ? 'text-amber-100 group-hover:text-amber-200 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]'
                         : 'text-stone-900 group-hover:text-emerald-900'
