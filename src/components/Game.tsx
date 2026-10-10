@@ -2185,9 +2185,12 @@ export default function Game() {
                     onClick={() => setSelectedLoreStage(currentStage)}
                     title="Click to view stage details"
                   >
-                    <span className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] block font-serif-zen whitespace-nowrap transition-colors duration-500 ${
-                      currentTheme.isNight ? 'text-emerald-300 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-[#34705a]'
-                    }`}>
+                    <span
+                      style={{ paddingTop: '100px' }}
+                      className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.25em] block font-serif-zen whitespace-nowrap transition-colors duration-500 pt-[100px] ${
+                        currentTheme.isNight ? 'text-emerald-300 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]' : 'text-[#34705a]'
+                      }`}
+                    >
                       {currentStage.realm} • STAGE {currentStage.id}
                     </span>
                     <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight font-serif-zen transition-colors duration-500 whitespace-nowrap ${
