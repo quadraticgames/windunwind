@@ -924,6 +924,7 @@ export default function Game() {
   const [stageCelebration, setStageCelebration] = useState<{ stageId: number; name: string; realm: string } | null>(null);
   const [isMuted, setIsMuted] = useState(() => getIsMuted());
   const [isFullscreen, setIsFullscreen] = useState(() => isBrowserFullscreen());
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   const handleToggleMute = useCallback(() => {
     const next = toggleMute();
@@ -1780,7 +1781,7 @@ export default function Game() {
                 </div>
               </div>
 
-              <div className="w-full pt-2">
+              <div className="w-full pt-2 flex flex-col space-y-2">
                 <button
                   type="button"
                   onClick={startGame}
@@ -1788,6 +1789,14 @@ export default function Game() {
                 >
                   <Play size={18} className="fill-emerald-950/80 text-emerald-950" />
                   <span className="font-serif-zen text-sm font-black tracking-wider uppercase">Begin The Journey</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAboutModal(true)}
+                  className="w-full py-2 px-4 flex items-center justify-center space-x-1.5 text-stone-600 hover:text-stone-900 font-bold transition-all text-xs uppercase tracking-wider font-serif-zen cursor-pointer"
+                >
+                  <BookOpen size={14} />
+                  <span>About This Game</span>
                 </button>
               </div>
 
@@ -2336,15 +2345,97 @@ export default function Game() {
                       onClick={continueCycle}
                       className="jade-stone w-full py-2.5 text-emerald-950 font-bold rounded-xl transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen shadow-md"
                     >
-                      Ascend to Cycle 2
+                      Reincarnate (Play Again)
                     </button>
                     <button
-                      onClick={startGame}
+                      onClick={() => setShowAboutModal(true)}
                       className="w-full py-2.5 bg-stone-200/80 hover:bg-stone-300 text-stone-700 font-bold rounded-xl transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen"
                     >
-                      Begin Again
+                      About This Game
                     </button>
                   </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* About This Game Modal */}
+          <AnimatePresence>
+            {showAboutModal && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) setShowAboutModal(false);
+                }}
+                className="absolute inset-0 z-50 bg-stone-900/65 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-left"
+              >
+                <motion.div
+                  initial={{ scale: 0.95, y: 10 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.95, y: 10 }}
+                  className="washi-card rounded-3xl p-6 sm:p-7 max-w-sm w-full relative shadow-2xl overflow-y-auto max-h-[90vh]"
+                >
+                  <button
+                    onClick={() => setShowAboutModal(false)}
+                    aria-label="Close About This Game"
+                    className="absolute top-4 right-4 p-1.5 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-600 hover:text-stone-900 transition-all cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+
+                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#34705a] mb-1 font-serif-zen">
+                    Attune • Siddhartha's Journey
+                  </div>
+                  <h3 className="text-xl font-bold text-stone-900 font-serif-zen mb-3">
+                    About This Game
+                  </h3>
+
+                  <div className="space-y-3 text-xs leading-relaxed text-stone-700 font-serif-zen">
+                    <div>
+                      <strong className="text-stone-900 uppercase tracking-wider text-[10px] block mb-0.5">
+                        The Inspiration
+                      </strong>
+                      <p>
+                        Adapted from Hermann Hesse's 1922 spiritual classic <em>Siddhartha</em>, Attune is a meditative audio-visual pitch attunement journey exploring the seeker's quest across three realms of existence.
+                      </p>
+                    </div>
+
+                    <div>
+                      <strong className="text-[#a93226] uppercase tracking-wider text-[10px] block mb-0.5">
+                        The Three Realms
+                      </strong>
+                      <p>
+                        Travel through 9 symbolic stages across 27 tone puzzles:
+                      </p>
+                      <ul className="list-disc list-inside mt-1 space-y-0.5 text-stone-600 text-[11px]">
+                        <li><strong className="text-stone-800">Body (Stages 1–3):</strong> The Brahmin’s Cage, The Samana Trials, Confronting the Buddha.</li>
+                        <li><strong className="text-stone-800">Mind (Stages 4–6):</strong> The Garden of Kamala, Rich Man (Greed), The River of Rebirth.</li>
+                        <li><strong className="text-stone-800">Spirit (Stages 7–9):</strong> The Ferryman’s Disciple, The Wound of Love, The Eternal Flow.</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <strong className="text-[#275d49] uppercase tracking-wider text-[10px] block mb-0.5">
+                        The Lesson
+                      </strong>
+                      <p className="font-semibold text-stone-900 italic">
+                        "Everything is sacred, time is a construct, and love is the most important force."
+                      </p>
+                    </div>
+
+                    <div className="pt-1 text-[10px] text-stone-500 border-t border-stone-200">
+                      Created with reverence by Quadratic Games.
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setShowAboutModal(false)}
+                    className="jade-stone mt-5 w-full py-2.5 text-emerald-950 font-bold rounded-xl transition-all cursor-pointer text-xs uppercase tracking-wider font-serif-zen shadow-sm"
+                  >
+                    Close
+                  </button>
                 </motion.div>
               </motion.div>
             )}
