@@ -38,6 +38,8 @@ const getDroneContext = (): AudioContext | null => {
 };
 
 let hasDroneFadedIn = false;
+// Ambient drone volume reduced by 60% (from 0.35 down to 0.14) for a delicate background presence
+const DRONE_VOLUME = 0.14;
 
 // Generates an equal-power seamless loop buffer from the raw recording,
 // eliminating MP3 boundary discontinuities and browser seek pops.
@@ -89,7 +91,7 @@ export const setDroneMuted = (muted: boolean) => {
 
   if (droneGainNode && droneAudioContext) {
     const now = droneAudioContext.currentTime;
-    const targetGain = muted ? 0 : 0.35;
+    const targetGain = muted ? 0 : DRONE_VOLUME;
     droneGainNode.gain.cancelScheduledValues(now);
     droneGainNode.gain.setValueAtTime(droneGainNode.gain.value, now);
     droneGainNode.gain.linearRampToValueAtTime(targetGain, now + 0.05);
@@ -224,7 +226,7 @@ export const startDrone = async () => {
       if (shouldFadeIn) {
         hasDroneFadedIn = true;
       }
-      const targetGain = isDroneMuted ? 0 : 0.35;
+      const targetGain = isDroneMuted ? 0 : DRONE_VOLUME;
       const FADE_IN_DURATION = 4.4; // 4.4-second gentle ambient swell
 
       if (!droneGainNode) {
@@ -264,12 +266,12 @@ export const startDrone = async () => {
           fallbackAudio.volume = 0;
           let currentVol = 0;
           const fadeTimer = setInterval(() => {
-            currentVol = Math.min(0.35, currentVol + 0.0175);
+            currentVol = Math.min(DRONE_VOLUME, currentVol + (DRONE_VOLUME / 20));
             if (fallbackAudio) fallbackAudio.volume = currentVol;
-            if (currentVol >= 0.35) clearInterval(fadeTimer);
+            if (currentVol >= DRONE_VOLUME) clearInterval(fadeTimer);
           }, 220);
         } else {
-          fallbackAudio.volume = 0.35;
+          fallbackAudio.volume = DRONE_VOLUME;
         }
       }
       fallbackAudio.play().catch(() => {});
