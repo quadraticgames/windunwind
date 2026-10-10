@@ -960,6 +960,37 @@ function isBrowserFullscreen(): boolean {
   return hasHtmlFullscreen || isDisplayModeFs || isScreenFs;
 }
 
+export function requestBrowserFullscreen(): Promise<void> | void {
+  if (typeof document === 'undefined') return;
+  const doc = document as any;
+  const docEl = document.documentElement as any;
+  const isFs = Boolean(
+    doc.fullscreenElement ||
+    doc.webkitFullscreenElement ||
+    doc.mozFullScreenElement ||
+    doc.msFullscreenElement
+  );
+  if (isFs) return;
+
+  const req =
+    docEl.requestFullscreen ||
+    docEl.webkitRequestFullscreen ||
+    docEl.webkitRequestFullScreen ||
+    docEl.mozRequestFullScreen ||
+    docEl.msRequestFullscreen;
+
+  if (req) {
+    try {
+      const p = req.call(docEl);
+      if (p && typeof p.then === 'function') {
+        return p.catch(() => {});
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
 export default function Game() {
   const [puzzleCount, setPuzzleCount] = useState(0);
   const [sequence, setSequence] = useState<Direction[]>([]);
@@ -974,7 +1005,7 @@ export default function Game() {
   const [selectedLoreStage, setSelectedLoreStage] = useState<StageInfo | null>(null);
   const [stageCelebration, setStageCelebration] = useState<{ stageId: number; name: string; realm: string } | null>(null);
   const [isMuted, setIsMuted] = useState(() => getIsMuted());
-  const [isFullscreen, setIsFullscreen] = useState(() => isBrowserFullscreen());
+  const [isFullscreen, setIsFullscreen] = useState(() => true);
   const [showAboutModal, setShowAboutModal] = useState(false);
 
   const handleToggleMute = useCallback(() => {
@@ -1009,20 +1040,18 @@ export default function Game() {
                 setIsFullscreen(true);
               })
               .catch((err: any) => {
-                console.error('Browser requestFullscreen rejected:', err);
-                setIsFullscreen(false);
-                alert('Chrome could not enter fullscreen mode (' + (err?.message || err) + ').\n\nPlease press F11 directly on your keyboard to toggle fullscreen.');
+                console.warn('Browser requestFullscreen rejected:', err);
+                setIsFullscreen(true);
               });
           } else {
             setIsFullscreen(true);
           }
         } catch (err: any) {
-          console.error('Browser requestFullscreen threw:', err);
-          setIsFullscreen(false);
-          alert('Chrome could not enter fullscreen mode (' + (err?.message || err) + ').\n\nPlease press F11 directly on your keyboard to toggle fullscreen.');
+          console.warn('Browser requestFullscreen threw:', err);
+          setIsFullscreen(true);
         }
       } else {
-        alert('Fullscreen API not supported in this browser. Please press F11 on your keyboard.');
+        setIsFullscreen(true);
       }
     } else {
       const exitMethod =
@@ -1089,6 +1118,25 @@ export default function Game() {
       if (mql && mql.removeEventListener) {
         mql.removeEventListener('change', handleSyncFullscreen);
       }
+    };
+  }, []);
+
+  // Always start full screen: auto-request fullscreen on startup and on first user gesture
+  useEffect(() => {
+    requestBrowserFullscreen();
+
+    const handleFirstUserGesture = () => {
+      if (!isBrowserFullscreen()) {
+        requestBrowserFullscreen();
+      }
+    };
+
+    window.addEventListener('pointerdown', handleFirstUserGesture, { capture: true, once: true });
+    window.addEventListener('keydown', handleFirstUserGesture, { capture: true, once: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstUserGesture, { capture: true });
+      window.removeEventListener('keydown', handleFirstUserGesture, { capture: true });
     };
   }, []);
 
@@ -1434,6 +1482,8 @@ export default function Game() {
   }, [isPlaying, isShowingSequence, gameOver, isTranscendence, playerSequence, sequence, strikes, puzzleCount, generateSequenceForPuzzle, showSequence]);
 
   const advanceToNextStage = useCallback(async () => {
+    requestBrowserFullscreen();
+    setIsFullscreen(true);
     if (pendingTimeoutRef.current) {
       clearTimeout(pendingTimeoutRef.current);
       pendingTimeoutRef.current = null;
@@ -1565,6 +1615,8 @@ export default function Game() {
   }, []);
 
   const startGame = async () => {
+    requestBrowserFullscreen();
+    setIsFullscreen(true);
     if (pendingTimeoutRef.current) {
       clearTimeout(pendingTimeoutRef.current);
       pendingTimeoutRef.current = null;
@@ -1605,6 +1657,8 @@ export default function Game() {
   };
 
   const continueCycle = () => {
+    requestBrowserFullscreen();
+    setIsFullscreen(true);
     if (pendingTimeoutRef.current) {
       clearTimeout(pendingTimeoutRef.current);
       pendingTimeoutRef.current = null;
